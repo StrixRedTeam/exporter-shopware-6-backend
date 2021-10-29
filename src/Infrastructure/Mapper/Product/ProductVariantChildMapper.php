@@ -1,6 +1,7 @@
 <?php
+
 /**
- * Copyright © Ergonode Sp. z o.o. All rights reserved.
+ * Copyright © Bold Brand Commerce Sp. z o.o. All rights reserved.
  * See LICENSE.txt for license details.
  */
 
@@ -10,22 +11,22 @@ namespace Ergonode\ExporterShopware6\Infrastructure\Mapper\Product;
 
 use Ergonode\Attribute\Domain\Repository\AttributeRepositoryInterface;
 use Ergonode\Attribute\Domain\Repository\OptionRepositoryInterface;
-use Ergonode\Core\Domain\ValueObject\Language;
 use Ergonode\Channel\Domain\Entity\Export;
+use Ergonode\Core\Domain\ValueObject\Language;
 use Ergonode\ExporterShopware6\Domain\Entity\Shopware6Channel;
 use Ergonode\ExporterShopware6\Domain\Repository\ProductRepositoryInterface as Shopware6ProductRepositoryInterface;
 use Ergonode\ExporterShopware6\Domain\Repository\PropertyGroupOptionsRepositoryInterface;
-use Ergonode\ExporterShopware6\Infrastructure\Calculator\AttributeTranslationInheritanceCalculator;
 use Ergonode\ExporterShopware6\Infrastructure\Model\Shopware6Product;
 use Ergonode\Product\Domain\Entity\AbstractProduct;
 use Ergonode\Product\Domain\Entity\VariableProduct;
 use Ergonode\Product\Domain\Query\ProductChildrenQueryInterface;
 use Ergonode\Product\Domain\Repository\ProductRepositoryInterface;
+use Ergonode\Product\Infrastructure\Calculator\TranslationInheritanceCalculator;
 use Ergonode\SharedKernel\Domain\Aggregate\ProductId;
 
 class ProductVariantChildMapper extends AbstractVariantOptionMapper
 {
-    private ProductChildrenQueryInterface  $childQuery;
+    private ProductChildrenQueryInterface $childQuery;
 
     private Shopware6ProductRepositoryInterface $shopware6ProductRepository;
 
@@ -37,7 +38,7 @@ class ProductVariantChildMapper extends AbstractVariantOptionMapper
         ProductRepositoryInterface $productRepository,
         AttributeRepositoryInterface $attributeRepository,
         OptionRepositoryInterface $optionRepository,
-        AttributeTranslationInheritanceCalculator $calculator,
+        TranslationInheritanceCalculator $calculator,
         PropertyGroupOptionsRepositoryInterface $propertyGroupOptionsRepository
     ) {
         parent::__construct($attributeRepository, $optionRepository, $calculator, $propertyGroupOptionsRepository);

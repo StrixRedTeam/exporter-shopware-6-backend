@@ -1,6 +1,7 @@
 <?php
+
 /**
- * Copyright © Ergonode Sp. z o.o. All rights reserved.
+ * Copyright © Bold Brand Commerce Sp. z o.o. All rights reserved.
  * See LICENSE.txt for license details.
  */
 
@@ -29,7 +30,7 @@ class GetCrossSellingAction extends AbstractAction
         return new Request(
             HttpRequest::METHOD_GET,
             $this->getUri(),
-            $this->buildHeaders()
+            $this->buildHeaders(),
         );
     }
 
@@ -48,7 +49,7 @@ class GetCrossSellingAction extends AbstractAction
             $data['data']['attributes']['name'],
             $data['data']['attributes']['productId'],
             $data['data']['attributes']['active'],
-            $data['data']['attributes']['type']
+            $data['data']['attributes']['type'],
         );
     }
 

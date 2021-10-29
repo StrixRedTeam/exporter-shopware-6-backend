@@ -1,6 +1,7 @@
 <?php
+
 /**
- * Copyright © Ergonode Sp. z o.o. All rights reserved.
+ * Copyright © Bold Brand Commerce Sp. z o.o. All rights reserved.
  * See LICENSE.txt for license details.
  */
 
@@ -29,7 +30,7 @@ class GetProductMedia extends AbstractAction
         return new Request(
             HttpRequest::METHOD_GET,
             $this->getUri(),
-            $this->buildHeaders()
+            $this->buildHeaders(),
         );
     }
 
@@ -47,7 +48,7 @@ class GetProductMedia extends AbstractAction
                 $result[] = new Shopware6ProductMedia(
                     $row['id'],
                     $row['attributes']['mediaId'],
-                    $row['attributes']['position']
+                    $row['attributes']['position'],
                 );
             }
         }

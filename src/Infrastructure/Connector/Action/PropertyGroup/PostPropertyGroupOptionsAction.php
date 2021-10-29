@@ -1,6 +1,7 @@
 <?php
+
 /**
- * Copyright © Ergonode Sp. z o.o. All rights reserved.
+ * Copyright © Bold Brand Commerce Sp. z o.o. All rights reserved.
  * See LICENSE.txt for license details.
  */
 
@@ -40,7 +41,7 @@ class PostPropertyGroupOptionsAction extends AbstractAction
             HttpRequest::METHOD_POST,
             $this->getUri(),
             $this->buildHeaders(),
-            $this->buildBody()
+            $this->buildBody(),
         );
     }
 
@@ -59,7 +60,7 @@ class PostPropertyGroupOptionsAction extends AbstractAction
             $data['data']['id'],
             $data['data']['attributes']['name'],
             $data['data']['attributes']['mediaId'],
-            $data['data']['attributes']['position']
+            $data['data']['attributes']['position'],
         );
     }
 

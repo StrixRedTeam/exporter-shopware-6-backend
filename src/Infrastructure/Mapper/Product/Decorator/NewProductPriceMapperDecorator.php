@@ -1,6 +1,7 @@
 <?php
+
 /**
- * Copyright © Ergonode Sp. z o.o. All rights reserved.
+ * Copyright © Bold Brand Commerce Sp. z o.o. All rights reserved.
  * See LICENSE.txt for license details.
  */
 
@@ -8,8 +9,8 @@ declare(strict_types=1);
 
 namespace Ergonode\ExporterShopware6\Infrastructure\Mapper\Product\Decorator;
 
-use Ergonode\Core\Domain\ValueObject\Language;
 use Ergonode\Channel\Domain\Entity\Export;
+use Ergonode\Core\Domain\ValueObject\Language;
 use Ergonode\ExporterShopware6\Domain\Entity\Shopware6Channel;
 use Ergonode\ExporterShopware6\Infrastructure\Exception\Mapper\Shopware6ExporterNoMapperException;
 use Ergonode\ExporterShopware6\Infrastructure\Exception\Mapper\Shopware6ExporterNumericAttributeException;
@@ -21,7 +22,7 @@ use Ergonode\Product\Domain\Entity\AbstractProduct;
 
 class NewProductPriceMapperDecorator implements ProductMapperInterface
 {
-    private ProductPriceMapper  $productPriceMapper;
+    private ProductPriceMapper $productPriceMapper;
 
     public function __construct(ProductPriceMapper $productPriceMapper)
     {

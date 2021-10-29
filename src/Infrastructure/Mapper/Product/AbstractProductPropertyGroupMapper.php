@@ -1,6 +1,7 @@
 <?php
+
 /**
- * Copyright © Ergonode Sp. z o.o. All rights reserved.
+ * Copyright © Bold Brand Commerce Sp. z o.o. All rights reserved.
  * See LICENSE.txt for license details.
  */
 
@@ -10,15 +11,15 @@ namespace Ergonode\ExporterShopware6\Infrastructure\Mapper\Product;
 
 use Ergonode\Attribute\Domain\Entity\AbstractAttribute;
 use Ergonode\Attribute\Domain\Repository\AttributeRepositoryInterface;
-use Ergonode\Core\Domain\ValueObject\Language;
 use Ergonode\Channel\Domain\Entity\Export;
+use Ergonode\Core\Domain\ValueObject\Language;
 use Ergonode\ExporterShopware6\Domain\Entity\Shopware6Channel;
-use Ergonode\ExporterShopware6\Infrastructure\Calculator\AttributeTranslationInheritanceCalculator;
 use Ergonode\ExporterShopware6\Infrastructure\Client\Shopware6PropertyGroupOptionClient;
 use Ergonode\ExporterShopware6\Infrastructure\Mapper\ProductMapperInterface;
 use Ergonode\ExporterShopware6\Infrastructure\Model\Shopware6Product;
 use Ergonode\ExporterShopware6\Infrastructure\Model\Shopware6PropertyGroupOption;
 use Ergonode\Product\Domain\Entity\AbstractProduct;
+use Ergonode\Product\Infrastructure\Calculator\TranslationInheritanceCalculator;
 use Ergonode\SharedKernel\Domain\Aggregate\AttributeId;
 use Ergonode\Value\Domain\ValueObject\ValueInterface;
 use Webmozart\Assert\Assert;
@@ -29,21 +30,18 @@ abstract class AbstractProductPropertyGroupMapper implements ProductMapperInterf
 
     protected Shopware6PropertyGroupOptionClient $propertyGroupOptionClient;
 
-    protected AttributeTranslationInheritanceCalculator $calculator;
+    protected TranslationInheritanceCalculator $calculator;
 
     public function __construct(
         AttributeRepositoryInterface $repository,
         Shopware6PropertyGroupOptionClient $propertyGroupOptionClient,
-        AttributeTranslationInheritanceCalculator $calculator
+        TranslationInheritanceCalculator $calculator
     ) {
         $this->repository = $repository;
         $this->propertyGroupOptionClient = $propertyGroupOptionClient;
         $this->calculator = $calculator;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function map(
         Shopware6Channel $channel,
         Export $export,
@@ -70,12 +68,12 @@ abstract class AbstractProductPropertyGroupMapper implements ProductMapperInterf
         AbstractAttribute $attribute,
         ValueInterface $value
     ): Shopware6PropertyGroupOption {
-        $name = $this->calculator->calculate($attribute, $value, $channel->getDefaultLanguage());
+        $name = $this->calculator->calculate($attribute->getScope(), $value, $channel->getDefaultLanguage());
 
         $propertyGroupOption = new Shopware6PropertyGroupOption(null, $name);
 
         foreach ($channel->getLanguages() as $language) {
-            $calculateValue = $this->calculator->calculate($attribute, $value, $language);
+            $calculateValue = $this->calculator->calculate($attribute->getScope(), $value, $language);
             if ($calculateValue) {
                 $propertyGroupOption->addTranslations($language, 'name', $calculateValue);
             }

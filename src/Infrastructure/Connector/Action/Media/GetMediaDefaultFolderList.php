@@ -1,6 +1,7 @@
 <?php
+
 /**
- * Copyright © Ergonode Sp. z o.o. All rights reserved.
+ * Copyright © Bold Brand Commerce Sp. z o.o. All rights reserved.
  * See LICENSE.txt for license details.
  */
 
@@ -30,7 +31,7 @@ class GetMediaDefaultFolderList extends AbstractAction
         return new Request(
             HttpRequest::METHOD_GET,
             $this->getUri(),
-            $this->buildHeaders()
+            $this->buildHeaders(),
         );
     }
 
@@ -46,7 +47,7 @@ class GetMediaDefaultFolderList extends AbstractAction
             $result[] = new Shopware6MediaDefaultFolder(
                 $row['id'],
                 $row['attributes']['entity'],
-                $row['relationships']['folder']['data']['id']
+                $row['relationships']['folder']['data']['id'],
             );
         }
 

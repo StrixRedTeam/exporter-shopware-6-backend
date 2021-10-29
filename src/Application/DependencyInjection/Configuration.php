@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright © Ergonode Sp. z o.o. All rights reserved.
+ * Copyright © Bold Brand Commerce Sp. z o.o. All rights reserved.
  * See LICENSE.txt for license details.
  */
 
@@ -26,7 +26,7 @@ final class Configuration implements ConfigurationInterface
                         ->validate()
                             ->ifTrue(
                                 fn (array $messenger): bool =>
-                                    $messenger['enabled'] && !isset($messenger['transport_name'])
+                                    $messenger['enabled'] && !isset($messenger['transport_name']),
                             )
                             ->thenInvalid('transport_name has to be defined for enabled messenger.')
                         ->end()

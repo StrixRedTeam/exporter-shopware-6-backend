@@ -1,6 +1,7 @@
 <?php
+
 /**
- * Copyright © Ergonode Sp. z o.o. All rights reserved.
+ * Copyright © Bold Brand Commerce Sp. z o.o. All rights reserved.
  * See LICENSE.txt for license details.
  */
 
@@ -15,9 +16,6 @@ use Ergonode\ExporterShopware6\Infrastructure\Mapper\Product\AbstractProductCust
 
 class ProductCustomFieldSetDateTimeMapper extends AbstractProductCustomFieldSetMapper
 {
-    /**
-     * {@inheritDoc}
-     */
     public function getType(): string
     {
         return AbstractDateAttribute::TYPE;

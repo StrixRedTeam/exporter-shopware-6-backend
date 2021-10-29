@@ -1,6 +1,7 @@
 <?php
+
 /**
- * Copyright © Ergonode Sp. z o.o. All rights reserved.
+ * Copyright © Bold Brand Commerce Sp. z o.o. All rights reserved.
  * See LICENSE.txt for license details.
  */
 
@@ -28,7 +29,7 @@ class GetCategory extends AbstractAction
         return new Request(
             HttpRequest::METHOD_GET,
             $this->getUri(),
-            $this->buildHeaders()
+            $this->buildHeaders(),
         );
     }
 
@@ -44,7 +45,7 @@ class GetCategory extends AbstractAction
             $data['data']['attributes']['name'],
             $data['data']['attributes']['parentId'],
             $data['data']['attributes']['active'],
-            $data['data']['attributes']['visible']
+            $data['data']['attributes']['visible'],
         );
     }
 

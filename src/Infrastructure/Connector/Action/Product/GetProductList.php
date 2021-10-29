@@ -1,6 +1,7 @@
 <?php
+
 /**
- * Copyright © Ergonode Sp. z o.o. All rights reserved.
+ * Copyright © Bold Brand Commerce Sp. z o.o. All rights reserved.
  * See LICENSE.txt for license details.
  */
 
@@ -10,8 +11,8 @@ namespace Ergonode\ExporterShopware6\Infrastructure\Connector\Action\Product;
 
 use Ergonode\ExporterShopware6\Infrastructure\Connector\AbstractAction;
 use Ergonode\ExporterShopware6\Infrastructure\Connector\Shopware6QueryBuilder;
-use Ergonode\ExporterShopware6\Infrastructure\Model\Shopware6Product;
 use Ergonode\ExporterShopware6\Infrastructure\Model\Product\Shopware6ProductPrice;
+use Ergonode\ExporterShopware6\Infrastructure\Model\Shopware6Product;
 use GuzzleHttp\Psr7\Request;
 use Symfony\Component\HttpFoundation\Request as HttpRequest;
 
@@ -31,7 +32,7 @@ class GetProductList extends AbstractAction
         return new Request(
             HttpRequest::METHOD_GET,
             $this->getUri(),
-            $this->buildHeaders()
+            $this->buildHeaders(),
         );
     }
 
@@ -57,7 +58,7 @@ class GetProductList extends AbstractAction
                             $attributePrice['currencyId'],
                             $attributePrice['net'],
                             $attributePrice['gross'],
-                            $attributePrice['linked']
+                            $attributePrice['linked'],
                         );
                     }
                 }
@@ -95,7 +96,7 @@ class GetProductList extends AbstractAction
                     $row['attributes']['coverId'] ?? null,
                     $row['attributes']['metaTitle'] ?? null,
                     $row['attributes']['metaDescription'] ?? null,
-                    $row['attributes']['keywords'] ?? null
+                    $row['attributes']['keywords'] ?? null,
                 );
             }
         }

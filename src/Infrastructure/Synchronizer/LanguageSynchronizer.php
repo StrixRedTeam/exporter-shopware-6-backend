@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright © Ergonode Sp. z o.o. All rights reserved.
+ * Copyright © Bold Brand Commerce Sp. z o.o. All rights reserved.
  * See LICENSE.txt for license details.
  */
 
@@ -17,7 +17,7 @@ use Ergonode\ExporterShopware6\Infrastructure\Client\Shopware6LanguageClient;
 
 class LanguageSynchronizer implements SynchronizerInterface
 {
-    private Shopware6LanguageClient  $languageClient;
+    private Shopware6LanguageClient $languageClient;
 
     private LanguageRepositoryInterface $languageShopwareRepository;
 
@@ -46,7 +46,7 @@ class LanguageSynchronizer implements SynchronizerInterface
         foreach ($shopwareLanguageList as $shopwareLanguage) {
             $this->languageShopwareRepository->save(
                 $channel->getId(),
-                $shopwareLanguage
+                $shopwareLanguage,
             );
         }
         $this->languageShopwareQuery->cleanData($channel->getId(), $start);

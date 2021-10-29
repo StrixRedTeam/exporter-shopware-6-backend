@@ -1,6 +1,7 @@
 <?php
+
 /**
- * Copyright © Ergonode Sp. z o.o. All rights reserved.
+ * Copyright © Bold Brand Commerce Sp. z o.o. All rights reserved.
  * See LICENSE.txt for license details.
  */
 
@@ -10,8 +11,8 @@ namespace Ergonode\ExporterShopware6\Infrastructure\Mapper\CustomField;
 
 use Ergonode\Attribute\Domain\Entity\AbstractAttribute;
 use Ergonode\Attribute\Domain\Query\OptionQueryInterface;
-use Ergonode\Core\Domain\ValueObject\Language;
 use Ergonode\Channel\Domain\Entity\Export;
+use Ergonode\Core\Domain\ValueObject\Language;
 use Ergonode\ExporterShopware6\Domain\Entity\Shopware6Channel;
 use Ergonode\ExporterShopware6\Domain\Repository\LanguageRepositoryInterface;
 use Ergonode\ExporterShopware6\Infrastructure\Mapper\CustomFieldMapperInterface;
@@ -22,7 +23,7 @@ class CustomFieldConfigOptionsMapper implements CustomFieldMapperInterface
 {
     private OptionQueryInterface $optionQuery;
 
-    private LanguageRepositoryInterface  $languageRepository;
+    private LanguageRepositoryInterface $languageRepository;
 
     public function __construct(
         OptionQueryInterface $optionQuery,
@@ -85,8 +86,10 @@ class CustomFieldConfigOptionsMapper implements CustomFieldMapperInterface
         ];
 
         foreach ($channel->getLanguages() as $language) {
-            if (isset($option['label'][$language->getCode()])
-                && $this->languageRepository->exists($channel->getId(), $language->getCode())) {
+            if (
+                isset($option['label'][$language->getCode()])
+                && $this->languageRepository->exists($channel->getId(), $language->getCode())
+            ) {
                 $label[str_replace('_', '-', $language->getCode())] = $option['label'][$language->getCode()];
             }
         }
@@ -95,7 +98,7 @@ class CustomFieldConfigOptionsMapper implements CustomFieldMapperInterface
             $label[str_replace(
                 '_',
                 '-',
-                $channel->getDefaultLanguage()->getCode()
+                $channel->getDefaultLanguage()->getCode(),
             )] = $option['label'][$channel->getDefaultLanguage()->getCode()];
         }
 

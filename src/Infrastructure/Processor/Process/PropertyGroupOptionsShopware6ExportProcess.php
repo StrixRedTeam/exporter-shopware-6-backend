@@ -1,6 +1,7 @@
 <?php
+
 /**
- * Copyright © Ergonode Sp. z o.o. All rights reserved.
+ * Copyright © Bold Brand Commerce Sp. z o.o. All rights reserved.
  * See LICENSE.txt for license details.
  */
 
@@ -12,8 +13,8 @@ use Ergonode\Attribute\Domain\Entity\AbstractAttribute;
 use Ergonode\Attribute\Domain\Entity\AbstractOption;
 use Ergonode\Attribute\Domain\Query\OptionQueryInterface;
 use Ergonode\Attribute\Domain\Repository\OptionRepositoryInterface;
-use Ergonode\Core\Domain\ValueObject\Language;
 use Ergonode\Channel\Domain\Entity\Export;
+use Ergonode\Core\Domain\ValueObject\Language;
 use Ergonode\ExporterShopware6\Domain\Entity\Shopware6Channel;
 use Ergonode\ExporterShopware6\Domain\Repository\LanguageRepositoryInterface;
 use Ergonode\ExporterShopware6\Domain\Repository\PropertyGroupOptionsRepositoryInterface;
@@ -31,7 +32,7 @@ class PropertyGroupOptionsShopware6ExportProcess
 {
     protected PropertyGroupRepositoryInterface $propertyGroupRepository;
 
-    protected OptionQueryInterface  $optionQuery;
+    protected OptionQueryInterface $optionQuery;
 
     private PropertyGroupOptionsRepositoryInterface $propertyGroupOptionsRepository;
 
@@ -41,7 +42,7 @@ class PropertyGroupOptionsShopware6ExportProcess
 
     private OptionRepositoryInterface $optionRepository;
 
-    private LanguageRepositoryInterface  $languageRepository;
+    private LanguageRepositoryInterface $languageRepository;
 
     public function __construct(
         PropertyGroupRepositoryInterface $propertyGroupRepository,
@@ -86,7 +87,7 @@ class PropertyGroupOptionsShopware6ExportProcess
             $channel,
             $attribute->getId(),
             $option->getId(),
-            $propertyGroupId
+            $propertyGroupId,
         );
 
         if ($propertyGroupOption) {
@@ -118,7 +119,7 @@ class PropertyGroupOptionsShopware6ExportProcess
                 $channel,
                 $propertyGroupId,
                 $propertyGroupOption,
-                $shopwareLanguage
+                $shopwareLanguage,
             );
         }
     }
@@ -138,7 +139,7 @@ class PropertyGroupOptionsShopware6ExportProcess
             $option->getAttributeId(),
             $option->getId(),
             $propertyGroupId,
-            $shopwareLanguage
+            $shopwareLanguage,
         );
         Assert::notNull($shopwarePropertyGroupOption);
 
@@ -149,7 +150,7 @@ class PropertyGroupOptionsShopware6ExportProcess
             $propertyGroupId,
             $option,
             $language,
-            $shopwareLanguage
+            $shopwareLanguage,
         );
     }
 
@@ -168,7 +169,7 @@ class PropertyGroupOptionsShopware6ExportProcess
                     $channel,
                     $propertyGroupId,
                     $shopwareId,
-                    $shopware6Language
+                    $shopware6Language,
                 );
             } catch (ClientException $exception) {
             }

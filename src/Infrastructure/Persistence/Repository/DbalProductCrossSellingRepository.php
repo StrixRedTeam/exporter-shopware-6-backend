@@ -1,6 +1,7 @@
 <?php
+
 /**
- * Copyright © Ergonode Sp. z o.o. All rights reserved.
+ * Copyright © Bold Brand Commerce Sp. z o.o. All rights reserved.
  * See LICENSE.txt for license details.
  */
 
@@ -64,7 +65,8 @@ class DbalProductCrossSellingRepository implements ProductCrossSellingRepository
         ProductId $productId,
         string $shopwareId
     ): void {
-        $sql = 'INSERT INTO '.self::TABLE.' (channel_id, product_collection_id, product_id, shopware6_id, updated_at) 
+        // phpcs:ignore
+        $sql = 'INSERT INTO ' . self::TABLE . ' (channel_id, product_collection_id, product_id, shopware6_id, updated_at) 
         VALUES (:channelId, :productCollectionId, :productId, :shopware6Id, :updatedAt)
             ON CONFLICT ON CONSTRAINT shopware6_product_collection_pkey
                 DO UPDATE SET shopware6_id = :shopware6Id, updated_at = :updatedAt
@@ -81,7 +83,7 @@ class DbalProductCrossSellingRepository implements ProductCrossSellingRepository
             ],
             [
                 'updatedAt' => Types::DATETIMETZ_MUTABLE,
-            ]
+            ],
         );
     }
 
@@ -116,7 +118,7 @@ class DbalProductCrossSellingRepository implements ProductCrossSellingRepository
             [
                 'shopware6_id' => $shopwareId,
                 'channel_id' => $channelId->getValue(),
-            ]
+            ],
         );
     }
 }

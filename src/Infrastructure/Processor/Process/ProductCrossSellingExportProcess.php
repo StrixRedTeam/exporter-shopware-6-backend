@@ -1,6 +1,7 @@
 <?php
+
 /**
- * Copyright © Ergonode Sp. z o.o. All rights reserved.
+ * Copyright © Bold Brand Commerce Sp. z o.o. All rights reserved.
  * See LICENSE.txt for license details.
  */
 
@@ -8,9 +9,10 @@ declare(strict_types=1);
 
 namespace Ergonode\ExporterShopware6\Infrastructure\Processor\Process;
 
+use Ergonode\Channel\Domain\Entity\Export;
+use Ergonode\Channel\Domain\Repository\ExportRepositoryInterface;
 use Ergonode\Channel\Domain\ValueObject\ExportLineId;
 use Ergonode\Core\Domain\ValueObject\Language;
-use Ergonode\Channel\Domain\Entity\Export;
 use Ergonode\ExporterShopware6\Domain\Entity\Shopware6Channel;
 use Ergonode\ExporterShopware6\Domain\Repository\LanguageRepositoryInterface;
 use Ergonode\ExporterShopware6\Domain\Repository\ProductCrossSellingRepositoryInterface;
@@ -26,7 +28,6 @@ use Ergonode\SharedKernel\Domain\Aggregate\ProductCollectionId;
 use Ergonode\SharedKernel\Domain\Aggregate\ProductId;
 use GuzzleHttp\Exception\ClientException;
 use Webmozart\Assert\Assert;
-use Ergonode\Channel\Domain\Repository\ExportRepositoryInterface;
 
 class ProductCrossSellingExportProcess
 {
@@ -84,7 +85,7 @@ class ProductCrossSellingExportProcess
         $productCrossSelling = $this->loadProductCrossSelling(
             $channel,
             $productCollection->getId(),
-            $collectionElement->getProductId()
+            $collectionElement->getProductId(),
         );
         try {
             if ($productCrossSelling) {
@@ -93,7 +94,7 @@ class ProductCrossSellingExportProcess
                     $export,
                     $productCrossSelling,
                     $productCollection,
-                    $collectionElement
+                    $collectionElement,
                 );
             } else {
                 $productCrossSelling = new ProductCrossSelling();
@@ -102,13 +103,13 @@ class ProductCrossSellingExportProcess
                     $export,
                     $productCrossSelling,
                     $productCollection,
-                    $collectionElement
+                    $collectionElement,
                 );
                 $this->productCrossSellingClient->insert(
                     $channel,
                     $productCrossSelling,
                     $productCollection->getId(),
-                    $collectionElement->getProductId()
+                    $collectionElement->getProductId(),
                 );
             }
 
@@ -120,7 +121,7 @@ class ProductCrossSellingExportProcess
                         $export,
                         $productCollection,
                         $collectionElement,
-                        $language
+                        $language,
                     );
                 }
             }
@@ -143,7 +144,7 @@ class ProductCrossSellingExportProcess
             $channel,
             $productCollection->getId(),
             $collectionElement->getProductId(),
-            $shopwareLanguage
+            $shopwareLanguage,
         );
         Assert::notNull($productCrossSelling);
 
@@ -154,7 +155,7 @@ class ProductCrossSellingExportProcess
             $productCollection,
             $collectionElement,
             $language,
-            $shopwareLanguage
+            $shopwareLanguage,
         );
     }
 
@@ -173,7 +174,7 @@ class ProductCrossSellingExportProcess
             $productCrossSelling,
             $productCollection,
             $collectionElement,
-            $language
+            $language,
         );
         if ($productCrossSelling->isModified()) {
             $this->productCrossSellingClient->update(
@@ -181,7 +182,7 @@ class ProductCrossSellingExportProcess
                 $productCrossSelling,
                 $productCollection->getId(),
                 $collectionElement->getProductId(),
-                $shopwareLanguage
+                $shopwareLanguage,
             );
         }
     }

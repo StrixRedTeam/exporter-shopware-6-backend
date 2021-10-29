@@ -1,6 +1,7 @@
 <?php
+
 /**
- * Copyright © Ergonode Sp. z o.o. All rights reserved.
+ * Copyright © Bold Brand Commerce Sp. z o.o. All rights reserved.
  * See LICENSE.txt for license details.
  */
 
@@ -25,7 +26,7 @@ class ProductToLongValueException extends Shopware6ExporterException
                 '{sku}' => $sku->getValue(),
                 '{length}' => $length,
             ],
-            $previous
+            $previous,
         );
     }
 }

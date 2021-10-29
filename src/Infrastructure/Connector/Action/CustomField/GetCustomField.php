@@ -1,6 +1,7 @@
 <?php
+
 /**
- * Copyright © Ergonode Sp. z o.o. All rights reserved.
+ * Copyright © Bold Brand Commerce Sp. z o.o. All rights reserved.
  * See LICENSE.txt for license details.
  */
 
@@ -30,7 +31,7 @@ class GetCustomField extends AbstractAction
         return new Request(
             HttpRequest::METHOD_GET,
             $this->getUri(),
-            $this->buildHeaders()
+            $this->buildHeaders(),
         );
     }
 
@@ -48,7 +49,7 @@ class GetCustomField extends AbstractAction
             $data['data']['attributes']['config']['componentName'] ?? null,
             $data['data']['attributes']['config']['dateType'] ?? null,
             $data['data']['attributes']['config']['numberType'] ?? null,
-            $data['data']['attributes']['config']['options'] ?? null
+            $data['data']['attributes']['config']['options'] ?? null,
         );
 
         return new Shopware6CustomField(
@@ -56,7 +57,7 @@ class GetCustomField extends AbstractAction
             $data['data']['attributes']['name'],
             $data['data']['attributes']['type'],
             $config,
-            $data['data']['attributes']['customFieldSetId']
+            $data['data']['attributes']['customFieldSetId'],
         );
     }
 

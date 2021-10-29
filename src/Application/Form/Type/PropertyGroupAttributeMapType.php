@@ -1,6 +1,7 @@
 <?php
+
 /**
- * Copyright © Ergonode Sp. z o.o. All rights reserved.
+ * Copyright © Bold Brand Commerce Sp. z o.o. All rights reserved.
  * See LICENSE.txt for license details.
  */
 
@@ -11,11 +12,11 @@ namespace Ergonode\ExporterShopware6\Application\Form\Type;
 use Ergonode\Attribute\Domain\Entity\Attribute\MultiSelectAttribute;
 use Ergonode\Attribute\Domain\Entity\Attribute\SelectAttribute;
 use Ergonode\Attribute\Domain\Query\AttributeQueryInterface;
+use Ergonode\ExporterShopware6\Application\Model\Type\PropertyGroupAttributeModel;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Ergonode\ExporterShopware6\Application\Model\Type\PropertyGroupAttributeModel;
 
 class PropertyGroupAttributeMapType extends AbstractType
 {
@@ -39,7 +40,7 @@ class PropertyGroupAttributeMapType extends AbstractType
                 [
                     'label' => 'Attribute',
                     'choices' => array_flip($dictionary),
-                ]
+                ],
             );
     }
 

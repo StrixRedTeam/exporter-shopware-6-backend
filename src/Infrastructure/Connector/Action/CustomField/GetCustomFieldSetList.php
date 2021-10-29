@@ -1,6 +1,7 @@
 <?php
+
 /**
- * Copyright © Ergonode Sp. z o.o. All rights reserved.
+ * Copyright © Bold Brand Commerce Sp. z o.o. All rights reserved.
  * See LICENSE.txt for license details.
  */
 
@@ -32,7 +33,7 @@ class GetCustomFieldSetList extends AbstractAction
         return new Request(
             HttpRequest::METHOD_GET,
             $this->getUri(),
-            $this->buildHeaders()
+            $this->buildHeaders(),
         );
     }
 
@@ -54,7 +55,7 @@ class GetCustomFieldSetList extends AbstractAction
             $result[] = new Shopware6CustomFieldSet(
                 $row['id'],
                 $row['attributes']['name'],
-                $config
+                $config,
             );
         }
 

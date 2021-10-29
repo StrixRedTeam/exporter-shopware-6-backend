@@ -1,6 +1,7 @@
 <?php
+
 /**
- * Copyright © Ergonode Sp. z o.o. All rights reserved.
+ * Copyright © Bold Brand Commerce Sp. z o.o. All rights reserved.
  * See LICENSE.txt for license details.
  */
 
@@ -10,13 +11,13 @@ namespace Ergonode\ExporterShopware6\Infrastructure\Mapper\Product;
 
 use Ergonode\Attribute\Domain\Entity\AbstractAttribute;
 use Ergonode\Attribute\Domain\Repository\AttributeRepositoryInterface;
-use Ergonode\Core\Domain\ValueObject\Language;
 use Ergonode\Channel\Domain\Entity\Export;
+use Ergonode\Core\Domain\ValueObject\Language;
 use Ergonode\ExporterShopware6\Domain\Entity\Shopware6Channel;
-use Ergonode\ExporterShopware6\Infrastructure\Calculator\AttributeTranslationInheritanceCalculator;
 use Ergonode\ExporterShopware6\Infrastructure\Mapper\ProductMapperInterface;
 use Ergonode\ExporterShopware6\Infrastructure\Model\Shopware6Product;
 use Ergonode\Product\Domain\Entity\AbstractProduct;
+use Ergonode\Product\Infrastructure\Calculator\TranslationInheritanceCalculator;
 use Ergonode\SharedKernel\Domain\Aggregate\AttributeId;
 use Webmozart\Assert\Assert;
 
@@ -24,19 +25,16 @@ abstract class AbstractProductCustomFieldSetMapper implements ProductMapperInter
 {
     private AttributeRepositoryInterface $repository;
 
-    private AttributeTranslationInheritanceCalculator $calculator;
+    private TranslationInheritanceCalculator $calculator;
 
     public function __construct(
         AttributeRepositoryInterface $repository,
-        AttributeTranslationInheritanceCalculator $calculator
+        TranslationInheritanceCalculator $calculator
     ) {
         $this->repository = $repository;
         $this->calculator = $calculator;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function map(
         Shopware6Channel $channel,
         Export $export,
@@ -87,15 +85,15 @@ abstract class AbstractProductCustomFieldSetMapper implements ProductMapperInter
         if ($this->isSupported($attribute->getType())) {
             $value = $product->getAttribute($attribute->getCode());
             $calculateValue = $this->calculator->calculate(
-                $attribute,
+                $attribute->getScope(),
                 $value,
-                $language ?: $channel->getDefaultLanguage()
+                $language ?: $channel->getDefaultLanguage(),
             );
 
             if ($calculateValue) {
                 $shopware6Product->addCustomField(
                     $attribute->getCode()->getValue(),
-                    $this->getValue($channel, $attribute, $calculateValue)
+                    $this->getValue($channel, $attribute, $calculateValue),
                 );
             }
         }

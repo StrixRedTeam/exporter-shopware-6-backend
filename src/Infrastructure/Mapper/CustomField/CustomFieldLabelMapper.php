@@ -1,6 +1,7 @@
 <?php
+
 /**
- * Copyright © Ergonode Sp. z o.o. All rights reserved.
+ * Copyright © Bold Brand Commerce Sp. z o.o. All rights reserved.
  * See LICENSE.txt for license details.
  */
 
@@ -9,8 +10,8 @@ declare(strict_types=1);
 namespace Ergonode\ExporterShopware6\Infrastructure\Mapper\CustomField;
 
 use Ergonode\Attribute\Domain\Entity\AbstractAttribute;
-use Ergonode\Core\Domain\ValueObject\Language;
 use Ergonode\Channel\Domain\Entity\Export;
+use Ergonode\Core\Domain\ValueObject\Language;
 use Ergonode\ExporterShopware6\Domain\Entity\Shopware6Channel;
 use Ergonode\ExporterShopware6\Domain\Repository\LanguageRepositoryInterface;
 use Ergonode\ExporterShopware6\Infrastructure\Mapper\CustomFieldMapperInterface;
@@ -18,7 +19,7 @@ use Ergonode\ExporterShopware6\Infrastructure\Model\AbstractShopware6CustomField
 
 class CustomFieldLabelMapper implements CustomFieldMapperInterface
 {
-    private LanguageRepositoryInterface  $languageRepository;
+    private LanguageRepositoryInterface $languageRepository;
 
     public function __construct(LanguageRepositoryInterface $languageRepository)
     {
@@ -40,8 +41,10 @@ class CustomFieldLabelMapper implements CustomFieldMapperInterface
         ];
 
         foreach ($channel->getLanguages() as $lang) {
-            if ($attribute->getLabel()->has($lang)
-                && $this->languageRepository->exists($channel->getId(), $lang->getCode())) {
+            if (
+                $attribute->getLabel()->has($lang)
+                && $this->languageRepository->exists($channel->getId(), $lang->getCode())
+            ) {
                 $label[str_replace('_', '-', $lang->getCode())] = $attribute->getLabel()->get($lang);
             }
         }
@@ -49,7 +52,7 @@ class CustomFieldLabelMapper implements CustomFieldMapperInterface
             $label[str_replace('_', '-', $channel->getDefaultLanguage()->getCode())] = $attribute
                 ->getLabel()
                 ->get(
-                    $channel->getDefaultLanguage()
+                    $channel->getDefaultLanguage(),
                 );
         }
 

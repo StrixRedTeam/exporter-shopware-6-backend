@@ -1,6 +1,7 @@
 <?php
+
 /**
- * Copyright © Ergonode Sp. z o.o. All rights reserved.
+ * Copyright © Bold Brand Commerce Sp. z o.o. All rights reserved.
  * See LICENSE.txt for license details.
  */
 
@@ -59,7 +60,7 @@ class Shopware6CustomFieldClient
                 $channel->getId(),
                 $attribute->getId(),
                 $customField->getId(),
-                $attribute->getType()
+                $attribute->getType(),
             );
 
             return $customField;
@@ -100,7 +101,7 @@ class Shopware6CustomFieldClient
             $channel->getId(),
             $attribute->getId(),
             $shopwareCustomField->getId(),
-            $attribute->getType()
+            $attribute->getType(),
         );
 
         return $shopwareCustomField;

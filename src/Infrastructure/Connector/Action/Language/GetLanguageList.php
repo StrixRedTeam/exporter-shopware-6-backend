@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright © Ergonode Sp. z o.o. All rights reserved.
+ * Copyright © Bold Brand Commerce Sp. z o.o. All rights reserved.
  * See LICENSE.txt for license details.
  */
 
@@ -31,7 +31,7 @@ class GetLanguageList extends AbstractAction
         return new Request(
             HttpRequest::METHOD_GET,
             $this->getUri(),
-            $this->buildHeaders()
+            $this->buildHeaders(),
         );
     }
 
@@ -48,7 +48,7 @@ class GetLanguageList extends AbstractAction
                 $row['id'],
                 $row['attributes']['name'],
                 $row['attributes']['localeId'],
-                $row['attributes']['translationCodeId']
+                $row['attributes']['translationCodeId'],
             );
         }
 

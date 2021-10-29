@@ -1,6 +1,7 @@
 <?php
+
 /**
- * Copyright © Ergonode Sp. z o.o. All rights reserved.
+ * Copyright © Bold Brand Commerce Sp. z o.o. All rights reserved.
  * See LICENSE.txt for license details.
  */
 
@@ -9,6 +10,7 @@ declare(strict_types=1);
 namespace Ergonode\ExporterShopware6\Infrastructure\Client;
 
 use Ergonode\Attribute\Domain\Entity\AbstractOption;
+use Ergonode\ExporterShopware6\Domain\Entity\Shopware6Channel;
 use Ergonode\ExporterShopware6\Domain\Repository\PropertyGroupOptionsRepositoryInterface;
 use Ergonode\ExporterShopware6\Infrastructure\Connector\Action\PropertyGroup\GetPropertyGroupOptions;
 use Ergonode\ExporterShopware6\Infrastructure\Connector\Action\PropertyGroup\PatchPropertyGroupOptionAction;
@@ -16,7 +18,6 @@ use Ergonode\ExporterShopware6\Infrastructure\Connector\Action\PropertyGroup\Pos
 use Ergonode\ExporterShopware6\Infrastructure\Connector\Shopware6Connector;
 use Ergonode\ExporterShopware6\Infrastructure\Model\Shopware6Language;
 use Ergonode\ExporterShopware6\Infrastructure\Model\Shopware6PropertyGroupOption;
-use Ergonode\ExporterShopware6\Domain\Entity\Shopware6Channel;
 
 class Shopware6PropertyGroupOptionClient
 {
@@ -63,15 +64,15 @@ class Shopware6PropertyGroupOptionClient
                 sprintf(
                     'Expected an instance of %s. %s received.',
                     Shopware6PropertyGroupOption::class,
-                    get_debug_type($shopwarePropertyGroupOptions)
-                )
+                    get_debug_type($shopwarePropertyGroupOptions),
+                ),
             );
         }
         $this->propertyGroupOptionsRepository->save(
             $channel->getId(),
             $option->getAttributeId(),
             $option->getId(),
-            $shopwarePropertyGroupOptions->getId()
+            $shopwarePropertyGroupOptions->getId(),
         );
 
         return $shopwarePropertyGroupOptions;

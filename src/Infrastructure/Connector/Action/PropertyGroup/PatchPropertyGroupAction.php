@@ -1,6 +1,7 @@
 <?php
+
 /**
- * Copyright © Ergonode Sp. z o.o. All rights reserved.
+ * Copyright © Bold Brand Commerce Sp. z o.o. All rights reserved.
  * See LICENSE.txt for license details.
  */
 
@@ -29,7 +30,7 @@ class PatchPropertyGroupAction extends AbstractAction
             HttpRequest::METHOD_PATCH,
             $this->getUri(),
             $this->buildHeaders(),
-            $this->buildBody()
+            $this->buildBody(),
         );
     }
     /**
@@ -47,6 +48,6 @@ class PatchPropertyGroupAction extends AbstractAction
 
     private function getUri(): string
     {
-        return self::URI.$this->propertyGroup->getId();
+        return self::URI . $this->propertyGroup->getId();
     }
 }

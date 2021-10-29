@@ -1,6 +1,7 @@
 <?php
+
 /**
- * Copyright © Ergonode Sp. z o.o. All rights reserved.
+ * Copyright © Bold Brand Commerce Sp. z o.o. All rights reserved.
  * See LICENSE.txt for license details.
  */
 
@@ -29,7 +30,7 @@ class GetConfiguratorSettings extends AbstractAction
         return new Request(
             HttpRequest::METHOD_GET,
             $this->getUri(),
-            $this->buildHeaders()
+            $this->buildHeaders(),
         );
     }
 
@@ -47,7 +48,7 @@ class GetConfiguratorSettings extends AbstractAction
             foreach ($data['data'] as $row) {
                 $result[] = new Shopware6ProductConfiguratorSettings(
                     $row['id'],
-                    $row['attributes']['optionId']
+                    $row['attributes']['optionId'],
                 );
             }
         }

@@ -1,6 +1,7 @@
 <?php
+
 /**
- * Copyright © Ergonode Sp. z o.o. All rights reserved.
+ * Copyright © Bold Brand Commerce Sp. z o.o. All rights reserved.
  * See LICENSE.txt for license details.
  */
 
@@ -56,7 +57,7 @@ class ProductCrossSellingRemoveProductExportProcess
                         $channel,
                         $productCollection->getId(),
                         $collectionElement->getProductId(),
-                        $deleteProductId
+                        $deleteProductId,
                     );
                 }
                 $this->productCrossSellingClient->delete($channel, $toRemove['shopware6_id']);
@@ -78,7 +79,7 @@ class ProductCrossSellingRemoveProductExportProcess
                     $this->productCrossSellingClient->deleteAssignedProducts(
                         $channel,
                         $productCrossSelling->getId(),
-                        $assignedProduct->getId()
+                        $assignedProduct->getId(),
                     );
                 }
             }
@@ -112,7 +113,7 @@ class ProductCrossSellingRemoveProductExportProcess
         return $this->productCrossSellingQuery->getOthersElements(
             $channel->getId(),
             $productCollection->getId(),
-            $productIds
+            $productIds,
         );
     }
 }

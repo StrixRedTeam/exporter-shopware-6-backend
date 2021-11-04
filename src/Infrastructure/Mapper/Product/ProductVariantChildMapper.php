@@ -84,8 +84,8 @@ class ProductVariantChildMapper extends AbstractVariantOptionMapper
             }
 
             foreach ($shopware6Product->getOptions() as $option) {
-                if (!in_array($option, $mappedOptionIds)) {
-                    $shopware6Product->addOptionToRemove($option);
+                if (!in_array($option['id'], $mappedOptionIds)) {
+                    $shopware6Product->addOptionToRemove($option['id']);
                 }
             }
         }

@@ -69,7 +69,7 @@ class PropertyGroupShopware6ExportProcess
         $propertyGroups = $this->propertyGroupClient->getAll($channel);
         foreach($attributeIds as $attributeId) {
             $attribute = $this->attributeRepository->load($attributeId);
-            Assert::isInstanceOf(AbstractAttribute::class, $attribute);
+            Assert::isInstanceOf($attribute,AbstractAttribute::class);
 
 
             $shopwareId = $this->propertyGroupRepository->load($channel->getId(), $attribute->getId());

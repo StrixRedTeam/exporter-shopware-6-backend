@@ -66,8 +66,8 @@ class Shopware6PropertyGroup implements \JsonSerializable
 
     public function addTranslatedName(string $shopwareLanguageId, string $name): void
     {
-        if (!isset($this->translatedNames[$shopwareLanguageId]) || $this->translatedNames[$shopwareLanguageId] !== $name) {
-            $this->translatedNames[$shopwareLanguageId] = $name;
+        if (!isset($this->translatedNames[$shopwareLanguageId]['name']) || $this->translatedNames[$shopwareLanguageId]['name'] !== $name) {
+            $this->translatedNames[$shopwareLanguageId]['name'] = $name;
             $this->modified = true;
         }
     }

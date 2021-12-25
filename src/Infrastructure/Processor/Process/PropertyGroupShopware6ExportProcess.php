@@ -9,9 +9,10 @@ declare(strict_types=1);
 namespace Ergonode\ExporterShopware6\Infrastructure\Processor\Process;
 
 use Ergonode\Attribute\Domain\Entity\AbstractAttribute;
-use Ergonode\Channel\Domain\ValueObject\ExportLineId;
-use Ergonode\Core\Domain\ValueObject\Language;
+use Ergonode\Attribute\Domain\Repository\AttributeRepositoryInterface;
 use Ergonode\Channel\Domain\Entity\Export;
+use Ergonode\Channel\Domain\Repository\ExportRepositoryInterface;
+use Ergonode\Core\Domain\ValueObject\Language;
 use Ergonode\ExporterShopware6\Domain\Entity\Shopware6Channel;
 use Ergonode\ExporterShopware6\Domain\Repository\LanguageRepositoryInterface;
 use Ergonode\ExporterShopware6\Domain\Repository\PropertyGroupRepositoryInterface;
@@ -22,10 +23,11 @@ use Ergonode\ExporterShopware6\Infrastructure\Model\Shopware6Language;
 use Ergonode\ExporterShopware6\Infrastructure\Model\Shopware6PropertyGroup;
 use GuzzleHttp\Exception\ClientException;
 use Webmozart\Assert\Assert;
-use Ergonode\Channel\Domain\Repository\ExportRepositoryInterface;
 
 class PropertyGroupShopware6ExportProcess
 {
+    protected AttributeRepositoryInterface $attributeRepository;
+
     private PropertyGroupRepositoryInterface $propertyGroupRepository;
 
     private Shopware6PropertyGroupClient $propertyGroupClient;
@@ -44,7 +46,8 @@ class PropertyGroupShopware6ExportProcess
         PropertyGroupBuilder $builder,
         LanguageRepositoryInterface $languageRepository,
         PropertyGroupOptionsShopware6ExportProcess $propertyGroupOptionsProcess,
-        ExportRepositoryInterface $exportRepository
+        ExportRepositoryInterface $exportRepository,
+        AttributeRepositoryInterface $attributeRepository
     ) {
         $this->propertyGroupRepository = $propertyGroupRepository;
         $this->propertyGroupClient = $propertyGroupClient;
@@ -52,37 +55,54 @@ class PropertyGroupShopware6ExportProcess
         $this->languageRepository = $languageRepository;
         $this->propertyGroupOptionsProcess = $propertyGroupOptionsProcess;
         $this->exportRepository = $exportRepository;
+        $this->attributeRepository = $attributeRepository;
     }
 
     /**
      * @throws \Exception
      */
     public function process(
-        ExportLineId $lineId,
         Export $export,
         Shopware6Channel $channel,
-        AbstractAttribute $attribute
+        array $attributeIds
     ): void {
-        $propertyGroup = $this->loadPropertyGroup($channel, $attribute);
-        try {
-            if ($propertyGroup) {
-                $this->updatePropertyGroup($channel, $export, $propertyGroup, $attribute);
-            } else {
-                $propertyGroup = new Shopware6PropertyGroup();
-                $this->builder->build($channel, $export, $propertyGroup, $attribute);
-                $this->propertyGroupClient->insert($channel, $propertyGroup, $attribute);
-            }
+        $propertyGroups = $this->propertyGroupClient->getAll($channel);
+        foreach($attributeIds as $attributeId) {
+            $attribute = $this->attributeRepository->load($attributeId);
+            Assert::isInstanceOf(AbstractAttribute::class, $attribute);
 
-            foreach ($channel->getLanguages() as $language) {
-                if ($this->languageRepository->exists($channel->getId(), $language->getCode())) {
-                    $this->updatePropertyGroupWithLanguage($channel, $export, $language, $attribute);
-                }
+
+            $shopwareId = $this->propertyGroupRepository->load($channel->getId(), $attribute->getId());
+            $propertyGroup = null;
+            if ($shopwareId && isset($propertyGroups[$shopwareId])) {
+                $propertyGroup = $propertyGroups[$shopwareId];
             }
-            $this->propertyGroupOptionsProcess->process($export, $channel, $attribute);
-        } catch (Shopware6ExporterException $exception) {
-            $this->exportRepository->addError($export->getId(), $exception->getMessage(), $exception->getParameters());
+            //$propertyGroup = $this->loadPropertyGroup($channel, $attribute);
+            try {
+                if (!$propertyGroup) {
+                    $propertyGroup = new Shopware6PropertyGroup();
+                }
+
+                //$this->builder->build($channel, $export, $propertyGroup, $attribute, $language);
+                //    $this->builder->build($channel, $export, $propertyGroup, $attribute);
+                //}
+
+                foreach ($channel->getLanguages() as $language) {
+                    if ($this->languageRepository->exists($channel->getId(), $language->getCode())) {
+                        $this->buildPropertyGroupWithLanguage($propertyGroup, $channel, $export, $language, $attribute);
+                    }
+                }
+                $this->propertyGroupClient->insert($channel, $propertyGroup, $attribute);
+                //$this->propertyGroupOptionsProcess->process($export, $channel, $attribute);
+            } catch (Shopware6ExporterException $exception) {
+                $this->exportRepository->addError(
+                    $export->getId(),
+                    $exception->getMessage(),
+                    $exception->getParameters()
+                );
+            }
+            return;
         }
-        $this->exportRepository->processLine($lineId);
     }
 
     private function updatePropertyGroup(
@@ -93,10 +113,22 @@ class PropertyGroupShopware6ExportProcess
         ?Language $language = null,
         ?Shopware6Language $shopwareLanguage = null
     ): void {
-        $this->builder->build($channel, $export, $propertyGroup, $attribute, $language);
         if ($propertyGroup->isModified()) {
             $this->propertyGroupClient->update($channel, $propertyGroup, $shopwareLanguage);
         }
+    }
+
+    private function buildPropertyGroupWithLanguage(
+        Shopware6PropertyGroup $propertyGroup,
+        Shopware6Channel $channel,
+        Export $export,
+        Language $language,
+        AbstractAttribute $attribute
+    ): void {
+        $shopwareLanguage = $this->languageRepository->load($channel->getId(), $language->getCode());
+        Assert::notNull($shopwareLanguage);
+
+        $this->builder->build($channel, $export, $propertyGroup, $attribute, $language, $shopwareLanguage);
     }
 
     private function updatePropertyGroupWithLanguage(

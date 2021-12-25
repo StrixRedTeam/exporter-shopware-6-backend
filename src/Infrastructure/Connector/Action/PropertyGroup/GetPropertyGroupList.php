@@ -43,7 +43,7 @@ class GetPropertyGroupList extends AbstractAction
         $data = json_decode($content, true);
 
         foreach ($data['data'] as $row) {
-            $result[] = new Shopware6PropertyGroup(
+            $result[$row['id']] = new Shopware6PropertyGroup(
                 $row['id'],
                 $row['attributes']['name'],
                 $row['attributes']['displayType'],

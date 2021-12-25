@@ -23,6 +23,12 @@ class Shopware6PropertyGroup implements \JsonSerializable
 
     protected bool $modified = false;
 
+    /**
+     * ShopwareLanguageID => $translatedName
+     * @var string[]
+     */
+    protected array $translatedNames = [];
+
     public function __construct(
         ?string $id = null,
         ?string $name = null,
@@ -54,6 +60,14 @@ class Shopware6PropertyGroup implements \JsonSerializable
     {
         if ($name !== $this->name) {
             $this->name = $name;
+            $this->modified = true;
+        }
+    }
+
+    public function addTranslatedName(string $shopwareLanguageId, string $name): void
+    {
+        if (!isset($this->translatedNames[$shopwareLanguageId]) || $this->translatedNames[$shopwareLanguageId] !== $name) {
+            $this->translatedNames[$shopwareLanguageId] = $name;
             $this->modified = true;
         }
     }
@@ -95,6 +109,7 @@ class Shopware6PropertyGroup implements \JsonSerializable
             'name' => $this->name,
             'displayType' => $this->displayType,
             'sortingType' => $this->sortingType,
+            'translations' => $this->translatedNames
         ];
     }
 }

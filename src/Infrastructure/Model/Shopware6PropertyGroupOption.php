@@ -24,6 +24,8 @@ class Shopware6PropertyGroupOption implements \JsonSerializable
 
     protected bool $modified = false;
 
+    protected ?string $groupId;
+
     /**
      * @param array|null $translations
      */
@@ -32,6 +34,7 @@ class Shopware6PropertyGroupOption implements \JsonSerializable
         ?string $name = null,
         ?string $mediaId = null,
         ?int $position = null,
+        ?string $groupId = null,
         ?array $translations = null
     ) {
         $this->id = $id;
@@ -39,6 +42,7 @@ class Shopware6PropertyGroupOption implements \JsonSerializable
         $this->mediaId = $mediaId;
         $this->position = $position;
         $this->translations = $translations;
+        $this->groupId = $groupId;
     }
 
     public function getId(): ?string
@@ -113,5 +117,15 @@ class Shopware6PropertyGroupOption implements \JsonSerializable
         }
 
         return $data;
+    }
+
+    public function getGroupId(): ?string
+    {
+        return $this->groupId;
+    }
+
+    public function setGroupId(?string $groupId): void
+    {
+        $this->groupId = $groupId;
     }
 }

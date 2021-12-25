@@ -21,6 +21,8 @@ class Shopware6QueryBuilder
 
     private ?int $page = null;
 
+    private array $includes = [];
+
     public function limit(int $limit): Shopware6QueryBuilder
     {
         $this->limit = $limit;
@@ -83,11 +85,20 @@ class Shopware6QueryBuilder
             }
         }
 
+        if (count($this->includes) > 0) {
+            $param['includes'] = $this->includes;
+        }
+
         return http_build_query($param);
     }
 
     private function isLimit(): bool
     {
         return null !== $this->limit;
+    }
+
+    public function include(string $entityName, array $fields)
+    {
+        $this->includes[$entityName] = $fields;
     }
 }

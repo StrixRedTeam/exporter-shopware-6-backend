@@ -11,15 +11,19 @@ namespace Ergonode\ExporterShopware6\Infrastructure\Client;
 use Ergonode\Attribute\Domain\Entity\AbstractOption;
 use Ergonode\ExporterShopware6\Domain\Repository\PropertyGroupOptionsRepositoryInterface;
 use Ergonode\ExporterShopware6\Infrastructure\Connector\Action\PropertyGroup\GetPropertyGroupOptions;
+use Ergonode\ExporterShopware6\Infrastructure\Connector\Action\PropertyGroup\GetPropertyGroupOptionsList;
 use Ergonode\ExporterShopware6\Infrastructure\Connector\Action\PropertyGroup\PatchPropertyGroupOptionAction;
 use Ergonode\ExporterShopware6\Infrastructure\Connector\Action\PropertyGroup\PostPropertyGroupOptionsAction;
 use Ergonode\ExporterShopware6\Infrastructure\Connector\Shopware6Connector;
+use Ergonode\ExporterShopware6\Infrastructure\Connector\Shopware6QueryBuilder;
 use Ergonode\ExporterShopware6\Infrastructure\Model\Shopware6Language;
 use Ergonode\ExporterShopware6\Infrastructure\Model\Shopware6PropertyGroupOption;
 use Ergonode\ExporterShopware6\Domain\Entity\Shopware6Channel;
 
 class Shopware6PropertyGroupOptionClient
 {
+    private const ENTITY_NAME = 'property_group_option';
+
     private Shopware6Connector $connector;
 
     private PropertyGroupOptionsRepositoryInterface $propertyGroupOptionsRepository;
@@ -30,6 +34,19 @@ class Shopware6PropertyGroupOptionClient
     ) {
         $this->connector = $connector;
         $this->propertyGroupOptionsRepository = $propertyGroupOptionsRepository;
+    }
+
+    /**
+     * @return Shopware6PropertyGroupOption[]|null
+     */
+    public function getAll(Shopware6Channel $channel): ?array
+    {
+        $query = new Shopware6QueryBuilder();
+        $query->limit(1000);
+        $query->include(self::ENTITY_NAME, ['id', 'name', 'display_type', 'sorting_type']);
+        $action = new GetPropertyGroupOptionsList($query);
+
+        return $this->connector->execute($channel, $action);
     }
 
     /**

@@ -22,6 +22,8 @@ use Ergonode\ExporterShopware6\Domain\Entity\Shopware6Channel;
 
 class Shopware6PropertyGroupClient
 {
+    private const ENTITY_NAME = 'property_group';
+
     private Shopware6Connector $connector;
 
     private PropertyGroupRepositoryInterface $repository;
@@ -35,10 +37,11 @@ class Shopware6PropertyGroupClient
     /**
      * @return Shopware6PropertyGroup[]|null
      */
-    public function load(Shopware6Channel $channel): ?array
+    public function getAll(Shopware6Channel $channel): ?array
     {
         $query = new Shopware6QueryBuilder();
-        $query->limit(500);
+        $query->limit(1000);
+        $query->include(self::ENTITY_NAME, ['id', 'name', 'display_type', 'sorting_type']);
         $action = new GetPropertyGroupList($query);
 
         return $this->connector->execute($channel, $action);

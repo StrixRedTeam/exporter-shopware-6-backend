@@ -37,7 +37,7 @@ class PropertyGroupNameMapper implements PropertyGroupMapperInterface
         if ($language && $shopware6Language && $shopware6Language->getId()) {
             $translatedName = $attribute->getLabel()->get($language);
             if ($translatedName) {
-                $shopware6PropertyGroup->addTranslatedName($shopware6Language->getName(), $translatedName);
+                $shopware6PropertyGroup->addTranslatedName($shopware6Language->getId(), $translatedName);
             }
         }
 

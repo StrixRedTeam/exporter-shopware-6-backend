@@ -43,11 +43,11 @@ class GetPropertyGroupOptions extends AbstractAction
         $result = [];
         foreach ($data['data'] as $row) {
             $result[$row['id']] = new Shopware6PropertyGroupOption(
-                $data['id'],
-                $data['attributes']['name'],
-                $data['attributes']['mediaId'],
-                $data['attributes']['position'],
-                $datum['attributes']['propertyGroupOptionId'] ?? null
+                $row['id'],
+                $row['attributes']['name'],
+                $row['attributes']['mediaId'],
+                $row['attributes']['position'],
+                $row['attributes']['propertyGroupOptionId'] ?? null
             );
         }
 

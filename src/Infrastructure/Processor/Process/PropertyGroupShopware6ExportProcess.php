@@ -82,17 +82,13 @@ class PropertyGroupShopware6ExportProcess
                     $propertyGroup = new Shopware6PropertyGroup();
                 }
 
-                //$this->builder->build($channel, $export, $propertyGroup, $attribute, $language);
-                //    $this->builder->build($channel, $export, $propertyGroup, $attribute);
-                //}
-
                 foreach ($channel->getLanguages() as $language) {
                     if ($this->languageRepository->exists($channel->getId(), $language->getCode())) {
                         $this->buildPropertyGroupWithLanguage($propertyGroup, $channel, $export, $language, $attribute);
                     }
                 }
 
-                if(!$propertyGroup->getId()) {
+                if (!$propertyGroup->getId()) {
                     $this->propertyGroupClient->insert($channel, $propertyGroup, $attribute);
                 } else {
                     $this->propertyGroupClient->update($channel, $propertyGroup);
@@ -110,19 +106,6 @@ class PropertyGroupShopware6ExportProcess
         }
     }
 
-    private function updatePropertyGroup(
-        Shopware6Channel $channel,
-        Export $export,
-        Shopware6PropertyGroup $propertyGroup,
-        AbstractAttribute $attribute,
-        ?Language $language = null,
-        ?Shopware6Language $shopwareLanguage = null
-    ): void {
-        if ($propertyGroup->isModified()) {
-            $this->propertyGroupClient->update($channel, $propertyGroup, $shopwareLanguage);
-        }
-    }
-
     private function buildPropertyGroupWithLanguage(
         Shopware6PropertyGroup $propertyGroup,
         Shopware6Channel $channel,
@@ -134,36 +117,5 @@ class PropertyGroupShopware6ExportProcess
         Assert::notNull($shopwareLanguage);
 
         $this->builder->build($channel, $export, $propertyGroup, $attribute, $language, $shopwareLanguage);
-    }
-
-    private function updatePropertyGroupWithLanguage(
-        Shopware6Channel $channel,
-        Export $export,
-        Language $language,
-        AbstractAttribute $attribute
-    ): void {
-        $shopwareLanguage = $this->languageRepository->load($channel->getId(), $language->getCode());
-        Assert::notNull($shopwareLanguage);
-
-        $shopwarePropertyGroup = $this->loadPropertyGroup($channel, $attribute, $shopwareLanguage);
-        Assert::notNull($shopwarePropertyGroup);
-
-        $this->updatePropertyGroup($channel, $export, $shopwarePropertyGroup, $attribute, $language, $shopwareLanguage);
-    }
-
-    private function loadPropertyGroup(
-        Shopware6Channel $channel,
-        AbstractAttribute $attribute,
-        ?Shopware6Language $shopware6Language = null
-    ): ?Shopware6PropertyGroup {
-        $shopwareId = $this->propertyGroupRepository->load($channel->getId(), $attribute->getId());
-        if ($shopwareId) {
-            try {
-                return $this->propertyGroupClient->get($channel, $shopwareId, $shopware6Language);
-            } catch (ClientException $exception) {
-            }
-        }
-
-        return null;
     }
 }

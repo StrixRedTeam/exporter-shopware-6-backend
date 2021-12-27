@@ -9,9 +9,11 @@ declare(strict_types=1);
 namespace Ergonode\ExporterShopware6\Infrastructure\Processor\Process;
 
 use Ergonode\Attribute\Domain\Entity\AbstractAttribute;
+use Ergonode\Attribute\Domain\Entity\AbstractOption;
 use Ergonode\Attribute\Domain\Query\OptionQueryInterface;
 use Ergonode\Attribute\Domain\Repository\OptionRepositoryInterface;
 use Ergonode\Channel\Domain\Entity\Export;
+use Ergonode\Core\Domain\ValueObject\Language;
 use Ergonode\ExporterShopware6\Domain\Entity\Shopware6Channel;
 use Ergonode\ExporterShopware6\Domain\Repository\LanguageRepositoryInterface;
 use Ergonode\ExporterShopware6\Domain\Repository\PropertyGroupOptionsRepositoryInterface;
@@ -84,6 +86,12 @@ class PropertyGroupOptionsShopware6ExportProcess
 
             $this->builder->build($channel, $export, $propertyGroupOption, $option);
 
+            foreach ($channel->getLanguages() as $language) {
+                if ($this->languageRepository->exists($channel->getId(), $language->getCode())) {
+                    $this->buildPropertyGroupOptionWithLanguage($propertyGroupOption, $channel, $export, $language, $option);
+                }
+            }
+
             $requestName = sprintf('%s_%s', $attribute->getId()->getValue(), $optionId->getValue());
             $propertyGroupOption->setRequestName($requestName);
 
@@ -91,5 +99,18 @@ class PropertyGroupOptionsShopware6ExportProcess
         }
 
         $this->propertyGroupOptionClient->insertBatch($channel, new BatchPropertyGroupOption($propertyGroupOptions));
+    }
+
+    private function buildPropertyGroupOptionWithLanguage(
+        Shopware6PropertyGroupOption $propertyGroupOption,
+        Shopware6Channel $channel,
+        Export $export,
+        Language $language,
+        AbstractOption $option
+    ): void {
+        $shopwareLanguage = $this->languageRepository->load($channel->getId(), $language->getCode());
+        Assert::notNull($shopwareLanguage);
+
+        $this->builder->build($channel, $export, $propertyGroupOption, $option, $language, $shopwareLanguage);
     }
 }

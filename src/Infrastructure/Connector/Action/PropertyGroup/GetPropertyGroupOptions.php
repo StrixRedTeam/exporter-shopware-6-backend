@@ -15,7 +15,7 @@ use Symfony\Component\HttpFoundation\Request as HttpRequest;
 
 class GetPropertyGroupOptions extends AbstractAction
 {
-    private const URI = '/api/property-group/%s/options/%s';
+    private const URI = '/api/property-group/%s/options';
 
     private string $propertyGroupId;
 
@@ -50,11 +50,20 @@ class GetPropertyGroupOptions extends AbstractAction
             );
         }
 
+        foreach ($data['included'] as $included) {
+            $propertyGroupOptionId = $included['attributes']['propertyGroupOptionId'];
+            if (isset($result[$propertyGroupOptionId])) {
+                $propertyGroup = $result[$propertyGroupOptionId];
+
+                $propertyGroup->addTranslations($included['languageId'], 'name', $included['name']);
+            }
+        }
+
         return $result;
     }
 
     private function getUri(): string
     {
-        return sprintf(self::URI, $this->propertyGroupId, $this->propertyGroupOptionId);
+        return sprintf(self::URI, $this->propertyGroupId);
     }
 }

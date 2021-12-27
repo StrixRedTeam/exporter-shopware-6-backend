@@ -41,12 +41,12 @@ class GetPropertyGroupOptions extends AbstractAction
         $data = json_decode($content, true, 512, JSON_THROW_ON_ERROR);
 
         $result = [];
-        foreach ($data as $row) {
-            $result[$row['data']['id']] = new Shopware6PropertyGroupOption(
-                $data['data']['id'],
-                $data['data']['attributes']['name'],
-                $data['data']['attributes']['mediaId'],
-                $data['data']['attributes']['position']
+        foreach ($data['data'] as $row) {
+            $result[$row['id']] = new Shopware6PropertyGroupOption(
+                $data['id'],
+                $data['attributes']['name'],
+                $data['attributes']['mediaId'],
+                $data['attributes']['position']
             );
         }
 

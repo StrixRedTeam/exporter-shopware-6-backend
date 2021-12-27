@@ -51,6 +51,15 @@ class GetPropertyGroupList extends AbstractAction
             );
         }
 
+        foreach ($data['included'] as $included) {
+            $propertyGroupId = $included['attributes']['propertyGroupId'];
+            if (isset($result[$propertyGroupId])) {
+                $propertyGroup = $result[$propertyGroupId];
+
+                $propertyGroup->addTranslatedName($included['languageId'], $included['name']);
+            }
+        }
+
         return $result;
     }
 

@@ -40,12 +40,14 @@ class GetPropertyGroup extends AbstractAction
     {
         $data = json_decode($content, true, 512, JSON_THROW_ON_ERROR);
 
-        return new Shopware6PropertyGroup(
+        $propertyGroup = new Shopware6PropertyGroup(
             $data['data']['id'],
             $data['data']['attributes']['name'],
             $data['data']['attributes']['displayType'],
             $data['data']['attributes']['sortingType']
         );
+
+
     }
 
     private function getUri(): string

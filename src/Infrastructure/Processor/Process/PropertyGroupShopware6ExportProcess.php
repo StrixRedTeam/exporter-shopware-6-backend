@@ -34,7 +34,7 @@ class PropertyGroupShopware6ExportProcess
 
     private PropertyGroupBuilder $builder;
 
-    private LanguageRepositoryInterface  $languageRepository;
+    private LanguageRepositoryInterface $languageRepository;
 
     private PropertyGroupOptionsShopware6ExportProcess $propertyGroupOptionsProcess;
 
@@ -67,10 +67,9 @@ class PropertyGroupShopware6ExportProcess
         array $attributeIds
     ): void {
         $propertyGroups = $this->propertyGroupClient->getAll($channel);
-        foreach($attributeIds as $attributeId) {
+        foreach ($attributeIds as $attributeId) {
             $attribute = $this->attributeRepository->load($attributeId);
-            Assert::isInstanceOf($attribute,AbstractAttribute::class);
-
+            Assert::isInstanceOf($attribute, AbstractAttribute::class);
 
             $shopwareId = $this->propertyGroupRepository->load($channel->getId(), $attribute->getId());
             $propertyGroup = null;
@@ -92,7 +91,12 @@ class PropertyGroupShopware6ExportProcess
                         $this->buildPropertyGroupWithLanguage($propertyGroup, $channel, $export, $language, $attribute);
                     }
                 }
-                $this->propertyGroupClient->insert($channel, $propertyGroup, $attribute);
+
+                if(!$propertyGroup->getId()) {
+                    $this->propertyGroupClient->insert($channel, $propertyGroup, $attribute);
+                } else {
+                    $this->propertyGroupClient->update($channel, $propertyGroup);
+                }
                 //$this->propertyGroupOptionsProcess->process($export, $channel, $attribute);
             } catch (Shopware6ExporterException $exception) {
                 $this->exportRepository->addError(
@@ -101,6 +105,7 @@ class PropertyGroupShopware6ExportProcess
                     $exception->getParameters()
                 );
             }
+
             return;
         }
     }

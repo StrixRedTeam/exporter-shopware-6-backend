@@ -23,6 +23,8 @@ use Ergonode\ExporterShopware6\Domain\Entity\Shopware6Channel;
 class Shopware6PropertyGroupClient
 {
     private const ENTITY_NAME = 'property_group';
+    private const TRANSLATION_ENTITY_NAME = 'property_group_translation';
+    private const REQUIRED_FIELDS = ['id', 'name', 'displayType', 'sortingType'];
 
     private Shopware6Connector $connector;
 
@@ -41,7 +43,10 @@ class Shopware6PropertyGroupClient
     {
         $query = new Shopware6QueryBuilder();
         $query->limit(1000);
-        $query->include(self::ENTITY_NAME, ['id', 'name', 'display_type', 'sorting_type']);
+        // weird format required by Shopware
+        $query->association('translations', [0 => '']);
+        $query->include(self::ENTITY_NAME, self::REQUIRED_FIELDS);
+        $query->include(self::TRANSLATION_ENTITY_NAME, self::REQUIRED_FIELDS);
         $action = new GetPropertyGroupList($query);
 
         return $this->connector->execute($channel, $action);

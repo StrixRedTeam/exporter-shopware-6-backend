@@ -10,15 +10,19 @@ namespace Ergonode\ExporterShopware6\Infrastructure\Client;
 
 use Ergonode\Attribute\Domain\Entity\AbstractOption;
 use Ergonode\ExporterShopware6\Domain\Repository\PropertyGroupOptionsRepositoryInterface;
+use Ergonode\ExporterShopware6\Infrastructure\Connector\Action\CustomField\BatchPostPropertyGroupOptionAction;
 use Ergonode\ExporterShopware6\Infrastructure\Connector\Action\PropertyGroup\GetPropertyGroupOptions;
 use Ergonode\ExporterShopware6\Infrastructure\Connector\Action\PropertyGroup\GetPropertyGroupOptionsList;
 use Ergonode\ExporterShopware6\Infrastructure\Connector\Action\PropertyGroup\PatchPropertyGroupOptionAction;
 use Ergonode\ExporterShopware6\Infrastructure\Connector\Action\PropertyGroup\PostPropertyGroupOptionsAction;
 use Ergonode\ExporterShopware6\Infrastructure\Connector\Shopware6Connector;
 use Ergonode\ExporterShopware6\Infrastructure\Connector\Shopware6QueryBuilder;
+use Ergonode\ExporterShopware6\Infrastructure\Model\PropertyGroupOption\BatchPropertyGroupOption;
 use Ergonode\ExporterShopware6\Infrastructure\Model\Shopware6Language;
 use Ergonode\ExporterShopware6\Infrastructure\Model\Shopware6PropertyGroupOption;
 use Ergonode\ExporterShopware6\Domain\Entity\Shopware6Channel;
+use Ergonode\SharedKernel\Domain\Aggregate\AttributeId;
+use Ergonode\SharedKernel\Domain\AggregateId;
 
 class Shopware6PropertyGroupOptionClient
 {
@@ -43,7 +47,9 @@ class Shopware6PropertyGroupOptionClient
     {
         $query = new Shopware6QueryBuilder();
         $query->limit(1000);
-        $query->include(self::ENTITY_NAME, ['id', 'name', 'display_type', 'sorting_type']);
+        $query->association('translations', [0 => '']);
+        $query->include(self::ENTITY_NAME, ['id', 'name', 'mediaId', 'position']);
+        $query->include(self::ENTITY_NAME, ['id', 'name', 'propertyGroupId', 'languageId']);
         $action = new GetPropertyGroupOptionsList($query);
 
         return $this->connector->execute($channel, $action);
@@ -55,10 +61,9 @@ class Shopware6PropertyGroupOptionClient
     public function get(
         Shopware6Channel $channel,
         string $propertyGroupId,
-        string $propertyGroupOptionId,
         ?Shopware6Language $shopware6Language = null
     ) {
-        $action = new GetPropertyGroupOptions($propertyGroupId, $propertyGroupOptionId);
+        $action = new GetPropertyGroupOptions($propertyGroupId);
         if ($shopware6Language) {
             $action->addHeader('sw-language-id', $shopware6Language->getId());
         }
@@ -105,5 +110,30 @@ class Shopware6PropertyGroupOptionClient
             $action->addHeader('sw-language-id', $shopware6Language->getId());
         }
         $this->connector->execute($channel, $action);
+    }
+
+    /**
+     * @param Shopware6Channel $channel
+     * @param BatchPropertyGroupOption $batchCustomField
+     * @return void
+     * @throws \Exception
+     */
+    public function insertBatch(
+        Shopware6Channel $channel,
+        BatchPropertyGroupOption $batchCustomField
+    ): void {
+        $action = new BatchPostPropertyGroupOptionAction($batchCustomField);
+
+        $ids = $this->connector->execute($channel, $action);
+
+        foreach ($ids as $requestId => $shopwareId) {
+            [$attributeId, $optionId] = explode('_', $requestId, 2);
+            $this->propertyGroupOptionsRepository->save(
+                $channel->getId(),
+                new AttributeId($attributeId),
+                new AggregateId($optionId),
+                $shopwareId
+            );
+        }
     }
 }

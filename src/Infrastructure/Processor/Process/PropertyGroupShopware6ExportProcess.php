@@ -97,7 +97,7 @@ class PropertyGroupShopware6ExportProcess
                 } else {
                     $this->propertyGroupClient->update($channel, $propertyGroup);
                 }
-                //$this->propertyGroupOptionsProcess->process($export, $channel, $attribute);
+                $this->propertyGroupOptionsProcess->process($export, $channel, $attribute);
             } catch (Shopware6ExporterException $exception) {
                 $this->exportRepository->addError(
                     $export->getId(),

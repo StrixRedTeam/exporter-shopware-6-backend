@@ -19,12 +19,9 @@ class GetPropertyGroupOptions extends AbstractAction
 
     private string $propertyGroupId;
 
-    private string $propertyGroupOptionId;
-
-    public function __construct(string $propertyGroupId, string $propertyGroupOptionId)
+    public function __construct(string $propertyGroupId)
     {
         $this->propertyGroupId = $propertyGroupId;
-        $this->propertyGroupOptionId = $propertyGroupOptionId;
     }
 
     public function getRequest(): Request
@@ -39,16 +36,21 @@ class GetPropertyGroupOptions extends AbstractAction
     /**
      * @throws \JsonException
      */
-    public function parseContent(?string $content): Shopware6PropertyGroupOption
+    public function parseContent(?string $content): ?array
     {
         $data = json_decode($content, true, 512, JSON_THROW_ON_ERROR);
 
-        return new Shopware6PropertyGroupOption(
-            $data['data']['id'],
-            $data['data']['attributes']['name'],
-            $data['data']['attributes']['mediaId'],
-            $data['data']['attributes']['position']
-        );
+        $result = [];
+        foreach ($data as $row) {
+            $result[$row['data']['id']] = new Shopware6PropertyGroupOption(
+                $data['data']['id'],
+                $data['data']['attributes']['name'],
+                $data['data']['attributes']['mediaId'],
+                $data['data']['attributes']['position']
+            );
+        }
+
+        return $result;
     }
 
     private function getUri(): string

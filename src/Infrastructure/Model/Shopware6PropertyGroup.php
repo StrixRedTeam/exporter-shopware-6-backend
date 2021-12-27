@@ -25,20 +25,25 @@ class Shopware6PropertyGroup implements \JsonSerializable
 
     /**
      * ShopwareLanguageID => $translatedName
+     *
      * @var string[]
      */
     protected array $translatedNames = [];
+
+    private ?array $translations;
 
     public function __construct(
         ?string $id = null,
         ?string $name = null,
         ?string $displayType = 'text',
-        ?string $sortingType = 'alphanumeric'
+        ?string $sortingType = 'alphanumeric',
+        ?array $translations = null
     ) {
         $this->id = $id;
         $this->name = $name;
         $this->displayType = $displayType;
         $this->sortingType = $sortingType;
+        $this->translations = $translations;
     }
 
     public function getId(): ?string
@@ -64,11 +69,11 @@ class Shopware6PropertyGroup implements \JsonSerializable
         }
     }
 
-    public function addTranslatedName(string $shopwareLanguageId, string $name): void
+    public function addTranslations(string $shopwareLanguageId, string $field, string $value): void
     {
-        if (!isset($this->translatedNames[$shopwareLanguageId]['name']) || $this->translatedNames[$shopwareLanguageId]['name'] !== $name) {
-            $this->translatedNames[$shopwareLanguageId]['name'] = $name;
+        if (!(isset($this->translations[$shopwareLanguageId][$field]) && $this->translations[$shopwareLanguageId][$field] === $value)) {
             $this->modified = true;
+            $this->translations[$shopwareLanguageId][$field] = $value;
         }
     }
 
@@ -105,11 +110,15 @@ class Shopware6PropertyGroup implements \JsonSerializable
 
     public function jsonSerialize(): array
     {
-        return [
-            'name' => $this->name,
+        $data = [
+            'name'        => $this->name,
             'displayType' => $this->displayType,
             'sortingType' => $this->sortingType,
-            'translations' => $this->translatedNames
         ];
+        if ($this->translations) {
+            $data['translations'] = $this->translations;
+        }
+
+        return $data;
     }
 }

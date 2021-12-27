@@ -26,6 +26,8 @@ class Shopware6PropertyGroupOption implements \JsonSerializable
 
     protected ?string $groupId;
 
+    protected string $requestName = '';
+
     /**
      * @param array|null $translations
      */
@@ -89,11 +91,12 @@ class Shopware6PropertyGroupOption implements \JsonSerializable
         }
     }
 
-    public function addTranslations(Language $language, string $field, string $value): void
+    public function addTranslations(string $shopwareLanguageId, string $field, string $value): void
     {
-        $code = str_replace('_', '-', $language->getCode());
-
-        $this->translations[$code][$field] = $value;
+        if (!(isset($this->translations[$shopwareLanguageId][$field]) && $this->translations[$shopwareLanguageId][$field] === $value)) {
+            $this->modified = true;
+            $this->translations[$shopwareLanguageId][$field] = $value;
+        }
     }
 
     public function isModified(): bool
@@ -127,5 +130,15 @@ class Shopware6PropertyGroupOption implements \JsonSerializable
     public function setGroupId(?string $groupId): void
     {
         $this->groupId = $groupId;
+    }
+
+    public function getRequestName(): string
+    {
+        return $this->requestName;
+    }
+
+    public function setRequestName(string $requestName): void
+    {
+        $this->requestName = $requestName;
     }
 }

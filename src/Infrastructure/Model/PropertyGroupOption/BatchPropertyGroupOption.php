@@ -30,7 +30,7 @@ class BatchPropertyGroupOption implements \JsonSerializable
         foreach ($this->getOptions() as $option) {
             $result[$option->getRequestName()] =
                 [
-                    "entity"  => "custom_field",
+                    "entity"  => "property_group_option",
                     "action"  => "upsert",
                     "payload" => [$option->jsonSerialize()],
                 ];

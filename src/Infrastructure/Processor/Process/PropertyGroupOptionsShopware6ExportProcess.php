@@ -47,7 +47,8 @@ class PropertyGroupOptionsShopware6ExportProcess
         PropertyGroupOptionsRepositoryInterface $propertyGroupOptionsRepository,
         Shopware6PropertyGroupOptionClient $propertyGroupOptionClient,
         PropertyGroupOptionBuilder $builder,
-        OptionRepositoryInterface $optionRepository
+        OptionRepositoryInterface $optionRepository,
+        LanguageRepositoryInterface $languageRepository
     ) {
         $this->propertyGroupRepository = $propertyGroupRepository;
         $this->optionQuery = $optionQuery;
@@ -55,6 +56,7 @@ class PropertyGroupOptionsShopware6ExportProcess
         $this->propertyGroupOptionClient = $propertyGroupOptionClient;
         $this->builder = $builder;
         $this->optionRepository = $optionRepository;
+        $this->languageRepository = $languageRepository;
     }
 
     public function process(Export $export, Shopware6Channel $channel, AbstractAttribute $attribute): void

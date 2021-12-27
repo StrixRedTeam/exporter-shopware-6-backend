@@ -121,6 +121,10 @@ class Shopware6PropertyGroupOption implements \JsonSerializable
             $data['translations'] = $this->translations;
         }
 
+        if (null !== $this->id) {
+            $data['id'] = $this->id;
+        }
+
         return $data;
     }
 

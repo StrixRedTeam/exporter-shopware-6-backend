@@ -110,6 +110,7 @@ class Shopware6PropertyGroupOption implements \JsonSerializable
             'name' => $this->name,
             'groupId' => $this->groupId
         ];
+
         if (null !== $this->mediaId) {
             $data['mediaId'] = $this->mediaId;
         }

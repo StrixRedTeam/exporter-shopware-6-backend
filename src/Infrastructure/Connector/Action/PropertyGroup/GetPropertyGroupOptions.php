@@ -47,12 +47,12 @@ class GetPropertyGroupOptions extends AbstractAction
                 $row['attributes']['name'],
                 $row['attributes']['mediaId'],
                 $row['attributes']['position'],
-                $row['attributes']['propertyGroupOptionId'] ?? null
+                $row['attributes']['groupId'] ?? null
             );
         }
 
         foreach ($data['included'] as $included) {
-            $propertyGroupOptionId = $included['attributes']['propertyGroupOptionId'];
+            $propertyGroupOptionId = $included['attributes']['groupId'];
             if (isset($result[$propertyGroupOptionId])) {
                 $propertyGroup = $result[$propertyGroupOptionId];
 

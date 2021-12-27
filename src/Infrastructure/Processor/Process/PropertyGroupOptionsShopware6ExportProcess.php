@@ -79,6 +79,7 @@ class PropertyGroupOptionsShopware6ExportProcess
             $propertyGroupOption = ($shopwareId && isset($shopwareOptions[$shopwareId])) ? $shopwareOptions[$shopwareId] : null;
             if (!$propertyGroupOption) {
                 $propertyGroupOption = new Shopware6PropertyGroupOption();
+                $propertyGroupOption->setGroupId($propertyGroupId);
             }
 
             $this->builder->build($channel, $export, $propertyGroupOption, $option);

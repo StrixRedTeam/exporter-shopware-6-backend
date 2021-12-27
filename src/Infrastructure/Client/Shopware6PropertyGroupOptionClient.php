@@ -71,34 +71,6 @@ class Shopware6PropertyGroupOptionClient
         return $this->connector->execute($channel, $action);
     }
 
-    public function insert(
-        Shopware6Channel $channel,
-        string $propertyGroupId,
-        Shopware6PropertyGroupOption $propertyGroupOption,
-        AbstractOption $option
-    ): ?Shopware6PropertyGroupOption {
-        $action = new PostPropertyGroupOptionsAction($propertyGroupId, $propertyGroupOption, true);
-        $shopwarePropertyGroupOptions = $this->connector->execute($channel, $action);
-
-        if (!$shopwarePropertyGroupOptions instanceof Shopware6PropertyGroupOption) {
-            throw new \LogicException(
-                sprintf(
-                    'Expected an instance of %s. %s received.',
-                    Shopware6PropertyGroupOption::class,
-                    get_debug_type($shopwarePropertyGroupOptions)
-                )
-            );
-        }
-        $this->propertyGroupOptionsRepository->save(
-            $channel->getId(),
-            $option->getAttributeId(),
-            $option->getId(),
-            $shopwarePropertyGroupOptions->getId()
-        );
-
-        return $shopwarePropertyGroupOptions;
-    }
-
     public function update(
         Shopware6Channel $channel,
         string $propertyGroupId,

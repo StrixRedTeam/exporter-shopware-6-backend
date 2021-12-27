@@ -46,7 +46,8 @@ class GetPropertyGroupOptions extends AbstractAction
                 $data['id'],
                 $data['attributes']['name'],
                 $data['attributes']['mediaId'],
-                $data['attributes']['position']
+                $data['attributes']['position'],
+                $datum['attributes']['propertyGroupOptionId'] ?? null
             );
         }
 

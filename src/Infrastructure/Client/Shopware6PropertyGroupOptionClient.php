@@ -11,6 +11,7 @@ namespace Ergonode\ExporterShopware6\Infrastructure\Client;
 use Ergonode\Attribute\Domain\Entity\AbstractOption;
 use Ergonode\ExporterShopware6\Domain\Repository\PropertyGroupOptionsRepositoryInterface;
 use Ergonode\ExporterShopware6\Infrastructure\Connector\Action\CustomField\BatchPostPropertyGroupOptionAction;
+use Ergonode\ExporterShopware6\Infrastructure\Connector\Action\Media\DeletePropertyGroupOption;
 use Ergonode\ExporterShopware6\Infrastructure\Connector\Action\PropertyGroup\GetPropertyGroupOptions;
 use Ergonode\ExporterShopware6\Infrastructure\Connector\Action\PropertyGroup\GetPropertyGroupOptionsList;
 use Ergonode\ExporterShopware6\Infrastructure\Connector\Action\PropertyGroup\PatchPropertyGroupOptionAction;
@@ -56,7 +57,11 @@ class Shopware6PropertyGroupOptionClient
     }
 
     /**
-     * @return array|object|string|null
+     * @param Shopware6Channel $channel
+     * @param string $propertyGroupId
+     * @param Shopware6Language|null $shopware6Language
+     * @return Shopware6PropertyGroupOption[]|null
+     * @throws \Exception
      */
     public function get(
         Shopware6Channel $channel,
@@ -107,5 +112,12 @@ class Shopware6PropertyGroupOptionClient
                 $shopwareId
             );
         }
+    }
+
+    public function delete(Shopware6Channel $channel, string $shopwareId): void
+    {
+        $action = new DeletePropertyGroupOption($shopwareId);
+        $this->connector->execute($channel, $action);
+        $this->propertyGroupOptionsRepository->delete($channel->getId(), $shopwareId);
     }
 }

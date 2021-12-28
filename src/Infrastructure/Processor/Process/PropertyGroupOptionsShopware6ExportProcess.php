@@ -80,7 +80,13 @@ class PropertyGroupOptionsShopware6ExportProcess
                 $optionId
             );
 
-            $propertyGroupOption = ($shopwareId && isset($shopwareOptions[$shopwareId])) ? $shopwareOptions[$shopwareId] : null;
+            $propertyGroupOption = null;
+            if ($shopwareId && isset($shopwareOptions[$shopwareId])) {
+                $propertyGroupOption = $shopwareOptions[$shopwareId];
+                // unset so remaining options could be removed from shopware
+                unset($shopwareOptions[$shopwareId]);
+            }
+
             if (!$propertyGroupOption) {
                 $propertyGroupOption = new Shopware6PropertyGroupOption();
                 $propertyGroupOption->setGroupId($propertyGroupId);
@@ -101,6 +107,12 @@ class PropertyGroupOptionsShopware6ExportProcess
         }
 
         $this->propertyGroupOptionClient->insertBatch($channel, new BatchPropertyGroupOption($propertyGroupOptions));
+        // delete remaining options not existing in Ergonode
+        if (!empty($shopwareOptions)) {
+            foreach ($shopwareOptions as $shopwareId => $option) {
+                $this->propertyGroupOptionClient->delete($channel, $shopwareId);
+            }
+        }
     }
 
     private function buildPropertyGroupOptionWithLanguage(

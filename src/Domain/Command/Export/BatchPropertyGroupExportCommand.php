@@ -4,12 +4,11 @@ declare(strict_types=1);
 namespace Ergonode\ExporterShopware6\Domain\Command\Export;
 
 use Ergonode\Channel\Domain\Command\ExporterCommandInterface;
-use Ergonode\Channel\Domain\ValueObject\ExportLineId;
 use Ergonode\SharedKernel\Domain\Aggregate\AttributeId;
 use Ergonode\SharedKernel\Domain\Aggregate\ExportId;
 use Webmozart\Assert\Assert;
 
-class BatchCustomFieldExportCommand implements ExporterCommandInterface
+class BatchPropertyGroupExportCommand implements ExporterCommandInterface
 {
     private ExportId $exportId;
 

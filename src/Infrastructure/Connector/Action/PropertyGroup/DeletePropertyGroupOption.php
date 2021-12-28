@@ -6,7 +6,7 @@
 
 declare(strict_types=1);
 
-namespace Ergonode\ExporterShopware6\Infrastructure\Connector\Action\Media;
+namespace Ergonode\ExporterShopware6\Infrastructure\Connector\Action\PropertyGroup;
 
 use Ergonode\ExporterShopware6\Infrastructure\Connector\AbstractAction;
 use GuzzleHttp\Psr7\Request;

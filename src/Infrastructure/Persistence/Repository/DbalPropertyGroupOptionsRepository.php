@@ -121,7 +121,7 @@ class DbalPropertyGroupOptionsRepository implements PropertyGroupOptionsReposito
         $this->connection->delete(
             self::TABLE,
             [
-                'shopware_id' => $shopwareId,
+                'shopware6_id' => $shopwareId,
                 'channel_id' => $channelId->getValue(),
             ]
         );

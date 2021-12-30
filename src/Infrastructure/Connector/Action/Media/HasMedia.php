@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright © Ergonode Sp. z o.o. All rights reserved.
  * See LICENSE.txt for license details.
@@ -6,7 +7,7 @@
 
 declare(strict_types=1);
 
-namespace Ergonode\ExporterShopware6\Infrastructure\Connector\Action;
+namespace Ergonode\ExporterShopware6\Infrastructure\Connector\Action\Media;
 
 use Ergonode\ExporterShopware6\Infrastructure\Connector\AbstractAction;
 use GuzzleHttp\Psr7\Request;
@@ -28,7 +29,7 @@ class HasMedia extends AbstractAction
         return new Request(
             HttpRequest::METHOD_GET,
             $this->getUri(),
-            $this->buildHeaders()
+            $this->buildHeaders(),
         );
     }
 

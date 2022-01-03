@@ -7,7 +7,6 @@ use Ergonode\Attribute\Domain\Entity\AbstractAttribute;
 use Ergonode\Attribute\Domain\Repository\AttributeRepositoryInterface;
 use Ergonode\Channel\Domain\Entity\Export;
 use Ergonode\Channel\Domain\Repository\ExportRepositoryInterface;
-use Ergonode\Core\Domain\ValueObject\Language;
 use Ergonode\ExporterShopware6\Domain\Entity\Shopware6Channel;
 use Ergonode\ExporterShopware6\Domain\Repository\CustomFieldRepositoryInterface;
 use Ergonode\ExporterShopware6\Infrastructure\Builder\CustomFieldBuilder;
@@ -19,7 +18,6 @@ use Ergonode\ExporterShopware6\Infrastructure\Model\Basic\Shopware6CustomField;
 use Ergonode\ExporterShopware6\Infrastructure\Model\Basic\Shopware6CustomFieldSet;
 use Ergonode\ExporterShopware6\Infrastructure\Model\Basic\Shopware6CustomFieldSetConfig;
 use Ergonode\ExporterShopware6\Infrastructure\Model\CustomField\BatchCustomField;
-use Ergonode\ExporterShopware6\Infrastructure\Model\Shopware6Language;
 use Ergonode\SharedKernel\Domain\Aggregate\AttributeId;
 use Webmozart\Assert\Assert;
 

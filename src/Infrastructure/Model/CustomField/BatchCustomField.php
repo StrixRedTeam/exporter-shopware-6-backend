@@ -24,7 +24,7 @@ class BatchCustomField implements \JsonSerializable
         return $this->customFields;
     }
 
-    public function jsonSerialize()
+    public function jsonSerialize(): array
     {
         $result = [];
         foreach ($this->getCustomFields() as $customField) {

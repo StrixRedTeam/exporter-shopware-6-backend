@@ -19,9 +19,7 @@ use Ergonode\ExporterShopware6\Domain\Repository\PropertyGroupRepositoryInterfac
 use Ergonode\ExporterShopware6\Infrastructure\Builder\PropertyGroupBuilder;
 use Ergonode\ExporterShopware6\Infrastructure\Client\Shopware6PropertyGroupClient;
 use Ergonode\ExporterShopware6\Infrastructure\Exception\Shopware6ExporterException;
-use Ergonode\ExporterShopware6\Infrastructure\Model\Shopware6Language;
 use Ergonode\ExporterShopware6\Infrastructure\Model\Shopware6PropertyGroup;
-use GuzzleHttp\Exception\ClientException;
 use Webmozart\Assert\Assert;
 
 class PropertyGroupShopware6ExportProcess
@@ -76,7 +74,7 @@ class PropertyGroupShopware6ExportProcess
             if ($shopwareId && isset($propertyGroups[$shopwareId])) {
                 $propertyGroup = $propertyGroups[$shopwareId];
             }
-            //$propertyGroup = $this->loadPropertyGroup($channel, $attribute);
+
             try {
                 if (!$propertyGroup) {
                     $propertyGroup = new Shopware6PropertyGroup();

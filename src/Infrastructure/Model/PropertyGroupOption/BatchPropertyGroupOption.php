@@ -24,7 +24,7 @@ class BatchPropertyGroupOption implements \JsonSerializable
         return $this->options;
     }
 
-    public function jsonSerialize()
+    public function jsonSerialize(): array
     {
         $result = [];
         foreach ($this->getOptions() as $option) {

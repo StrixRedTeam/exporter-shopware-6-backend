@@ -113,7 +113,7 @@ class Shopware6ProductMediaClient
                 if ($decode['errors'][0]['code'] !== 'CONTENT__MEDIA_DUPLICATED_FILE_NAME') {
                     throw $exception;
                 }
-                $name = $multimedia->getHash()->getValue().'_'.$iteration++;
+                $name = $multimedia->getHash()->getValue() . '_' . $iteration++;
             }
         }
     }
@@ -170,18 +170,26 @@ class Shopware6ProductMediaClient
     private function hasMedia(Shopware6Channel $channel, string $shopwareId): bool
     {
         $action = new HasMedia($shopwareId);
+        static $cachedMedia = [];
 
+        $channelHost = $channel->getHost();
+        if (isset($cachedMedia[$channelHost][$shopwareId])) {
+            return $cachedMedia[$channelHost][$shopwareId];
+        }
+
+        $hasMedia = false;
         try {
             $shopware6MediaId = $this->connector->execute($channel, $action);
             if (!is_string($shopware6MediaId)) {
                 throw new Shopware6InstanceOfException(Shopware6Media::class);
             }
 
-            return true;
+            $hasMedia = true;
         } catch (ClientException $exception) {
         }
 
-        return false;
+        $cachedMedia[$channelHost][$shopwareId] = $hasMedia;
+        return $hasMedia;
     }
 
     private function delete(Shopware6Channel $channel, string $shopwareId, MultimediaId $multimediaId): void
@@ -198,7 +206,7 @@ class Shopware6ProductMediaClient
     {
         $query = new Shopware6QueryBuilder();
         $query->equals('fileName', $filename)
-              ->limit(1);
+            ->limit(1);
 
         $action = new GetMediaByFilename($query);
 

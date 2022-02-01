@@ -1,8 +1,4 @@
 <?php
-/**
- * Copyright © Ergonode Sp. z o.o. All rights reserved.
- * See LICENSE.txt for license details.
- */
 
 declare(strict_types=1);
 
@@ -104,8 +100,6 @@ class ProductShopware6ExportProcess
         Assert::notNull($shopwareLanguage);
 
         $translatedShopwareProduct = $shopware6Product->getTranslated($shopwareLanguage);
-        Assert::notNull($translatedShopwareProduct);
-
         $this->updateProduct($channel, $export, $translatedShopwareProduct, $product, $language, $shopwareLanguage);
     }
 }

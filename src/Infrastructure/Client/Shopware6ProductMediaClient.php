@@ -1,8 +1,4 @@
 <?php
-/**
- * Copyright © Ergonode Sp. z o.o. All rights reserved.
- * See LICENSE.txt for license details.
- */
 
 declare(strict_types=1);
 
@@ -35,6 +31,8 @@ class Shopware6ProductMediaClient
     private FilesystemInterface $multimediaStorage;
 
     private MultimediaRepositoryInterface $multimediaRepository;
+
+    private array $inMemoryCache = [];
 
     public function __construct(
         Shopware6Connector $connector,
@@ -82,6 +80,7 @@ class Shopware6ProductMediaClient
             $this->upload($channel, $media, $multimedia);
             $this->multimediaRepository->save($channel->getId(), $multimedia->getId(), $media->getId());
 
+            $this->inMemoryCache['has-media'][$channel->getHost()][$media->getId()] = true;
             return $media;
         } catch (\Exception $exception) {
             if ($media) {
@@ -137,17 +136,23 @@ class Shopware6ProductMediaClient
 
     private function getProductFolderId(Shopware6Channel $channel): ?Shopware6MediaDefaultFolder
     {
+        if (isset($this->inMemoryCache['product-folder-id'][$channel->getId()])) {
+            return $this->inMemoryCache['product-folder-id'][$channel->getId()];
+        }
+
         $query = new Shopware6QueryBuilder();
         $query->equals('entity', 'product');
 
         $action = new GetMediaDefaultFolderList($query);
 
+        $productFolderId = null;
         $folderList = $this->connector->execute($channel, $action);
         if (is_array($folderList) && count($folderList) > 0) {
-            return reset($folderList);
+            $productFolderId = reset($folderList);
+            $this->inMemoryCache['product-folder-id'][$channel->getId()] = $productFolderId;
         }
 
-        return null;
+        return $productFolderId;
     }
 
     private function check(Shopware6Channel $channel, Multimedia $multimedia): ?string
@@ -170,11 +175,10 @@ class Shopware6ProductMediaClient
     private function hasMedia(Shopware6Channel $channel, string $shopwareId): bool
     {
         $action = new HasMedia($shopwareId);
-        static $cachedMedia = [];
 
         $channelHost = $channel->getHost();
-        if (isset($cachedMedia[$channelHost][$shopwareId])) {
-            return $cachedMedia[$channelHost][$shopwareId];
+        if (isset($this->inMemoryCache['has-media'][$channelHost][$shopwareId])) {
+            return $this->inMemoryCache['has-media'][$channelHost][$shopwareId];
         }
 
         $hasMedia = false;
@@ -188,7 +192,7 @@ class Shopware6ProductMediaClient
         } catch (ClientException $exception) {
         }
 
-        $cachedMedia[$channelHost][$shopwareId] = $hasMedia;
+        $this->inMemoryCache['has-media'][$channelHost][$shopwareId] = $hasMedia;
         return $hasMedia;
     }
 

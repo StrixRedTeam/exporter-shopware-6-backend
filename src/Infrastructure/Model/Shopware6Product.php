@@ -738,7 +738,7 @@ class Shopware6Product implements JsonSerializable
         $this->modified = false;
     }
 
-    public function getTranslated(Shopware6Language $language): ?Shopware6Product
+    public function getTranslated(Shopware6Language $language): Shopware6Product
     {
         $translation = null;
         $languageId = $language->getId();

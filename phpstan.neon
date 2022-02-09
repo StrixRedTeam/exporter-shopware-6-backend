@@ -1,0 +1,11 @@
+parameters:
+    level: 4
+    checkUninitializedProperties: true
+    excludes_analyse:
+        - %currentWorkingDirectory%/*/Test/*
+        - %currentWorkingDirectory%/*/tests/*
+        - %currentWorkingDirectory%/*/phpstan-config-generator.php
+    ignoreErrors:
+        - '#Reflection error:#'
+    scanDirectories:
+        - %currentWorkingDirectory%/src

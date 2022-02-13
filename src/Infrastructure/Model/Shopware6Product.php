@@ -701,6 +701,11 @@ class Shopware6Product implements JsonSerializable
         }
     }
 
+    public function setId(string $id): void
+    {
+        $this->id = $id;
+    }
+
     /**
      * @param Shopware6ProductCategory[] $categories
      */

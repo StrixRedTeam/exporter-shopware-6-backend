@@ -12,6 +12,7 @@ use Ergonode\ExporterShopware6\Infrastructure\Connector\AbstractAction;
 use Ergonode\ExporterShopware6\Infrastructure\Model\Shopware6Product;
 use GuzzleHttp\Psr7\Request;
 use Symfony\Component\HttpFoundation\Request as HttpRequest;
+use Webmozart\Assert\Assert;
 
 class PatchProductAction extends AbstractAction
 {
@@ -22,6 +23,7 @@ class PatchProductAction extends AbstractAction
     public function __construct(Shopware6Product $product)
     {
         $this->product = $product;
+        Assert::notNull($product->getId());
     }
 
     public function getRequest(): Request

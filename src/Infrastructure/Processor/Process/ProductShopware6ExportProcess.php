@@ -10,6 +10,7 @@ use Ergonode\Channel\Domain\ValueObject\ExportLineId;
 use Ergonode\Core\Domain\ValueObject\Language;
 use Ergonode\ExporterShopware6\Domain\Entity\Shopware6Channel;
 use Ergonode\ExporterShopware6\Domain\Repository\LanguageRepositoryInterface;
+use Ergonode\ExporterShopware6\Domain\Repository\ProductRepositoryInterface;
 use Ergonode\ExporterShopware6\Infrastructure\Builder\ProductBuilder;
 use Ergonode\ExporterShopware6\Infrastructure\Client\Shopware6ProductClient;
 use Ergonode\ExporterShopware6\Infrastructure\Exception\Shopware6ExporterException;
@@ -20,6 +21,8 @@ use Webmozart\Assert\Assert;
 
 class ProductShopware6ExportProcess
 {
+    protected ProductRepositoryInterface $shopwareProductRepository;
+
     private ProductBuilder $builder;
 
     private Shopware6ProductClient $productClient;
@@ -32,12 +35,14 @@ class ProductShopware6ExportProcess
         ProductBuilder $builder,
         Shopware6ProductClient $productClient,
         LanguageRepositoryInterface $languageRepository,
-        ExportRepositoryInterface $exportRepository
+        ExportRepositoryInterface $exportRepository,
+        ProductRepositoryInterface $shopwareProductRepository
     ) {
         $this->builder = $builder;
         $this->productClient = $productClient;
         $this->languageRepository = $languageRepository;
         $this->exportRepository = $exportRepository;
+        $this->shopwareProductRepository = $shopwareProductRepository;
     }
 
     /**
@@ -58,6 +63,13 @@ class ProductShopware6ExportProcess
                 $shopwareProduct = new Shopware6Product();
                 $this->builder->build($channel, $export, $shopwareProduct, $product);
                 $this->productClient->insert($channel, $shopwareProduct, $product->getId());
+                $shopwareId = $this->shopwareProductRepository->load($channel->getId(), $product->getId());
+                if (!$shopwareId) {
+                    throw new Shopware6ExporterException(
+                        sprintf("Failed inserting product %s", $product->getSku()->getValue())
+                    );
+                }
+                $shopwareProduct->setId($shopwareId);
             }
 
             foreach ($channel->getLanguages() as $language) {

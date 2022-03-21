@@ -97,6 +97,11 @@ abstract class AbstractProductCustomFieldSetMapper implements ProductMapperInter
                     $attribute->getCode()->getValue(),
                     $this->getValue($channel, $attribute, $calculateValue, $shopware6Product)
                 );
+            } elseif (empty($calculateValue) && $shopware6Product->hasCustomField($attribute->getCode()->getValue())) {
+                $shopware6Product->addCustomField(
+                    $attribute->getCode()->getValue(),
+                    null
+                );
             }
         }
 

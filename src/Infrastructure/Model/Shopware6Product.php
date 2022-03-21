@@ -317,7 +317,7 @@ class Shopware6Product implements JsonSerializable
     }
 
     /**
-     * @param string|array $value
+     * @param string|array|null $value
      */
     public function addCustomField(string $customFieldId, $value): void
     {

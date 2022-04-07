@@ -51,9 +51,11 @@ class ProductCustomFieldSetSelectMapper extends AbstractProductCustomFieldSetMap
         $calculateValue,
         Shopware6Product $shopware6Product = null
     ): string {
-        $options = explode(',', $calculateValue);
+        if (!is_array($calculateValue)) {
+            $calculateValue = [$calculateValue];
+        }
 
-        foreach ($options as $optionValue) {
+        foreach ($calculateValue as $optionValue) {
             $optionId = new AggregateId($optionValue);
             $option = $this->optionRepository->load($optionId);
             if ($option) {

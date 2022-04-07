@@ -52,7 +52,7 @@ abstract class AbstractVariantOptionMapper implements ProductMapperInterface
             return null;
         }
         $value = $product->getAttribute($binding->getCode());
-        $optionValue = $this->calculator->calculate($binding, $value, $channel->getDefaultLanguage());
+        $optionValue = $this->calculator->calculate($binding->getScope(), $value, $channel->getDefaultLanguage());
         $optionId = new AggregateId($optionValue);
 
         return $this->optionMap($channel, $bindingId, $optionId);

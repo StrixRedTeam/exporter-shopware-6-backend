@@ -54,7 +54,7 @@ class ProductNameMapper implements ProductMapperInterface
         }
 
         $value = $product->getAttribute($attribute->getCode());
-        $name = $this->calculator->calculate($attribute, $value, $language ?: $channel->getDefaultLanguage());
+        $name = $this->calculator->calculate($attribute->getScope(), $value, $language ?: $channel->getDefaultLanguage());
         $shopware6Product->setName($name);
 
         return $shopware6Product;

@@ -282,7 +282,7 @@ class Shopware6ProductMediaClient
 
     private function checkAndDeleteByFilename(Shopware6Channel $channel, Multimedia $multimedia): void
     {
-        $filename = rtrim($multimedia->getFileName(), sprintf('.%s', $multimedia->getExtension()));
+        $filename = $multimedia->getHash()->getValue();
         $shopwareId = $this->getMediaByFilename($channel, $filename);
         if ($shopwareId) {
             try {

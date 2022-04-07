@@ -12,12 +12,12 @@ use Ergonode\Attribute\Domain\Entity\AbstractAttribute;
 use Ergonode\Attribute\Domain\Entity\Attribute\AbstractImageAttribute;
 use Ergonode\Attribute\Domain\Repository\AttributeRepositoryInterface;
 use Ergonode\ExporterShopware6\Domain\Entity\Shopware6Channel;
-use Ergonode\ExporterShopware6\Infrastructure\Calculator\AttributeTranslationInheritanceCalculator;
 use Ergonode\ExporterShopware6\Infrastructure\Client\Shopware6ProductMediaClient;
 use Ergonode\ExporterShopware6\Infrastructure\Exception\Mapper\Shopware6ExporterMultimediaException;
 use Ergonode\ExporterShopware6\Infrastructure\Mapper\Product\AbstractProductCustomFieldSetMapper;
 use Ergonode\ExporterShopware6\Infrastructure\Model\Shopware6Product;
 use Ergonode\Multimedia\Domain\Repository\MultimediaRepositoryInterface;
+use Ergonode\Product\Infrastructure\Calculator\TranslationInheritanceCalculator;
 use Ergonode\SharedKernel\Domain\Aggregate\MultimediaId;
 
 class ProductCustomFieldSetMultimediaMapper extends AbstractProductCustomFieldSetMapper
@@ -28,7 +28,7 @@ class ProductCustomFieldSetMultimediaMapper extends AbstractProductCustomFieldSe
 
     public function __construct(
         AttributeRepositoryInterface $repository,
-        AttributeTranslationInheritanceCalculator $calculator,
+        TranslationInheritanceCalculator $calculator,
         MultimediaRepositoryInterface $multimediaRepository,
         Shopware6ProductMediaClient $mediaClient
     ) {

@@ -13,9 +13,9 @@ use Ergonode\Attribute\Domain\Entity\Attribute\MultiSelectAttribute;
 use Ergonode\Attribute\Domain\Repository\AttributeRepositoryInterface;
 use Ergonode\Attribute\Domain\Repository\OptionRepositoryInterface;
 use Ergonode\ExporterShopware6\Domain\Entity\Shopware6Channel;
-use Ergonode\ExporterShopware6\Infrastructure\Calculator\AttributeTranslationInheritanceCalculator;
 use Ergonode\ExporterShopware6\Infrastructure\Mapper\Product\AbstractProductCustomFieldSetMapper;
 use Ergonode\ExporterShopware6\Infrastructure\Model\Shopware6Product;
+use Ergonode\Product\Infrastructure\Calculator\TranslationInheritanceCalculator;
 use Ergonode\SharedKernel\Domain\AggregateId;
 
 class ProductCustomFieldSetMultiSelectMapper extends AbstractProductCustomFieldSetMapper
@@ -24,7 +24,7 @@ class ProductCustomFieldSetMultiSelectMapper extends AbstractProductCustomFieldS
 
     public function __construct(
         AttributeRepositoryInterface $repository,
-        AttributeTranslationInheritanceCalculator $calculator,
+        TranslationInheritanceCalculator $calculator,
         OptionRepositoryInterface $optionRepository
     ) {
         parent::__construct($repository, $calculator);

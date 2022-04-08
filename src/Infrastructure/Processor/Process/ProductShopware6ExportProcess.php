@@ -109,7 +109,7 @@ class ProductShopware6ExportProcess
         Shopware6Product $shopware6Product
     ): void {
         $shopwareLanguage = $this->languageRepository->load($channel->getId(), $language->getCode());
-        Assert::notNull($shopwareLanguage);
+        Assert::notNull($shopwareLanguage,sprintf('Expected a value other than null for product lang  %s', $language->getCode()));
 
         $translatedShopwareProduct = $shopware6Product->getTranslated($shopwareLanguage);
         $this->updateProduct($channel, $export, $translatedShopwareProduct, $product, $language, $shopwareLanguage);

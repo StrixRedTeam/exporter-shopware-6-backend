@@ -78,7 +78,7 @@ abstract class AbstractProductCustomFieldSetMapper implements ProductMapperInter
         ?Language $language = null
     ): Shopware6Product {
         $attribute = $this->repository->load($attributeId);
-        Assert::notNull($attribute);
+        Assert::notNull($attribute,sprintf('Expected a value other than null for custom attribute %s', $attributeId->getValue()));
 
         if (false === $product->hasAttribute($attribute->getCode())) {
             return $shopware6Product;

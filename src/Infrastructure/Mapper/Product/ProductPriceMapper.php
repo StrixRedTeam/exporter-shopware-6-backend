@@ -110,7 +110,7 @@ class ProductPriceMapper implements ProductMapperInterface
     {
         $attribute = $this->repository->load($channel->getAttributeProductTax());
 
-        Assert::notNull($attribute);
+        Assert::notNull($attribute,sprintf('Expected a value other than null for price attribute %s', $channel->getAttributeProductTax()->getValue()));
 
         if (false === $product->hasAttribute($attribute->getCode())) {
             throw new Shopware6ExporterProductAttributeException($attribute->getCode(), $product->getSku());

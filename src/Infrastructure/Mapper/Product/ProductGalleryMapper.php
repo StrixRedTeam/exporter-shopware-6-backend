@@ -55,7 +55,7 @@ class ProductGalleryMapper implements ProductMapperInterface
         }
         $attribute = $this->repository->load($channel->getAttributeProductGallery());
 
-        Assert::notNull($attribute);
+        Assert::notNull($attribute,sprintf('Expected a value other than null for gallery attribute %s', $channel->getAttributeProductGallery()->getValue()));
 
         if (false === $product->hasAttribute($attribute->getCode())) {
             return $shopware6Product;

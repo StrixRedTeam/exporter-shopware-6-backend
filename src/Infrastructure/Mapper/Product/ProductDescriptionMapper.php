@@ -48,7 +48,7 @@ class ProductDescriptionMapper implements ProductMapperInterface
         }
         $attribute = $this->repository->load($channel->getAttributeProductDescription());
 
-        Assert::notNull($attribute);
+        Assert::notNull($attribute,sprintf('Expected a value other than null for description attribute %s', $channel->getAttributeProductDescription()->getValue()));
 
         if (false === $product->hasAttribute($attribute->getCode())) {
             return $shopware6Product;

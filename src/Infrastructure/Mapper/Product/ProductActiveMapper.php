@@ -45,7 +45,7 @@ class ProductActiveMapper implements ProductMapperInterface
         $active = false;
 
         $attribute = $this->repository->load($channel->getAttributeProductActive());
-        Assert::notNull($attribute);
+        Assert::notNull($attribute,sprintf('Expected a value other than null for active attribute %s', $channel->getAttributeProductActive()->getValue()));
 
         if (false === $product->hasAttribute($attribute->getCode())) {
             $shopware6Product->setActive($active);

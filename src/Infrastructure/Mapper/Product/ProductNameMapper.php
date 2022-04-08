@@ -47,7 +47,7 @@ class ProductNameMapper implements ProductMapperInterface
     ): Shopware6Product {
 
         $attribute = $this->repository->load($channel->getAttributeProductName());
-        Assert::notNull($attribute);
+        Assert::notNull($attribute,sprintf('Expected a value other than null for name attribute %s', $channel->getAttributeProductName()->getValue()));
 
         if (false === $product->hasAttribute($attribute->getCode())) {
             throw new Shopware6ExporterProductAttributeException($attribute->getCode(), $product->getSku());

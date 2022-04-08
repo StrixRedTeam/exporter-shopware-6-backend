@@ -110,7 +110,7 @@ class PropertyGroupShopware6ExportProcess
         AbstractAttribute $attribute
     ): void {
         $shopwareLanguage = $this->languageRepository->load($channel->getId(), $language->getCode());
-        Assert::notNull($shopwareLanguage);
+        Assert::notNull($shopwareLanguage,sprintf('Expected a value other than null for property group with lang %s', $language->getCode()));
 
         $this->builder->build($channel, $export, $propertyGroup, $attribute, $language, $shopwareLanguage);
     }

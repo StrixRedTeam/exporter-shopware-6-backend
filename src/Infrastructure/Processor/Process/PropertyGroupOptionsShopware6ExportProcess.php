@@ -64,7 +64,7 @@ class PropertyGroupOptionsShopware6ExportProcess
     public function process(Export $export, Shopware6Channel $channel, AbstractAttribute $attribute): void
     {
         $propertyGroupId = $this->propertyGroupRepository->load($channel->getId(), $attribute->getId());
-        Assert::notNull($propertyGroupId);
+        Assert::notNull($propertyGroupId,sprintf('Expected a value other than null for property group %s', $attribute->getId()->getValue()));
 
         $options = $this->optionQuery->getOptions($attribute->getId());
 
@@ -74,7 +74,7 @@ class PropertyGroupOptionsShopware6ExportProcess
         foreach ($options as $option) {
             $optionId = new AggregateId($option);
             $option = $this->optionRepository->load($optionId);
-            Assert::notNull($option);
+            Assert::notNull($option,sprintf('Expected a value other than null for option %s', $optionId));
 
             $shopwareId = $this->propertyGroupOptionsRepository->load(
                 $channel->getId(),
@@ -131,7 +131,7 @@ class PropertyGroupOptionsShopware6ExportProcess
         AbstractOption $option
     ): void {
         $shopwareLanguage = $this->languageRepository->load($channel->getId(), $language->getCode());
-        Assert::notNull($shopwareLanguage);
+        Assert::notNull($shopwareLanguage,sprintf('Expected a value other than null for lang property group option %s', $language->getCode()));
 
         $this->builder->build($channel, $export, $propertyGroupOption, $option, $language, $shopwareLanguage);
     }

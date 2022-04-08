@@ -133,7 +133,7 @@ class CustomFieldShopware6ExportProcess
             ]
         );
         $newCustomFieldSet = $this->customFieldSetClient->insert($channel, $customFieldSet);
-        Assert::notNull($newCustomFieldSet);
+        Assert::notNull($newCustomFieldSet,sprintf('Expected a value other than null for custom field set %s', $customFieldSet->getId()));
 
         return $newCustomFieldSet;
     }

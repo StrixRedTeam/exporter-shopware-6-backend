@@ -45,7 +45,7 @@ class ProductSEOKeywordsMapper implements ProductMapperInterface
         }
         $attribute = $this->repository->load($channel->getAttributeProductKeywords());
 
-        Assert::notNull($attribute);
+        Assert::notNull($attribute,sprintf('Expected a value other than null for keywords attribute %s', $channel->getAttributeProductKeywords()->getValue()));
 
         if (false === $product->hasAttribute($attribute->getCode())) {
             return $shopware6Product;

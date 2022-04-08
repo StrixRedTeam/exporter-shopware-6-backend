@@ -79,7 +79,7 @@ abstract class AbstractProductPropertyGroupMapper implements ProductMapperInterf
         ?Language $language = null
     ): Shopware6Product {
         $attribute = $this->repository->load($attributeId);
-        Assert::notNull($attribute);
+        Assert::notNull($attribute,sprintf('Expected a value other than null for property attribute %s', $attributeId->getValue()));
 
         if (false === $product->hasAttribute($attribute->getCode())) {
             return $shopware6Product;

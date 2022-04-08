@@ -98,10 +98,10 @@ class CategoryShopware6ExportProcess
         ?CategoryId $parentId = null
     ): void {
         $shopwareLanguage = $this->languageRepository->load($channel->getId(), $language->getCode());
-        Assert::notNull($shopwareLanguage);
+        Assert::notNull($shopwareLanguage,sprintf('Expected a value other than null for category language %s', $language->getCode()));
 
         $shopwareCategory = $this->loadCategory($channel, $category, $shopwareLanguage);
-        Assert::notNull($shopwareCategory);
+        Assert::notNull($shopwareCategory, sprintf('Expected a value other than null for category  %s', $category->getId()->getValue()));
 
         $this->updateCategory($channel, $export, $shopwareCategory, $category, $parentId, $language, $shopwareLanguage);
     }

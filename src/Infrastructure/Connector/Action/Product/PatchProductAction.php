@@ -23,7 +23,7 @@ class PatchProductAction extends AbstractAction
     public function __construct(Shopware6Product $product)
     {
         $this->product = $product;
-        Assert::notNull($product->getId());
+        Assert::notNull($product->getId(), sprintf('Expected a value other than null for patch product'));
     }
 
     public function getRequest(): Request

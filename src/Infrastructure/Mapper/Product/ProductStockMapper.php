@@ -43,7 +43,7 @@ class ProductStockMapper implements ProductMapperInterface
         ?Language $language = null
     ): Shopware6Product {
         $attribute = $this->repository->load($channel->getAttributeProductStock());
-        Assert::notNull($attribute);
+        Assert::notNull($attribute,sprintf('Expected a value other than null for stock attribute %s', $channel->getAttributeProductStock()->getValue()));
         if (false === $product->hasAttribute($attribute->getCode())) {
             if ($shopware6Product->isNew()) {
                 $shopware6Product->setStock(0);

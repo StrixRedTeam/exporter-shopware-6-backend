@@ -51,7 +51,7 @@ class ProductSEOMetaTitleMapper implements ProductMapperInterface
         }
         $attribute = $this->repository->load($channel->getAttributeProductMetaTitle());
 
-        Assert::notNull($attribute);
+        Assert::notNull($attribute,sprintf('Expected a value other than null for meta title attribute %s', $channel->getAttributeProductMetaTitle()->getValue()));
 
         if (false === $product->hasAttribute($attribute->getCode())) {
             return $shopware6Product;

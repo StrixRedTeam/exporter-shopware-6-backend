@@ -137,7 +137,7 @@ class ProductCrossSellingExportProcess
         Language $language
     ): void {
         $shopwareLanguage = $this->languageRepository->load($channel->getId(), $language->getCode());
-        Assert::notNull($shopwareLanguage);
+        Assert::notNull($shopwareLanguage,sprintf('Expected a value other than null for cross selling lang %s', $language->getCode()));
 
         $productCrossSelling = $this->loadProductCrossSelling(
             $channel,
@@ -145,7 +145,7 @@ class ProductCrossSellingExportProcess
             $collectionElement->getProductId(),
             $shopwareLanguage
         );
-        Assert::notNull($productCrossSelling);
+        Assert::notNull($productCrossSelling,sprintf('Expected a value other than null for product cross %s', $productCollection->getId()->getValue()));
 
         $this->updateProductCrossSelling(
             $channel,

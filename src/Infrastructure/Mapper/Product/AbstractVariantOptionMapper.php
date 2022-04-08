@@ -47,7 +47,7 @@ abstract class AbstractVariantOptionMapper implements ProductMapperInterface
         Shopware6Channel $channel
     ): ?string {
         $binding = $this->attributeRepository->load($bindingId);
-        Assert::notNull($binding);
+        Assert::notNull($binding,sprintf('Expected a value other than null for binding attribute %s', $bindingId->getValue()));
         if (false === $product->hasAttribute($binding->getCode())) {
             return null;
         }

@@ -57,13 +57,14 @@ class ProductSEOMetaTitleMapper implements ProductMapperInterface
             return $shopware6Product;
         }
 
+        $currentLanguage = $language ?: $channel->getDefaultLanguage();
         $value = $this->calculator->calculate(
             $attribute->getScope(),
             $product->getAttribute($attribute->getCode()),
-            $language ?: $channel->getDefaultLanguage()
+            $currentLanguage
         );
         if ($value && mb_strlen($value) > self::MAX_LENGTH) {
-            throw new ProductToLongValueException($attribute->getCode(), $product->getSku(), self::MAX_LENGTH);
+            throw new ProductToLongValueException($attribute->getCode(), $product->getSku(), self::MAX_LENGTH, $currentLanguage);
         }
 
         $shopware6Product->setMetaTitle($value);

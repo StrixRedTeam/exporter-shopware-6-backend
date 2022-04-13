@@ -57,6 +57,8 @@ class ProductCustomFieldSetFileMapper extends AbstractProductCustomFieldSetMappe
         $calculateValue,
         Shopware6Product $shopware6Product = null
     ): string {
+        var_dump($calculateValue);
+        var_dump('+++++++');
         $multimediaId = new MultimediaId($calculateValue);
 
         return $this->getShopware6MultimediaId($channel, $multimediaId, $shopware6Product, $attribute);

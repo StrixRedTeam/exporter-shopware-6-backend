@@ -9,7 +9,6 @@ declare(strict_types=1);
 namespace Ergonode\ExporterShopware6\Infrastructure\Mapper\Product\CustomField;
 
 use Ergonode\Attribute\Domain\Entity\AbstractAttribute;
-use Ergonode\Attribute\Domain\Entity\Attribute\AbstractImageAttribute;
 use Ergonode\Attribute\Domain\Entity\Attribute\FileAttribute;
 use Ergonode\Attribute\Domain\Repository\AttributeRepositoryInterface;
 use Ergonode\ExporterShopware6\Domain\Entity\Shopware6Channel;
@@ -57,8 +56,10 @@ class ProductCustomFieldSetFileMapper extends AbstractProductCustomFieldSetMappe
         $calculateValue,
         Shopware6Product $shopware6Product = null
     ): string {
-        var_dump($calculateValue);
-        var_dump('+++++++');
+        var_dump('------');
+        if (is_array($calculateValue)) {
+            $calculateValue = $calculateValue[0];
+        }
         $multimediaId = new MultimediaId($calculateValue);
 
         return $this->getShopware6MultimediaId($channel, $multimediaId, $shopware6Product, $attribute);

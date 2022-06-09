@@ -27,7 +27,7 @@ class CategoryBuilder
 
     public function __construct(iterable $collection)
     {
-        Assert::allIsInstanceOf($collection, Category::class);
+        Assert::allIsInstanceOf($collection, CategoryMapperInterface::class);
         $this->collection = $collection;
     }
 

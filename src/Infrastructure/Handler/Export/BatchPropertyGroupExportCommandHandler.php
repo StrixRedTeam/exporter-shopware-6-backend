@@ -28,7 +28,7 @@ class BatchPropertyGroupExportCommandHandler extends AbstractBatchExportCommandH
         $this->validateAndProcessCommand($command);
     }
 
-    protected function processCommand(Export $export, Shopware6Channel $channel, array $attributeIds): void
+    protected function processCommand(Export $export, Shopware6Channel $channel, array $attributeIds, array $entities): void
     {
         $this->process->process($export, $channel, $attributeIds);
     }

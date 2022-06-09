@@ -33,12 +33,13 @@ abstract class AbstractBatchExportCommandHandler
         $attributeIds = $command->getAttributeIds();
         Assert::allIsInstanceOf($attributeIds, AttributeId::class);
 
-        $this->processCommand($export, $channel, $attributeIds);
+        $this->processCommand($export, $channel, $attributeIds, $command->getEntities());
     }
 
     abstract protected function processCommand(
         Export $export,
         Shopware6Channel $channel,
-        array $attributeIds
+        array $attributeIds,
+        array $entities
     );
 }

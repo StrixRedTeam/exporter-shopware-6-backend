@@ -17,11 +17,17 @@ abstract class AbstractBatchExportCommand implements ExporterCommandInterface
      */
     private array $attributeIds;
 
-    public function __construct(ExportId $exportId, array $attributeIds)
+    /**
+     * @var string[]
+     */
+    private array $entities;
+
+    public function __construct(ExportId $exportId, array $attributeIds, array $entities = ['product'])
     {
         $this->exportId = $exportId;
         Assert::allIsInstanceOf($attributeIds, AttributeId::class);
         $this->attributeIds = $attributeIds;
+        $this->entities = $entities;
     }
 
     public function getExportId(): ExportId
@@ -32,5 +38,10 @@ abstract class AbstractBatchExportCommand implements ExporterCommandInterface
     public function getAttributeIds(): array
     {
         return $this->attributeIds;
+    }
+
+    public function getEntities(): array
+    {
+        return $this->entities;
     }
 }

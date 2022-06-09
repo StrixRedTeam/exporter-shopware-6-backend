@@ -33,8 +33,8 @@ class BatchCustomFieldExportCommandHandler extends AbstractBatchExportCommandHan
         $this->validateAndProcessCommand($command);
     }
 
-    protected function processCommand(Export $export, Shopware6Channel $channel, array $attributeIds): void
+    protected function processCommand(Export $export, Shopware6Channel $channel, array $attributeIds, array $entites): void
     {
-        $this->process->process($export, $channel, $attributeIds);
+        $this->process->process($export, $channel, $attributeIds, $entites);
     }
 }

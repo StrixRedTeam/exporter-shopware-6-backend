@@ -62,10 +62,11 @@ class CustomFieldShopware6ExportProcess
     public function process(
         Export $export,
         Shopware6Channel $channel,
-        array $attributeIds = []
+        array $attributeIds = [],
+        array $entities
     ): void {
         $shopwareCustomFields = $this->customFieldClient->getAll($channel);
-        $customFieldSet = $this->loadCustomFieldSet($channel);
+        $customFieldSet = $this->loadCustomFieldSet($channel, $entities);
 
         $customFields = [];
         foreach ($attributeIds as $attributeId) {
@@ -107,7 +108,8 @@ class CustomFieldShopware6ExportProcess
     }
 
     private function loadCustomFieldSet(
-        Shopware6Channel $channel
+        Shopware6Channel $channel,
+        array $entities
     ): AbstractShopware6CustomFieldSet {
         $customFieldSet = $this->customFieldSetClient->findByCode($channel, self::CUSTOM_FIELD_SET_NAME);
         if ($customFieldSet) {
@@ -122,14 +124,17 @@ class CustomFieldShopware6ExportProcess
             $label
         );
 
+        $entityNames = [];
+        foreach($entities as $entity) {
+            $entityNames[] = ['entityName' => $entity];
+        }
+
         $customFieldSet = new Shopware6CustomFieldSet(
             null,
             self::CUSTOM_FIELD_SET_NAME,
             $config,
             [
-                [
-                    'entityName' => 'product',
-                ],
+                $entityNames,
             ]
         );
         $newCustomFieldSet = $this->customFieldSetClient->insert($channel, $customFieldSet);

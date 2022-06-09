@@ -60,7 +60,7 @@ class PostUploadFile extends AbstractAction
 
     private function getUri(): string
     {
-        $fileName = $this->fileName ?: $this->multimedia->getHash()->getValue();
+        $fileName = $this->fileName ?: $this->multimedia->getFileName();
 
         $query = [
             'extension' => $this->multimedia->getExtension(),

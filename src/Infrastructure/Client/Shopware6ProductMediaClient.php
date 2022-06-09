@@ -102,9 +102,7 @@ class Shopware6ProductMediaClient
     private function upload(Shopware6Channel $channel, Shopware6Media $media, Multimedia $multimedia): void
     {
         $content = $this->multimediaStorage->read($multimedia->getFileName());
-        $name = $multimedia->getHash()->getValue();
-        $iteration = 0;
-        while (true) {
+        $name = $multimedia->getFileName();
             try {
                 $action = new PostUploadFile($media->getId(), $content, $multimedia, $name);
                 $this->connector->execute($channel, $action);
@@ -125,10 +123,8 @@ class Shopware6ProductMediaClient
                         throw $exception;
                     }
                 }
-
-                $name = $multimedia->getHash()->getValue() . '_' . $iteration++;
             }
-        }
+
     }
 
     /**
@@ -282,8 +278,7 @@ class Shopware6ProductMediaClient
 
     private function checkAndDeleteByFilename(Shopware6Channel $channel, Multimedia $multimedia): void
     {
-        $filename = $multimedia->getHash()->getValue();
-        $shopwareId = $this->getMediaByFilename($channel, $filename);
+        $shopwareId = $this->getMediaByFilename($channel, $multimedia->getFileName());
         if ($shopwareId) {
             try {
                 $action = new DeleteMedia($shopwareId);

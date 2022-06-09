@@ -20,7 +20,7 @@ class Shopware6Category implements \JsonSerializable
 
     private bool $visible;
 
-    private bool $modified = false;
+    protected bool $modified = false;
 
     public function __construct(
         ?string $id = null,

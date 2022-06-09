@@ -77,8 +77,7 @@ services:
 
     Ergonode\ExporterShopware6\Infrastructure\Builder\CategoryBuilder:
         arguments:
-            - '@Ergonode\ExporterShopware6\Infrastructure\Mapper\Category\CategoryNameMapper'
-            - '@Ergonode\ExporterShopware6\Infrastructure\Mapper\Category\CategoryParentMapper'
+            - !tagged_iterator 'component.exporter_shopware6.category_mapper_interface'
 
     Ergonode\ExporterShopware6\Infrastructure\Builder\ProductBuilder:
         arguments:

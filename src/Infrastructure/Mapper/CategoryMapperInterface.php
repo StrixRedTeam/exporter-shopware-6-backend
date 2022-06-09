@@ -17,6 +17,8 @@ use Ergonode\SharedKernel\Domain\Aggregate\CategoryId;
 
 interface CategoryMapperInterface
 {
+    public const TAG = 'component.exporter_shopware6.category_mapper_interface';
+
     public function map(
         Shopware6Channel $channel,
         Export $export,

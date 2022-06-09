@@ -8,6 +8,7 @@ declare(strict_types=1);
 
 namespace Ergonode\ExporterShopware6\Application\DependencyInjection;
 
+use Ergonode\ExporterShopware6\Infrastructure\Mapper\CategoryMapperInterface;
 use Ergonode\ExporterShopware6\Infrastructure\Mapper\CustomFieldMapperInterface;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -32,6 +33,10 @@ class ErgonodeExporterShopware6Extension extends Extension implements PrependExt
         $container
             ->registerForAutoconfiguration(CustomFieldMapperInterface::class)
             ->addTag(CustomFieldMapperInterface::TAG);
+
+        $container
+            ->registerForAutoconfiguration(CategoryMapperInterface::class)
+            ->addTag(CategoryMapperInterface::TAG);
 
         $loader->load('services.yml');
     }

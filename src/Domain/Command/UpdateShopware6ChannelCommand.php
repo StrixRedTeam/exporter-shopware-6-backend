@@ -76,6 +76,16 @@ class UpdateShopware6ChannelCommand implements ChannelCommandInterface
      */
     private array $crossSelling;
 
+    private ?AttributeId $categoryDescription;
+
+    private ?AttributeId $categoryGallery;
+
+    private ?AttributeId $categoryMetaTitle;
+
+    private ?AttributeId $categoryMetaDescription;
+
+    private ?AttributeId $categoryKeywords;
+
     /**
      * @param Language[]                  $languages
      * @param array|AttributeId[]         $propertyGroup
@@ -105,7 +115,12 @@ class UpdateShopware6ChannelCommand implements ChannelCommandInterface
         ?CategoryTreeId $categoryTree,
         array $propertyGroup,
         array $customField,
-        array $crossSelling
+        array $crossSelling,
+        ?AttributeId $categoryDescription,
+        ?AttributeId $categoryGallery,
+        ?AttributeId $categoryMetaTitle,
+        ?AttributeId $categoryMetaDescription,
+        ?AttributeId $categoryKeywords
     ) {
         $this->id = $id;
         $this->name = $name;
@@ -130,6 +145,11 @@ class UpdateShopware6ChannelCommand implements ChannelCommandInterface
         $this->propertyGroup = $propertyGroup;
         $this->customField = $customField;
         $this->crossSelling = $crossSelling;
+        $this->categoryDescription = $categoryDescription;
+        $this->categoryGallery = $categoryGallery;
+        $this->categoryMetaTitle = $categoryMetaTitle;
+        $this->categoryMetaDescription = $categoryMetaDescription;
+        $this->categoryKeywords = $categoryKeywords;
     }
 
     public function getId(): ChannelId
@@ -257,5 +277,30 @@ class UpdateShopware6ChannelCommand implements ChannelCommandInterface
     public function getCrossSelling(): array
     {
         return $this->crossSelling;
+    }
+
+    public function getCategoryDescription(): ?AttributeId
+    {
+        return $this->categoryDescription;
+    }
+
+    public function getCategoryGallery(): ?AttributeId
+    {
+        return $this->categoryGallery;
+    }
+
+    public function getCategoryMetaTitle(): ?AttributeId
+    {
+        return $this->categoryMetaTitle;
+    }
+
+    public function getCategoryMetaDescription(): ?AttributeId
+    {
+        return $this->categoryMetaDescription;
+    }
+
+    public function getCategoryKeywords(): ?AttributeId
+    {
+        return $this->categoryKeywords;
     }
 }

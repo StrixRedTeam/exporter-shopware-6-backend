@@ -74,6 +74,16 @@ class Shopware6Channel extends AbstractChannel
      */
     private array $crossSelling;
 
+    private ?AttributeId $attributeCategoryDescription;
+
+    private ?AttributeId $attributeCategoryGallery;
+
+    private ?AttributeId $attributeCategoryMetaTitle;
+
+    private ?AttributeId $attributeCategoryMetaDescription;
+
+    private ?AttributeId $attributeCategoryKeywords;
+
     /**
      * @param Language[]                  $languages
      * @param array|AttributeId[]         $propertyGroup
@@ -103,7 +113,12 @@ class Shopware6Channel extends AbstractChannel
         ?CategoryTreeId $categoryTree,
         array $propertyGroup,
         array $customField,
-        array $crossSelling
+        array $crossSelling,
+        ?AttributeId $attributeCategoryDescription,
+        ?AttributeId $attributeCategoryGallery,
+        ?AttributeId $attributeCategoryMetaTitle,
+        ?AttributeId $attributeCategoryMetaDescription,
+        ?AttributeId $attributeCategoryKeywords
     ) {
         parent::__construct($id, $name);
 
@@ -128,6 +143,11 @@ class Shopware6Channel extends AbstractChannel
         $this->propertyGroup = $propertyGroup;
         $this->customField = $customField;
         $this->crossSelling = $crossSelling;
+        $this->attributeCategoryDescription = $attributeCategoryDescription;
+        $this->attributeCategoryGallery = $attributeCategoryGallery;
+        $this->attributeCategoryMetaTitle = $attributeCategoryMetaTitle;
+        $this->attributeCategoryMetaDescription = $attributeCategoryMetaDescription;
+        $this->attributeCategoryKeywords = $attributeCategoryKeywords;
     }
 
     public static function getType(): string
@@ -367,5 +387,55 @@ class Shopware6Channel extends AbstractChannel
     public function setCrossSelling(array $crossSelling): void
     {
         $this->crossSelling = $crossSelling;
+    }
+
+    public function getAttributeCategoryDescription(): ?AttributeId
+    {
+        return $this->attributeCategoryDescription;
+    }
+
+    public function setAttributeCategoryDescription(AttributeId $attributeCategoryDescription): void
+    {
+        $this->attributeCategoryDescription = $attributeCategoryDescription;
+    }
+
+    public function getAttributeCategoryGallery(): ?AttributeId
+    {
+        return $this->attributeCategoryGallery;
+    }
+
+    public function setAttributeCategoryGallery(AttributeId $attributeCategoryGallery): void
+    {
+        $this->attributeCategoryGallery = $attributeCategoryGallery;
+    }
+
+    public function getAttributeCategoryMetaTitle(): ?AttributeId
+    {
+        return $this->attributeCategoryMetaTitle;
+    }
+
+    public function setAttributeCategoryMetaTitle(AttributeId $attributeCategoryMetaTitle): void
+    {
+        $this->attributeCategoryMetaTitle = $attributeCategoryMetaTitle;
+    }
+
+    public function getAttributeCategoryMetaDescription(): ?AttributeId
+    {
+        return $this->attributeCategoryMetaDescription;
+    }
+
+    public function setAttributeCategoryMetaDescription(AttributeId $attributeCategoryMetaDescription): void
+    {
+        $this->attributeCategoryMetaDescription = $attributeCategoryMetaDescription;
+    }
+
+    public function getAttributeCategoryKeywords(): ?AttributeId
+    {
+        return $this->attributeCategoryKeywords;
+    }
+
+    public function setAttributeCategoryKeywords(AttributeId $attributeCategoryKeywords): void
+    {
+        $this->attributeCategoryKeywords = $attributeCategoryKeywords;
     }
 }

@@ -50,6 +50,11 @@ class UpdateShopware6ChannelCommandHandler
         $channel->setPropertyGroup($command->getPropertyGroup());
         $channel->setCustomField($command->getCustomField());
         $channel->setCrossSelling($command->getCrossSelling());
+        $channel->setAttributeCategoryDescription($command->getCategoryDescription());
+        $channel->setAttributeCategoryGallery($command->getCategoryGallery());
+        $channel->setAttributeCategoryMetaTitle($command->getCategoryMetaTitle());
+        $channel->setAttributeCategoryMetaDescription($command->getCategoryMetaDescription());
+        $channel->setAttributeCategoryKeywords($command->getCategoryKeywords());
 
         $this->repository->save($channel);
     }

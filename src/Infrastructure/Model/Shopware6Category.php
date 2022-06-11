@@ -22,18 +22,22 @@ class Shopware6Category implements \JsonSerializable
 
     protected bool $modified = false;
 
+    private ?array $customFields;
+
     public function __construct(
         ?string $id = null,
         ?string $name = null,
         ?string $parentId = null,
         bool $active = true,
-        bool $visible = true
+        bool $visible = true,
+        ?array $customFields = null
     ) {
         $this->id = $id;
         $this->name = $name;
         $this->parentId = $parentId;
         $this->active = $active;
         $this->visible = $visible;
+        $this->customFields = $customFields;
     }
 
     public function getId(): ?string
@@ -98,6 +102,45 @@ class Shopware6Category implements \JsonSerializable
         return $this->modified;
     }
 
+    /**
+     * @return array|null
+     */
+    public function getCustomFields(): ?array
+    {
+        if ($this->customFields) {
+            return $this->customFields;
+        }
+
+        return [];
+    }
+
+    /**
+     * @param string|array|null $value
+     */
+    public function addCustomField(string $customFieldId, $value): void
+    {
+        if ($this->hasCustomField($customFieldId)) {
+            if ($this->customFields[$customFieldId] !== $value) {
+                $this->customFields[$customFieldId] = $value;
+                $this->modified = true;
+            }
+        } else {
+            $this->customFields[$customFieldId] = $value;
+            $this->modified = true;
+        }
+    }
+
+    public function hasCustomField(string $customFieldId): bool
+    {
+        foreach (array_keys($this->getCustomFields()) as $key) {
+            if ($key === $customFieldId) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public function jsonSerialize(): array
     {
         $data =
@@ -105,6 +148,7 @@ class Shopware6Category implements \JsonSerializable
                 'name' => $this->name,
                 'active' => $this->active,
                 'visible' => $this->visible,
+                'customFields' => $this->customFields
             ];
         if (null !== $this->parentId) {
             $data['parentId'] = $this->parentId;

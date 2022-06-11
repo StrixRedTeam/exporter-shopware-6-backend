@@ -44,7 +44,8 @@ class GetCategory extends AbstractAction
             $data['data']['attributes']['name'],
             $data['data']['attributes']['parentId'],
             $data['data']['attributes']['active'],
-            $data['data']['attributes']['visible']
+            $data['data']['attributes']['visible'],
+            $data['data']['attributes']['customFields']
         );
     }
 

@@ -12,6 +12,7 @@ use Ergonode\Core\Application\Validator as CoreAssert;
 use Ergonode\ExporterShopware6\Application\Model\Type\CustomFieldAttributeModel;
 use Ergonode\ExporterShopware6\Application\Model\Type\PropertyGroupAttributeModel;
 use Ergonode\ExporterShopware6\Domain\Entity\Shopware6Channel;
+use Ergonode\SharedKernel\Domain\Aggregate\AttributeId;
 use Symfony\Component\Validator\Constraints as Assert;
 
 class Shopware6ChannelFormModel
@@ -122,6 +123,17 @@ class Shopware6ChannelFormModel
      */
     public array $crossSelling = [];
 
+
+    public ?string $attributeCategoryDescription = null;
+
+    public ?string $attributeCategoryGallery = null;
+
+    public ?string $attributeCategoryMetaTitle = null;
+
+    public ?string $attributeCategoryMetaDescription = null;
+
+    public ?string $attributeCategoryKeywords = null;
+
     public function __construct(Shopware6Channel $channel = null)
     {
         if ($channel) {
@@ -150,6 +162,17 @@ class Shopware6ChannelFormModel
                 ? $channel->getAttributeProductKeywords()->getValue() : null;
             $this->categoryTree = $channel->getCategoryTree() ? $channel->getCategoryTree()->getValue() : null;
             $this->crossSelling = $channel->getCrossSelling();
+
+            $this->attributeCategoryDescription = $channel->getAttributeCategoryDescription()
+                ? $channel->getAttributeCategoryDescription()->getValue() : null;
+            $this->attributeCategoryGallery = $channel->getAttributeCategoryGallery()
+                ? $channel->getAttributeCategoryGallery()->getValue() : null;
+            $this->attributeCategoryMetaTitle = $channel->getAttributeCategoryMetaTitle()
+                ? $channel->getAttributeCategoryMetaTitle()->getValue() : null;
+            $this->attributeCategoryMetaDescription = $channel->getAttributeCategoryMetaDescription()
+                ? $channel->getAttributeCategoryMetaDescription()->getValue() : null;
+            $this->attributeCategoryKeywords = $channel->getAttributeCategoryKeywords()
+                ? $channel->getAttributeCategoryKeywords()->getValue() : null;
 
             foreach ($channel->getPropertyGroup() as $string) {
                 $this->propertyGroup[] = new PropertyGroupAttributeModel($string->getValue());

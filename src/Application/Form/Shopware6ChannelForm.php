@@ -282,7 +282,62 @@ class Shopware6ChannelForm extends AbstractType
                     'property_path' => 'crossSelling',
                     'required' => false,
                 ]
-            );
+            )
+
+            ->add(
+                'attribute_product_meta_title',
+                ChoiceType::class,
+                [
+                    'label' => 'Attribute Category Meta Title',
+                    'help' => 'Value in category should contain 255 characters or less.',
+                    'choices' => array_flip($textareaAttributeDictionary),
+                    'property_path' => 'attributeCategoryMetaTitle',
+                    'required' => false,
+                ]
+            )
+            ->add(
+                'attribute_category_meta_description',
+                ChoiceType::class,
+                [
+                    'label' => 'Attribute Category Meta Description',
+                    'help' => 'Value in category should contain 255 characters or less.',
+                    'choices' => array_flip($textareaAttributeDictionary),
+                    'property_path' => 'attributeCategoryMetaDescription',
+                    'required' => false,
+                ]
+            )
+            ->add(
+                'attribute_category_keywords',
+                ChoiceType::class,
+                [
+                    'label' => 'Attribute Category Keywords',
+                    'choices' => array_flip($textareaAttributeDictionary),
+                    'property_path' => 'attributeCategoryKeywords',
+                    'required' => false,
+                ]
+            )
+
+            ->add(
+                'attribute_category_description',
+                ChoiceType::class,
+                [
+                    'label' => 'Attribute Category Description',
+                    'choices' => array_flip($textareaAttributeDictionary),
+                    'property_path' => 'attributeCategoryDescription',
+                    'required' => false,
+                ]
+            )
+            ->add(
+                'attribute_category_gallery',
+                ChoiceType::class,
+                [
+                    'label' => 'Attribute Category Gallery',
+                    'choices' => array_flip($galleryAttributeDictionary),
+                    'property_path' => 'attributeCategoryGallery',
+                    'required' => false,
+                ]
+            )
+        ;
     }
 
     public function configureOptions(OptionsResolver $resolver): void

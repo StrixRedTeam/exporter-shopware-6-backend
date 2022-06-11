@@ -240,54 +240,9 @@ class Shopware6ChannelForm extends AbstractType
                     'required' => false,
                 ]
             )
-            ->add(
-                'category_tree',
-                ChoiceType::class,
-                [
-                    'label' => 'Category tree',
-                    'property_path' => 'categoryTree',
-                    'choices' => array_flip($categoryTrees),
-                    'required' => false,
-                ]
-            )
-            ->add(
-                'property_group',
-                CollectionType::class,
-                [
-                    'property_path' => 'propertyGroup',
-                    'label' => 'List Property Group to Export',
-                    'allow_add' => true,
-                    'allow_delete' => true,
-                    'entry_type' => PropertyGroupAttributeMapType::class,
-                    'required' => false,
-                ]
-            )
-            ->add(
-                'custom_field',
-                CollectionType::class,
-                [
-                    'property_path' => 'customField',
-                    'label' => 'List custom field to export',
-                    'allow_add' => true,
-                    'allow_delete' => true,
-                    'entry_type' => CustomFieldAttributeMapType::class,
-                    'required' => false,
-                ]
-            )
-            ->add(
-                'cross_selling',
-                ChoiceType::class,
-                [
-                    'label' => 'List of Product Collections',
-                    'choices' => array_flip($productCollectionDictionary),
-                    'multiple' => true,
-                    'property_path' => 'crossSelling',
-                    'required' => false,
-                ]
-            )
 
             ->add(
-                'attribute_product_meta_title',
+                'attribute_category_meta_title',
                 ChoiceType::class,
                 [
                     'label' => 'Attribute Category Meta Title',
@@ -337,6 +292,51 @@ class Shopware6ChannelForm extends AbstractType
                     'label' => 'Attribute Category Image',
                     'choices' => array_flip($imageAttributeDictionary),
                     'property_path' => 'attributeCategoryGallery',
+                    'required' => false,
+                ]
+            )
+            ->add(
+                'category_tree',
+                ChoiceType::class,
+                [
+                    'label' => 'Category tree',
+                    'property_path' => 'categoryTree',
+                    'choices' => array_flip($categoryTrees),
+                    'required' => false,
+                ]
+            )
+            ->add(
+                'property_group',
+                CollectionType::class,
+                [
+                    'property_path' => 'propertyGroup',
+                    'label' => 'List Property Group to Export',
+                    'allow_add' => true,
+                    'allow_delete' => true,
+                    'entry_type' => PropertyGroupAttributeMapType::class,
+                    'required' => false,
+                ]
+            )
+            ->add(
+                'custom_field',
+                CollectionType::class,
+                [
+                    'property_path' => 'customField',
+                    'label' => 'List custom field to export',
+                    'allow_add' => true,
+                    'allow_delete' => true,
+                    'entry_type' => CustomFieldAttributeMapType::class,
+                    'required' => false,
+                ]
+            )
+            ->add(
+                'cross_selling',
+                ChoiceType::class,
+                [
+                    'label' => 'List of Product Collections',
+                    'choices' => array_flip($productCollectionDictionary),
+                    'multiple' => true,
+                    'property_path' => 'crossSelling',
                     'required' => false,
                 ]
             )

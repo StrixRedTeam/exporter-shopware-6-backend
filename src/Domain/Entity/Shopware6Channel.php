@@ -394,7 +394,7 @@ class Shopware6Channel extends AbstractChannel
         return $this->attributeCategoryDescription;
     }
 
-    public function setAttributeCategoryDescription(AttributeId $attributeCategoryDescription): void
+    public function setAttributeCategoryDescription(?AttributeId $attributeCategoryDescription): void
     {
         $this->attributeCategoryDescription = $attributeCategoryDescription;
     }
@@ -404,7 +404,7 @@ class Shopware6Channel extends AbstractChannel
         return $this->attributeCategoryGallery;
     }
 
-    public function setAttributeCategoryGallery(AttributeId $attributeCategoryGallery): void
+    public function setAttributeCategoryGallery(?AttributeId $attributeCategoryGallery): void
     {
         $this->attributeCategoryGallery = $attributeCategoryGallery;
     }
@@ -414,7 +414,7 @@ class Shopware6Channel extends AbstractChannel
         return $this->attributeCategoryMetaTitle;
     }
 
-    public function setAttributeCategoryMetaTitle(AttributeId $attributeCategoryMetaTitle): void
+    public function setAttributeCategoryMetaTitle(?AttributeId $attributeCategoryMetaTitle): void
     {
         $this->attributeCategoryMetaTitle = $attributeCategoryMetaTitle;
     }
@@ -424,7 +424,7 @@ class Shopware6Channel extends AbstractChannel
         return $this->attributeCategoryMetaDescription;
     }
 
-    public function setAttributeCategoryMetaDescription(AttributeId $attributeCategoryMetaDescription): void
+    public function setAttributeCategoryMetaDescription(?AttributeId $attributeCategoryMetaDescription): void
     {
         $this->attributeCategoryMetaDescription = $attributeCategoryMetaDescription;
     }
@@ -434,7 +434,7 @@ class Shopware6Channel extends AbstractChannel
         return $this->attributeCategoryKeywords;
     }
 
-    public function setAttributeCategoryKeywords(AttributeId $attributeCategoryKeywords): void
+    public function setAttributeCategoryKeywords(?AttributeId $attributeCategoryKeywords): void
     {
         $this->attributeCategoryKeywords = $attributeCategoryKeywords;
     }

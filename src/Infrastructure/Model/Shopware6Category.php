@@ -24,13 +24,28 @@ class Shopware6Category implements \JsonSerializable
 
     private ?array $customFields;
 
+    private ?string $description;
+
+    private ?string $mediaId;
+
+    private ?string $metaTitle;
+
+    private ?string $metaDescription;
+
+    private ?string $keywords;
+
     public function __construct(
         ?string $id = null,
         ?string $name = null,
         ?string $parentId = null,
         bool $active = true,
         bool $visible = true,
-        ?array $customFields = null
+        ?array $customFields = null,
+        ?string $description = null,
+        ?string $mediaId = null,
+        ?string $metaTitle = null,
+        ?string $metaDescription = null,
+        ?string $keywords = null
     ) {
         $this->id = $id;
         $this->name = $name;
@@ -38,6 +53,11 @@ class Shopware6Category implements \JsonSerializable
         $this->active = $active;
         $this->visible = $visible;
         $this->customFields = $customFields;
+        $this->description = $description;
+        $this->mediaId = $mediaId;
+        $this->metaTitle = $metaTitle;
+        $this->metaDescription = $metaDescription;
+        $this->keywords = $keywords;
     }
 
     public function getId(): ?string
@@ -141,6 +161,57 @@ class Shopware6Category implements \JsonSerializable
         return false;
     }
 
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(?string $description): void
+    {
+        $this->description = $description;
+    }
+
+    public function getMediaId(): ?string
+    {
+        return $this->mediaId;
+    }
+
+    public function setMediaId(?string $mediaId): void
+    {
+        $this->mediaId = $mediaId;
+    }
+
+    public function getMetaTitle(): ?string
+    {
+        return $this->metaTitle;
+    }
+
+    public function setMetaTitle(?string $metaTitle): void
+    {
+        $this->metaTitle = $metaTitle;
+    }
+
+    public function getMetaDescription(): ?string
+    {
+        return $this->metaDescription;
+    }
+
+    public function setMetaDescription(?string $metaDescription): void
+    {
+        $this->metaDescription = $metaDescription;
+    }
+
+    public function getKeywords(): ?string
+    {
+        return $this->keywords;
+    }
+
+    public function setKeywords(?string $keywords): void
+    {
+        $this->keywords = $keywords;
+    }
+
+
     public function jsonSerialize(): array
     {
         $data =
@@ -148,10 +219,26 @@ class Shopware6Category implements \JsonSerializable
                 'name' => $this->name,
                 'active' => $this->active,
                 'visible' => $this->visible,
-                'customFields' => $this->customFields
+                'customFields' => $this->customFields,
             ];
         if (null !== $this->parentId) {
             $data['parentId'] = $this->parentId;
+        }
+
+        if (null !== $this->mediaId) {
+            $data['mediaId'] = $this->mediaId;
+        }
+        if (null !== $this->metaTitle) {
+            $data['metaTitle'] = $this->metaTitle;
+        }
+        if (null !== $this->metaDescription) {
+            $data['metaDescription'] = $this->metaDescription;
+        }
+        if (null !== $this->keywords) {
+            $data['keywords'] = $this->keywords;
+        }
+        if (null !== $this->description) {
+            $data['description'] = $this->description;
         }
 
         return $data;

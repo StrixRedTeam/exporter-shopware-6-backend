@@ -74,15 +74,15 @@ class Shopware6Channel extends AbstractChannel
      */
     private array $crossSelling;
 
-    private ?AttributeId $attributeCategoryDescription;
+    private ?AttributeId $attributeCategoryDescription = null;
 
-    private ?AttributeId $attributeCategoryGallery;
+    private ?AttributeId $attributeCategoryGallery = null;
 
-    private ?AttributeId $attributeCategoryMetaTitle;
+    private ?AttributeId $attributeCategoryMetaTitle = null;
 
-    private ?AttributeId $attributeCategoryMetaDescription;
+    private ?AttributeId $attributeCategoryMetaDescription = null;
 
-    private ?AttributeId $attributeCategoryKeywords;
+    private ?AttributeId $attributeCategoryKeywords = null;
 
     /**
      * @param Language[]                  $languages

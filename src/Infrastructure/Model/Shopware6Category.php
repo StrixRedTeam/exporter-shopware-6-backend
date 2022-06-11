@@ -179,6 +179,7 @@ class Shopware6Category implements \JsonSerializable
     public function setMediaId(?string $mediaId): void
     {
         $this->mediaId = $mediaId;
+        $this->modified = true;
     }
 
     public function getMetaTitle(): ?string
@@ -189,6 +190,7 @@ class Shopware6Category implements \JsonSerializable
     public function setMetaTitle(?string $metaTitle): void
     {
         $this->metaTitle = $metaTitle;
+        $this->modified = true;
     }
 
     public function getMetaDescription(): ?string
@@ -199,6 +201,7 @@ class Shopware6Category implements \JsonSerializable
     public function setMetaDescription(?string $metaDescription): void
     {
         $this->metaDescription = $metaDescription;
+        $this->modified = true;
     }
 
     public function getKeywords(): ?string
@@ -209,6 +212,7 @@ class Shopware6Category implements \JsonSerializable
     public function setKeywords(?string $keywords): void
     {
         $this->keywords = $keywords;
+        $this->modified = true;
     }
 
 

@@ -8,6 +8,8 @@ use Ergonode\Attribute\Domain\Repository\AttributeRepositoryInterface;
 use Ergonode\Channel\Domain\Entity\Export;
 use Ergonode\Channel\Domain\Repository\ExportRepositoryInterface;
 use Ergonode\ExporterShopware6\Domain\Entity\Shopware6Channel;
+use Ergonode\ExporterShopware6\Domain\Query\EventStoreQueryInterface;
+use Ergonode\ExporterShopware6\Domain\Query\ExportQueryInterface;
 use Ergonode\ExporterShopware6\Domain\Repository\CustomFieldRepositoryInterface;
 use Ergonode\ExporterShopware6\Infrastructure\Builder\CustomFieldBuilder;
 use Ergonode\ExporterShopware6\Infrastructure\Client\Shopware6CustomFieldClient;
@@ -37,13 +39,19 @@ class CustomFieldShopware6ExportProcess
 
     private ExportRepositoryInterface $exportRepository;
 
+    private ExportQueryInterface $exportQuery;
+
+    private EventStoreQueryInterface $eventHistoryQuery;
+
     public function __construct(
         CustomFieldRepositoryInterface $customFieldRepository,
         Shopware6CustomFieldClient $customFieldClient,
         CustomFieldBuilder $builder,
         Shopware6CustomFieldSetClient $customFieldSetClient,
         ExportRepositoryInterface $exportRepository,
-        AttributeRepositoryInterface $attributeRepository
+        AttributeRepositoryInterface $attributeRepository,
+        ExportQueryInterface $exportQuery,
+        EventStoreQueryInterface $eventHistoryQuery
     ) {
         $this->customFieldRepository = $customFieldRepository;
         $this->customFieldClient = $customFieldClient;
@@ -51,6 +59,8 @@ class CustomFieldShopware6ExportProcess
         $this->customFieldSetClient = $customFieldSetClient;
         $this->exportRepository = $exportRepository;
         $this->attributeRepository = $attributeRepository;
+        $this->exportQuery = $exportQuery;
+        $this->eventHistoryQuery = $eventHistoryQuery;
     }
 
     /**
@@ -68,10 +78,18 @@ class CustomFieldShopware6ExportProcess
         $shopwareCustomFields = $this->customFieldClient->getAll($channel);
         $customFieldSet = $this->loadCustomFieldSet($channel, $entities);
 
+        $lastExportDate = $this->exportQuery->findLastExportStarted($channel->getId());
+
         $customFields = [];
         foreach ($attributeIds as $attributeId) {
             $attribute = $this->attributeRepository->load($attributeId);
             Assert::isInstanceOf($attribute, AbstractAttribute::class);
+
+            $lastAttributeChangeDate = $this->eventHistoryQuery->findLastDateForAggregateId($attributeId);
+            // if custom field was not changed since last export, skip it
+            if ($lastExportDate && $lastAttributeChangeDate && $lastAttributeChangeDate < $lastExportDate) {
+                continue;
+            }
             $shopwareId = $this->customFieldRepository->load($channel->getId(), $attributeId);
 
             $customField = ($shopwareId && isset($shopwareCustomFields[$shopwareId])) ? $shopwareCustomFields[$shopwareId] : null;

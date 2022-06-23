@@ -691,7 +691,9 @@ class Shopware6Product implements JsonSerializable
         if (null !== $this->keywords) {
             $data['keywords'] = $this->keywords;
         }
-
+        foreach ($this->seoUrls as $seoUrl) {
+            $data['seoUrls'][] = $seoUrl->jsonSerialize();
+        }
         return $data;
     }
 
@@ -712,6 +714,9 @@ class Shopware6Product implements JsonSerializable
         $this->id = $id;
     }
 
+    /**
+     * @return Shopware6SeoUrl[]
+     */
     public function getSeoUrls(): array
     {
         return $this->seoUrls;

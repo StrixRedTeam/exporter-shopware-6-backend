@@ -98,7 +98,7 @@ class GetProductList extends AbstractAction
                 );
             } elseif ($type === 'seo_url') {
                 $includedSeoUrls[$id] = new Shopware6SeoUrl(
-                    $attributes['id'],
+                    $id,
                     $attributes['salesChannelId'],
                     $attributes['seoPathInfo']
                 );

@@ -244,7 +244,7 @@ class Shopware6ChannelForm extends AbstractType
                 [
                     'label' => 'Attribute Seo Url',
                     'help' => 'Value in product should contain 255 characters or less.',
-                    'choices' => array_flip($textareaAttributeDictionary),
+                    'choices' => array_flip($textAttributeDictionary),
                     'property_path' => 'attributeProductSeoUrl',
                     'required' => false,
                 ]

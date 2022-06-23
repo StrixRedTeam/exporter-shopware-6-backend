@@ -13,6 +13,7 @@ use Ergonode\ExporterShopware6\Infrastructure\Model\Product\Shopware6ProductConf
 use Ergonode\ExporterShopware6\Infrastructure\Model\Product\Shopware6ProductMedia;
 use Ergonode\ExporterShopware6\Infrastructure\Model\Product\Shopware6ProductPrice;
 use Ergonode\ExporterShopware6\Infrastructure\Model\Product\Shopware6ProductTranslation;
+use Ergonode\ExporterShopware6\Infrastructure\Model\Product\Shopware6SeoUrl;
 use JsonSerializable;
 use Webmozart\Assert\Assert;
 
@@ -105,6 +106,9 @@ class Shopware6Product implements JsonSerializable
      */
     private array $translations;
 
+    /** @var Shopware6SeoUrl[] */
+    private array $seoUrls;
+
     /**
      * @param string|null $id
      * @param string|null $sku
@@ -147,7 +151,8 @@ class Shopware6Product implements JsonSerializable
         array $categories = [],
         array $media = [],
         array $configuratorSettings = [],
-        array $translations = []
+        array $translations = [],
+        array $seoUrls = []
     ) {
         $this->id = $id;
         $this->sku = $sku;
@@ -170,6 +175,7 @@ class Shopware6Product implements JsonSerializable
         $this->setCategories($categories);
         $this->setMedia($media);
         $this->setConfiguratorSettings($configuratorSettings);
+        $this->seoUrls = $seoUrls;
     }
 
     public function getId(): ?string
@@ -706,6 +712,16 @@ class Shopware6Product implements JsonSerializable
         $this->id = $id;
     }
 
+    public function getSeoUrls(): array
+    {
+        return $this->seoUrls;
+    }
+
+    public function setSeoUrls(array $seoUrls): void
+    {
+        $this->seoUrls = $seoUrls;
+    }
+
     /**
      * @param Shopware6ProductCategory[] $categories
      */
@@ -790,7 +806,8 @@ class Shopware6Product implements JsonSerializable
             $this->categories,
             $this->media,
             $this->configuratorSettings,
-            $this->translations
+            $this->translations,
+            $this->seoUrls
         );
     }
 }

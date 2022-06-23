@@ -62,6 +62,7 @@ class Shopware6ProductClient
             ->association('configuratorSettings', ['' => ''])
             ->association('categories', ['' => ''])
             ->association('translations', ['' => ''])
+            ->association('seoUrls', ['' => ''])
             ->limit(1);
 
         $action = new GetProductList($query);

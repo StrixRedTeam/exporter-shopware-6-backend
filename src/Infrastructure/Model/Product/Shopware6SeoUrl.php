@@ -11,11 +11,17 @@ class Shopware6SeoUrl implements \JsonSerializable
 
     private string $salesChannelId;
 
-    public function __construct(?string $id = null, string $seoPathInfo, string $salesChannelId)
+    private string $pathInfo;
+
+    private string $routeName;
+
+    public function __construct(?string $id = null, string $seoPathInfo, string $salesChannelId, string $pathInfo, string $routeName)
     {
         $this->id = $id;
         $this->seoPathInfo = $seoPathInfo;
         $this->salesChannelId = $salesChannelId;
+        $this->pathInfo = $pathInfo;
+        $this->routeName = $routeName;
     }
 
     public function getId(): ?string
@@ -30,12 +36,16 @@ class Shopware6SeoUrl implements \JsonSerializable
                 'id' => $this->id,
                 'salesChannelId' => $this->salesChannelId,
                 'seoPathInfo' => $this->seoPathInfo,
+                'pathInfo' => $this->pathInfo,
+                'routeName'=> $this->routeName
             ];
         }
 
         return [
             'salesChannelId' => $this->salesChannelId,
             'seoPathInfo' => $this->seoPathInfo,
+            'pathInfo' => $this->pathInfo,
+            'routeName'=> $this->routeName
         ];
     }
 
@@ -47,5 +57,15 @@ class Shopware6SeoUrl implements \JsonSerializable
     public function getSalesChannelId(): string
     {
         return $this->salesChannelId;
+    }
+
+    public function getPathInfo(): string
+    {
+        return $this->pathInfo;
+    }
+
+    public function getRouteName(): string
+    {
+        return $this->routeName;
     }
 }

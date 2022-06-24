@@ -724,6 +724,7 @@ class Shopware6Product implements JsonSerializable
 
     public function setSeoUrls(array $seoUrls): void
     {
+
         $this->seoUrls = $seoUrls;
     }
 
@@ -759,7 +760,7 @@ class Shopware6Product implements JsonSerializable
         }
     }
 
-    private function setModified(): void
+    public function setModified(): void
     {
         $this->modified = true;
     }

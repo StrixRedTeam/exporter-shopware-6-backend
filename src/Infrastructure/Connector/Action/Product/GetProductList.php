@@ -97,8 +97,6 @@ class GetProductList extends AbstractAction
                     $attributes['apiAlias'],
                 );
             } elseif ($type === 'seo_url') {
-
-                
                 $includedSeoUrls[$id] = new Shopware6SeoUrl(
                     $id,
                     $attributes['seoPathInfo'],

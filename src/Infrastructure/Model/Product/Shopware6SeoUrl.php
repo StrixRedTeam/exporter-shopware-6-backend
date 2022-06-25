@@ -31,22 +31,20 @@ class Shopware6SeoUrl implements \JsonSerializable
 
     public function jsonSerialize(): array
     {
-        if ($this->id) {
-            return [
-                'id' => $this->id,
-                'salesChannelId' => $this->salesChannelId,
-                'seoPathInfo' => $this->seoPathInfo,
-                'pathInfo' => $this->pathInfo,
-                'routeName'=> $this->routeName
-            ];
-        }
-
-        return [
+        $data = [
+            'id' => $this->id,
             'salesChannelId' => $this->salesChannelId,
             'seoPathInfo' => $this->seoPathInfo,
             'pathInfo' => $this->pathInfo,
-            'routeName'=> $this->routeName
+            'routeName'=> $this->routeName,
+            'isCanonical' => 1
         ];
+
+        if ($this->id) {
+            $data['id'] = $this->id;
+        }
+
+        return $data;
     }
 
     public function getSeoPathInfo(): string

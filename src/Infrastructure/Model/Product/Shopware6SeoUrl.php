@@ -15,10 +15,16 @@ class Shopware6SeoUrl implements \JsonSerializable
 
     private string $routeName;
 
-    private bool $isCanonical;
+    private ?bool $isCanonical;
 
-    public function __construct(?string $id = null, string $seoPathInfo, string $salesChannelId, string $pathInfo, string $routeName, bool $isCanonical)
-    {
+    public function __construct(
+        ?string $id = null,
+        string $seoPathInfo,
+        string $salesChannelId,
+        string $pathInfo,
+        string $routeName,
+        ?bool $isCanonical
+    ) {
         $this->id = $id;
         $this->seoPathInfo = $seoPathInfo;
         $this->salesChannelId = $salesChannelId;
@@ -39,8 +45,8 @@ class Shopware6SeoUrl implements \JsonSerializable
             'salesChannelId' => $this->salesChannelId,
             'seoPathInfo' => $this->seoPathInfo,
             'pathInfo' => $this->pathInfo,
-            'routeName'=> $this->routeName,
-            'isCanonical' => $this->isCanonical
+            'routeName' => $this->routeName,
+            'isCanonical' => $this->isCanonical,
         ];
 
         if ($this->id) {

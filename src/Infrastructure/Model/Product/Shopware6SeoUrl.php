@@ -37,7 +37,7 @@ class Shopware6SeoUrl implements \JsonSerializable
             'seoPathInfo' => $this->seoPathInfo,
             'pathInfo' => $this->pathInfo,
             'routeName'=> $this->routeName,
-            'isCanonical' => 1
+            'isCanonical' => true
         ];
 
         if ($this->id) {

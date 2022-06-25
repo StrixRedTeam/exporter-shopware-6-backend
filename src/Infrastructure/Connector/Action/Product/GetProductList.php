@@ -106,7 +106,7 @@ class GetProductList extends AbstractAction
                 );
             }
         }
-
+  
         if (count($data['data']) > 0) {
             foreach ($data['data'] as $row) {
                 $properties = null;

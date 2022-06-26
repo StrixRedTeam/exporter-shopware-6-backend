@@ -101,8 +101,8 @@ class Shopware6ProductMediaClient
 
     private function upload(Shopware6Channel $channel, Shopware6Media $media, Multimedia $multimedia): void
     {
-        $content = $this->multimediaStorage->read($multimedia->getFileName());
-        $name = $multimedia->getFileName();
+        $content = $this->multimediaStorage->read($multimedia->getName());
+        $name = $multimedia->getName();
             try {
                 $action = new PostUploadFile($media->getId(), $content, $multimedia, $name);
                 $this->connector->execute($channel, $action);
@@ -278,7 +278,7 @@ class Shopware6ProductMediaClient
 
     private function checkAndDeleteByFilename(Shopware6Channel $channel, Multimedia $multimedia): void
     {
-        $shopwareId = $this->getMediaByFilename($channel, $multimedia->getFileName());
+        $shopwareId = $this->getMediaByFilename($channel, $multimedia->getName());
         if ($shopwareId) {
             try {
                 $action = new DeleteMedia($shopwareId);

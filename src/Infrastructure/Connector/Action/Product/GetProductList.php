@@ -15,6 +15,7 @@ use Ergonode\ExporterShopware6\Infrastructure\Model\Product\Shopware6ProductConf
 use Ergonode\ExporterShopware6\Infrastructure\Model\Product\Shopware6ProductMedia;
 use Ergonode\ExporterShopware6\Infrastructure\Model\Product\Shopware6ProductPrice;
 use Ergonode\ExporterShopware6\Infrastructure\Model\Product\Shopware6ProductTranslation;
+use Ergonode\ExporterShopware6\Infrastructure\Model\Product\Shopware6SeoUrl;
 use Ergonode\ExporterShopware6\Infrastructure\Model\Shopware6Product;
 use GuzzleHttp\Psr7\Request;
 use JsonException;
@@ -54,6 +55,7 @@ class GetProductList extends AbstractAction
         $includedMedia = [];
         $includedConfiguratorSettings = [];
         $includedTranslations = [];
+        $includedSeoUrls = [];
         foreach ($data['included'] as $includedAssociation) {
             if (false === isset($includedAssociation['id'])) {
                 continue;
@@ -93,6 +95,15 @@ class GetProductList extends AbstractAction
                     $attributes['languageId'],
                     $attributes['productVersionId'],
                     $attributes['apiAlias'],
+                );
+            } elseif ($type === 'seo_url') {
+                $includedSeoUrls[$id] = new Shopware6SeoUrl(
+                    $id,
+                    $attributes['seoPathInfo'],
+                    $attributes['salesChannelId'],
+                    $attributes['pathInfo'],
+                    $attributes['routeName'],
+                    $attributes['isCanonical'] ?? null
                 );
             }
         }
@@ -187,7 +198,8 @@ class GetProductList extends AbstractAction
                     $categories,
                     $media,
                     $configuratorSettings,
-                    $translations
+                    $translations,
+                    $includedSeoUrls
                 );
             }
         }

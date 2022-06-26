@@ -53,6 +53,7 @@ class Shopware6CreateChannelCommandBuilder implements CreateChannelCommandBuilde
         $attributeProductGallery = $data->attributeProductGallery;
         $attributeProductMetaTitle = $data->attributeProductMetaTitle;
         $attributeProductMetaDescription = $data->attributeProductMetaDescription;
+        $attributeProductSeoUrl = $data->attributeProductSeoUrl;
         $attributeProductKeywords = $data->attributeProductKeywords;
         $categoryTree = $data->categoryTree;
         $crossSelling = $data->crossSelling;
@@ -100,7 +101,8 @@ class Shopware6CreateChannelCommandBuilder implements CreateChannelCommandBuilde
             $categoryTree ? new CategoryTreeId($categoryTree) : null,
             $propertyGroup,
             $customField,
-            $crossSellingObjects
+            $crossSellingObjects,
+            $attributeProductSeoUrl ? new AttributeId($attributeProductSeoUrl) : null
         );
     }
 }

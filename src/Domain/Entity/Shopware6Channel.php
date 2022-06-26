@@ -74,6 +74,8 @@ class Shopware6Channel extends AbstractChannel
      */
     private array $crossSelling;
 
+    private ?AttributeId $attributeProductSeoUrl = null;
+
     /**
      * @param Language[]                  $languages
      * @param array|AttributeId[]         $propertyGroup
@@ -103,7 +105,8 @@ class Shopware6Channel extends AbstractChannel
         ?CategoryTreeId $categoryTree,
         array $propertyGroup,
         array $customField,
-        array $crossSelling
+        array $crossSelling,
+        ?AttributeId $attributeProductSeoUrl
     ) {
         parent::__construct($id, $name);
 
@@ -128,6 +131,7 @@ class Shopware6Channel extends AbstractChannel
         $this->propertyGroup = $propertyGroup;
         $this->customField = $customField;
         $this->crossSelling = $crossSelling;
+        $this->attributeProductSeoUrl = $attributeProductSeoUrl;
     }
 
     public static function getType(): string
@@ -367,5 +371,15 @@ class Shopware6Channel extends AbstractChannel
     public function setCrossSelling(array $crossSelling): void
     {
         $this->crossSelling = $crossSelling;
+    }
+
+    public function getAttributeProductSeoUrl(): ?AttributeId
+    {
+        return $this->attributeProductSeoUrl;
+    }
+
+    public function setAttributeProductSeoUrl(?AttributeId $attributeProductSeoUrl): void
+    {
+        $this->attributeProductSeoUrl = $attributeProductSeoUrl;
     }
 }

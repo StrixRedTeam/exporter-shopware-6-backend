@@ -76,6 +76,8 @@ class CreateShopware6ChannelCommand implements CreateChannelCommandInterface
      */
     private array $crossSelling;
 
+    private ?AttributeId $productSeoUrl;
+
     /**
      * @param Language[]                  $languages
      * @param array|AttributeId[]         $propertyGroup
@@ -105,7 +107,8 @@ class CreateShopware6ChannelCommand implements CreateChannelCommandInterface
         ?CategoryTreeId $categoryTree,
         array $propertyGroup,
         array $customField,
-        array $crossSelling
+        array $crossSelling,
+        ?AttributeId $productSeoUrl
     ) {
         $this->id = $id;
         $this->name = $name;
@@ -130,6 +133,7 @@ class CreateShopware6ChannelCommand implements CreateChannelCommandInterface
         $this->propertyGroup = $propertyGroup;
         $this->customField = $customField;
         $this->crossSelling = $crossSelling;
+        $this->productSeoUrl = $productSeoUrl;
     }
 
     public function getId(): ChannelId
@@ -257,5 +261,10 @@ class CreateShopware6ChannelCommand implements CreateChannelCommandInterface
     public function getCrossSelling(): array
     {
         return $this->crossSelling;
+    }
+
+    public function getProductSeoUrl(): ?AttributeId
+    {
+        return $this->productSeoUrl;
     }
 }

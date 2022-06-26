@@ -50,6 +50,7 @@ class UpdateShopware6ChannelCommandHandler
         $channel->setPropertyGroup($command->getPropertyGroup());
         $channel->setCustomField($command->getCustomField());
         $channel->setCrossSelling($command->getCrossSelling());
+        $channel->setAttributeProductSeoUrl($command->getProductSeoUrl());
 
         $this->repository->save($channel);
     }

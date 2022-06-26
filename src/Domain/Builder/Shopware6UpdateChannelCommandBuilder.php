@@ -49,6 +49,7 @@ class Shopware6UpdateChannelCommandBuilder implements UpdateChannelCommandBuilde
         $attributeProductDescription = $data->attributeProductDescription;
         $attributeProductGallery = $data->attributeProductGallery;
         $attributeProductMetaTitle = $data->attributeProductMetaTitle;
+        $attributeProductSeoUrl = $data->attributeProductSeoUrl;
         $attributeProductMetaDescription = $data->attributeProductMetaDescription;
         $attributeProductKeywords = $data->attributeProductKeywords;
         $categoryTree = $data->categoryTree;
@@ -96,7 +97,8 @@ class Shopware6UpdateChannelCommandBuilder implements UpdateChannelCommandBuilde
             $categoryTree ? new CategoryTreeId($categoryTree) : null,
             $propertyGroup,
             $customField,
-            $crossSellingObjects
+            $crossSellingObjects,
+            $attributeProductSeoUrl ? new AttributeId($attributeProductSeoUrl) : null
         );
     }
 }

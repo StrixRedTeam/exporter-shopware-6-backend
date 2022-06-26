@@ -76,7 +76,7 @@ class Shopware6SeoUrl implements \JsonSerializable
         return $this->routeName;
     }
 
-    public function getIsCanonical(): ?bool
+    public function isCanonical(): ?bool
     {
         return $this->isCanonical;
     }

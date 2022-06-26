@@ -101,7 +101,7 @@ class Shopware6ProductMediaClient
 
     private function upload(Shopware6Channel $channel, Shopware6Media $media, Multimedia $multimedia): void
     {
-        $content = $this->multimediaStorage->read($multimedia->getName());
+        $content = $this->multimediaStorage->read($multimedia->getFileName());
         $name = $multimedia->getName();
             try {
                 $action = new PostUploadFile($media->getId(), $content, $multimedia, $name);

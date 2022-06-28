@@ -103,7 +103,8 @@ class GetProductList extends AbstractAction
                     $attributes['salesChannelId'],
                     $attributes['pathInfo'],
                     $attributes['routeName'],
-                    $attributes['isCanonical'] ?? null
+                    $attributes['isCanonical'] ?? null,
+                    $attributes['isModified'],
                 );
             }
         }

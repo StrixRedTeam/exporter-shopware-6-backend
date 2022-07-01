@@ -53,6 +53,12 @@ class ProductGalleryMapper implements ProductMapperInterface
         if (null === $channel->getAttributeProductGallery()) {
             return $shopware6Product;
         }
+        /**
+         * Don't map images for non default language. Handlers don't flush data in real time but transactional. Other languages don't know about default image being already saved.
+         */
+        if (!is_null($language)) {
+            return $shopware6Product;
+        }
         $attribute = $this->repository->load($channel->getAttributeProductGallery());
 
         Assert::notNull($attribute,sprintf('Expected a value other than null for gallery attribute %s', $channel->getAttributeProductGallery()->getValue()));

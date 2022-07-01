@@ -132,6 +132,9 @@ class Shopware6ProductClient
     private function removeMedia(Shopware6Channel $channel, Shopware6Product $product): void
     {
         foreach ($product->getMediaToRemove() as $media) {
+            if (!$media->getId()) {
+                continue;
+            }
             $action = new DeleteProductMedia($product->getId(), $media->getId());
             $this->connector->execute($channel, $action);
         }

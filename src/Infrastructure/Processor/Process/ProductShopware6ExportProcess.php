@@ -111,7 +111,7 @@ class ProductShopware6ExportProcess
         $shopwareLanguage = $this->languageRepository->load($channel->getId(), $language->getCode());
         Assert::notNull($shopwareLanguage,sprintf('Expected a value other than null for product lang  %s', $language->getCode()));
 
-        $translatedShopwareProduct = $shopware6Product->getTranslated($shopwareLanguage);
-        $this->updateProduct($channel, $export, $translatedShopwareProduct, $product, $language, $shopwareLanguage);
+        $shopware6Product = $this->productClient->find($channel, $product, $shopwareLanguage);
+        $this->updateProduct($channel, $export, $shopware6Product, $product, $language, $shopwareLanguage);
     }
 }

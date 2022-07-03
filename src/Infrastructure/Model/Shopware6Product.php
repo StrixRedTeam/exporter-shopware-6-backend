@@ -508,6 +508,11 @@ class Shopware6Product implements JsonSerializable
         unset($this->mediaToRemove[$media->getMediaId()]);
     }
 
+    public function unsetMediaRemove(Shopware6ProductMedia $media): void
+    {
+        unset($this->mediaToRemove[$media->getMediaId()]);
+    }
+
     public function hasMedia(Shopware6ProductMedia $media): bool
     {
         foreach ($this->getMedia() as $productMedia) {

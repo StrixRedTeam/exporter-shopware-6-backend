@@ -89,7 +89,9 @@ class ProductGalleryMapper implements ProductMapperInterface
         Shopware6Channel $channel,
         int $position
     ): Shopware6Product {
-        if ($shopware6Product->hasMedia(new Shopware6ProductMedia(null, $multimediaId->getValue(), $position))) {
+        $media = new Shopware6ProductMedia(null, $multimediaId->getValue(), $position);
+        if ($shopware6Product->hasMedia($media)) {
+            $shopware6Product->unsetMediaRemove($media);
             return $shopware6Product;
         }
 

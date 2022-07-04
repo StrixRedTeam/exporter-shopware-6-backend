@@ -831,7 +831,16 @@ class Shopware6Product implements JsonSerializable
     {
         foreach ($this->translations as $key => $translation) {
             if ($translation->getLanguageId() === $shopware6Language->getId()) {
-                $this->translations[$key] = $product;
+                $this->translations[$key] = new Shopware6ProductTranslation(
+                    null,
+                    $product->getMetaDescription(),
+                    $product->getName(),
+                    $product->getKeywords(),
+                    $product->getDescription(),
+                    $product->getMetaTitle(),
+                    $product->getCustomFields(),
+                    $shopware6Language->getId()
+                );
             }
         }
     }

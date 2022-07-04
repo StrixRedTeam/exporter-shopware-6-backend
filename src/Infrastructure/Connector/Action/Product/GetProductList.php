@@ -84,17 +84,8 @@ class GetProductList extends AbstractAction
                     $attributes['keywords'],
                     $attributes['description'],
                     $attributes['metaTitle'],
-                    $attributes['packUnit'],
-                    $attributes['packUnitPlural'],
-                    $attributes['customSearchKeywords'],
-                    $attributes['slotConfig'],
                     $attributes['customFields'],
-                    $attributes['createdAt'],
-                    $attributes['updatedAt'],
-                    $attributes['productId'],
                     $attributes['languageId'],
-                    $attributes['productVersionId'],
-                    $attributes['apiAlias'],
                 );
             } elseif ($type === 'seo_url') {
                 $includedSeoUrls[$id] = new Shopware6SeoUrl(

@@ -57,7 +57,7 @@ class ProductShopware6ExportProcess
         $shopwareProduct = $this->productClient->find($channel, $product);
 
         try {
-            if (!$shopwareProduct) {
+            if ($shopwareProduct) {
                 $this->updateFullProduct($channel, $export, $shopwareProduct, $product);
             } else {
                 $shopwareProduct = new Shopware6Product();

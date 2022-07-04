@@ -749,6 +749,10 @@ class Shopware6Product implements JsonSerializable
         }
     }
 
+    public function resetCategoryToRemove(): void
+    {
+        $this->categoryToRemove = [];
+    }
     /**
      * @param array $media
      */

@@ -83,12 +83,18 @@ class ProductShopware6ExportProcess
         Shopware6Channel $channel,
         Export $export,
         Shopware6Product $shopwareProduct,
-        AbstractProduct $product,
-        ?Language $language = null,
-        ?Shopware6Language $shopwareLanguage = null
+        AbstractProduct $product
     ): void {
         $requireUpdate = false;
-        $shopwareProduct = $this->builder->build($channel, $export, $shopwareProduct, $product, $language);
+
+        $shopwareLanguage = $this->languageRepository->load($channel->getId(), $channel->getDefaultLanguage()->getCode());
+        Assert::notNull(
+            $shopwareLanguage,
+            sprintf('Expected a value other than null for product lang  %s', $channel->getDefaultLanguage()->getCode())
+        );
+
+        $shopwareProduct = $this->builder->build($channel, $export, $shopwareProduct, $product);
+        $shopwareProduct->updateTranslated($shopwareProduct, $shopwareLanguage);
         if ($shopwareProduct->isModified() || $shopwareProduct->hasItemToRemoved()) {
             $requireUpdate = true;
         }
@@ -102,7 +108,7 @@ class ProductShopware6ExportProcess
                 );
 
                 $translatedProduct = $shopwareProduct->getTranslated($shopwareLanguage);
-                $translatedProduct = $this->builder->build($channel, $export, $translatedProduct, $product, $language);
+                $translatedProduct = $this->builder->build($channel, $export, $translatedProduct, $product, $channelLanguage);
                 $shopwareProduct->updateTranslated($translatedProduct, $shopwareLanguage);
 
                 if ($translatedProduct->isModified() || $translatedProduct->hasItemToRemoved()) {

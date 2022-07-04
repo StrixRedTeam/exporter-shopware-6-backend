@@ -148,23 +148,96 @@ class Shopware6ProductTranslation implements \JsonSerializable
         return $this->apiAlias;
     }
 
+    public function setMetaDescription(?string $metaDescription): void
+    {
+        $this->metaDescription = $metaDescription;
+    }
+
+    public function setName(?string $name): void
+    {
+        $this->name = $name;
+    }
+
+    public function setKeywords(?string $keywords): void
+    {
+        $this->keywords = $keywords;
+    }
+
+    public function setDescription(?string $description): void
+    {
+        $this->description = $description;
+    }
+
+    public function setMetaTitle(?string $metaTitle): void
+    {
+        $this->metaTitle = $metaTitle;
+    }
+
+    public function setPackUnit(?string $packUnit): void
+    {
+        $this->packUnit = $packUnit;
+    }
+
+    public function setPackUnitPlural(?string $packUnitPlural): void
+    {
+        $this->packUnitPlural = $packUnitPlural;
+    }
+
+    public function setCustomSearchKeywords(?string $customSearchKeywords): void
+    {
+        $this->customSearchKeywords = $customSearchKeywords;
+    }
+
+    public function setSlotConfig(?array $slotConfig): void
+    {
+        $this->slotConfig = $slotConfig;
+    }
+
+    public function setCustomFields(?array $customFields): void
+    {
+        $this->customFields = $customFields;
+    }
+
+    public function setCreatedAt(string $createdAt): void
+    {
+        $this->createdAt = $createdAt;
+    }
+
+    public function setUpdatedAt(?string $updatedAt): void
+    {
+        $this->updatedAt = $updatedAt;
+    }
+
+    public function setProductId(string $productId): void
+    {
+        $this->productId = $productId;
+    }
+
+    public function setLanguageId(string $languageId): void
+    {
+        $this->languageId = $languageId;
+    }
+
+    public function setProductVersionId(?string $productVersionId): void
+    {
+        $this->productVersionId = $productVersionId;
+    }
+
+    public function setApiAlias(?string $apiAlias): void
+    {
+        $this->apiAlias = $apiAlias;
+    }
+
     public function jsonSerialize(): array
     {
         return [
             'id' => $this->id,
             'metaDescription' => $this->metaDescription,
             'metaTitle' => $this->metaTitle,
-            'packUnit' => $this->packUnit,
-            'packUnitPlural' => $this->packUnitPlural,
-            'customSearchKeywords' => $this->customSearchKeywords,
-            'slotConfig' => $this->slotConfig,
-            'customFields' => $this->customFields,
-            'createdAt' => $this->createdAt,
-            'updatedAt' => $this->updatedAt,
-            'productId' => $this->productId,
-            'languageId' => $this->languageId,
-            'productVersionId' => $this->productVersionId,
-            'apiAlias' => $this->apiAlias,
+            'name' => $this->name,
+            'description' => $this->description,
+            'keywords' => $this->keywords,
+            'customFields' => $this->customFields
         ];
     }
 }

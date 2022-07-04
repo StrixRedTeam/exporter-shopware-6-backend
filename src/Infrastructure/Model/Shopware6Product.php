@@ -699,6 +699,11 @@ class Shopware6Product implements JsonSerializable
         foreach ($this->seoUrls as $seoUrl) {
             $data['seoUrls'][] = $seoUrl->jsonSerialize();
         }
+
+        foreach ($this->translations as $translation) {
+            $data['translations'][$translation->getLanguageId()] = $translation->jsonSerialize();
+        }
+
         return $data;
     }
 
@@ -820,5 +825,14 @@ class Shopware6Product implements JsonSerializable
             $this->translations,
             $this->seoUrls
         );
+    }
+
+    public function updateTranslated(Shopware6Product $product, Shopware6Language $shopware6Language): void
+    {
+        foreach ($this->translations as $key => $translation) {
+            if ($translation->getLanguageId() === $shopware6Language->getId()) {
+                $this->translations[$key] = $product;
+            }
+        }
     }
 }

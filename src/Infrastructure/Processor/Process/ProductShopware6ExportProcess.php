@@ -88,7 +88,7 @@ class ProductShopware6ExportProcess
         ?Shopware6Language $shopwareLanguage = null
     ): void {
         $requireUpdate = false;
-        $this->builder->build($channel, $export, $shopwareProduct, $product, $language);
+        $shopwareProduct = $this->builder->build($channel, $export, $shopwareProduct, $product, $language);
         if ($shopwareProduct->isModified() || $shopwareProduct->hasItemToRemoved()) {
             $requireUpdate = true;
         }
@@ -102,7 +102,7 @@ class ProductShopware6ExportProcess
                 );
 
                 $translatedProduct = $shopwareProduct->getTranslated($shopwareLanguage);
-                $this->builder->build($channel, $export, $translatedProduct, $product, $language);
+                $translatedProduct = $this->builder->build($channel, $export, $translatedProduct, $product, $language);
                 $shopwareProduct->updateTranslated($translatedProduct, $shopwareLanguage);
 
                 if ($translatedProduct->isModified() || $translatedProduct->hasItemToRemoved()) {

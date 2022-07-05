@@ -282,7 +282,8 @@ class Shopware6ProductMediaClient
 
     private function findByFilename(Shopware6Channel $channel, Multimedia $multimedia): ?string
     {
-        $shopwareId = $this->getMediaByFilename($channel, $multimedia->getName());
+        $name = str_replace(sprintf('.%s', $multimedia->getExtension()), "", $multimedia->getName());
+        $shopwareId = $this->getMediaByFilename($channel, $name);
         if ($shopwareId) {
             $this->multimediaRepository->save($channel->getId(), $multimedia->getId(), $shopwareId);
 

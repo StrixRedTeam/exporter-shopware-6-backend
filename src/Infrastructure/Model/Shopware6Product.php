@@ -508,7 +508,7 @@ class Shopware6Product implements JsonSerializable
 
         // find media starting with media id to remove eventual media duplicates
         $filtered = array_filter($this->mediaToRemove, function ($key) use ($media) {
-            return strpos($key, $media->getId()) === 0;
+            return strpos($key, $media->getMediaId()) === 0;
         }, ARRAY_FILTER_USE_KEY);
 
         $mediaKey = array_key_first($filtered);

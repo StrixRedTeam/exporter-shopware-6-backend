@@ -135,8 +135,12 @@ class Shopware6ProductClient
             if (!$media->getId()) {
                 continue;
             }
-            $action = new DeleteProductMedia($product->getId(), $media->getId());
-            $this->connector->execute($channel, $action);
+            try {
+                $action = new DeleteProductMedia($product->getId(), $media->getId());
+                $this->connector->execute($channel, $action);
+            } catch (\Exception $e) {
+                $this->logger->error($e->getMessage());
+            }
         }
     }
 

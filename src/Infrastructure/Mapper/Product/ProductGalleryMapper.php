@@ -9,6 +9,7 @@ use Ergonode\Channel\Domain\Entity\Export;
 use Ergonode\Core\Domain\ValueObject\Language;
 use Ergonode\ExporterShopware6\Domain\Entity\Shopware6Channel;
 use Ergonode\ExporterShopware6\Infrastructure\Client\Shopware6ProductMediaClient;
+use Ergonode\ExporterShopware6\Infrastructure\Exception\Shopware6ExporterException;
 use Ergonode\ExporterShopware6\Infrastructure\Mapper\ProductMapperInterface;
 use Ergonode\ExporterShopware6\Infrastructure\Model\Product\Shopware6ProductMedia;
 use Ergonode\ExporterShopware6\Infrastructure\Model\Shopware6Product;
@@ -64,15 +65,25 @@ class ProductGalleryMapper implements ProductMapperInterface
 
         $value = $product->getAttribute($attribute->getCode());
         $calculateValue = $this->calculator->calculate($attribute->getScope(), $value, $language ?: $channel->getDefaultLanguage());
-        if ($calculateValue) {
-            if (!is_array($calculateValue)) {
-                $calculateValue = [$calculateValue];
+
+        try {
+            if ($calculateValue) {
+                if (!is_array($calculateValue)) {
+                    $calculateValue = [$calculateValue];
+                }
+                $position = 0;
+                foreach ($calculateValue as $galleryValue) {
+                    $multimediaId = new MultimediaId($galleryValue);
+                    $this->getShopware6MultimediaId($multimediaId, $shopware6Product, $channel, $position++);
+                }
             }
-            $position = 0;
-            foreach ($calculateValue as $galleryValue) {
-                $multimediaId = new MultimediaId($galleryValue);
-                $this->getShopware6MultimediaId($multimediaId, $shopware6Product, $channel, $position++);
-            }
+        } catch (\Exception $e) {
+            $message = sprintf(
+                'Export failed for product %s with message %s',
+                $shopware6Product->getSku(),
+                $e->getMessage()
+            );
+            throw new Shopware6ExporterException($message);
         }
 
         return $shopware6Product;

@@ -505,7 +505,7 @@ class Shopware6Product implements JsonSerializable
             $this->media[] = $media;
             $this->setModified();
         }
-        unset($this->mediaToRemove[$media->getMediaId()]);
+        unset($this->mediaToRemove[$media->getMediaId().'_'.($media->getId() ?? '')]);
     }
 
     public function unsetMediaRemove(Shopware6ProductMedia $media): void
@@ -754,12 +754,12 @@ class Shopware6Product implements JsonSerializable
         $this->categoryToRemove = [];
     }
     /**
-     * @param array $media
+     * @param Shopware6ProductMedia[] $media
      */
     private function setMediaToRemove(array $media): void
     {
         foreach ($media as $item) {
-            $this->mediaToRemove[$item->getMediaId()] = $item;
+            $this->mediaToRemove[$item->getMediaId().'_'.($item->getId() ?? '')] = $item;
         }
     }
 

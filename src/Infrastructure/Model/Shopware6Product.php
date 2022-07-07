@@ -512,7 +512,9 @@ class Shopware6Product implements JsonSerializable
         }, ARRAY_FILTER_USE_KEY);
 
         $mediaKey = array_key_first($filtered);
-        unset($this->mediaToRemove[$mediaKey]);
+        if ($mediaKey) {
+            unset($this->mediaToRemove[$mediaKey]);
+        }
     }
 
     public function unsetMediaRemove(Shopware6ProductMedia $media): void

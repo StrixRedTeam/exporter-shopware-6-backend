@@ -33,7 +33,8 @@ use League\Flysystem\FilesystemInterface;
 class Shopware6ProductMediaClient
 {
     private const CACHE_KEY_PRODUCT_FOLDER_ID = 'product-folder-id';
-    private const CACHE_KEY_HAS_MEDIA = 'has-media';
+    private const CACHE_KEY_HAS_MEDIA         = 'has-media';
+
     private Shopware6Connector $connector;
 
     private FilesystemInterface $multimediaStorage;
@@ -72,7 +73,11 @@ class Shopware6ProductMediaClient
             throw new Shopware6DefaultFolderException();
         }
 
-        $this->checkAndDeleteByFilename($channel, $multimedia);
+        $shopwareId = $this->findByFilename($channel, $multimedia);
+        if ($shopwareId) {
+            return $shopwareId;
+        }
+
         return $this->createNew($channel, $multimedia, $folder)->getId();
     }
 
@@ -102,29 +107,28 @@ class Shopware6ProductMediaClient
     private function upload(Shopware6Channel $channel, Shopware6Media $media, Multimedia $multimedia): void
     {
         $content = $this->multimediaStorage->read($multimedia->getFileName());
-        $name = $multimedia->getFileName();
-            try {
-                $action = new PostUploadFile($media->getId(), $content, $multimedia, $name);
-                $this->connector->execute($channel, $action);
+        $name = str_replace(sprintf('.%s', $multimedia->getExtension()), "", $multimedia->getName());
+        try {
+            $action = new PostUploadFile($media->getId(), $content, $multimedia, $name);
+            $this->connector->execute($channel, $action);
 
-                return;
-            } catch (ServerException $exception) {
-                $response = $exception->getResponse();
+            return;
+        } catch (ServerException $exception) {
+            $response = $exception->getResponse();
 
-                if (null !== $response) {
-                    $decode = json_decode(
-                        $response->getBody()->getContents(),
-                        true,
-                        512,
-                        JSON_THROW_ON_ERROR
-                    );
+            if (null !== $response) {
+                $decode = json_decode(
+                    $response->getBody()->getContents(),
+                    true,
+                    512,
+                    JSON_THROW_ON_ERROR
+                );
 
-                    if ($decode['errors'][0]['code'] !== 'CONTENT__MEDIA_DUPLICATED_FILE_NAME') {
-                        throw $exception;
-                    }
+                if ($decode['errors'][0]['code'] !== 'CONTENT__MEDIA_DUPLICATED_FILE_NAME') {
+                    throw $exception;
                 }
             }
-
+        }
     }
 
     /**
@@ -261,7 +265,7 @@ class Shopware6ProductMediaClient
     {
         $query = new Shopware6QueryBuilder();
         $query->equals('fileName', $filename)
-            ->limit(1);
+              ->limit(1);
 
         $action = new GetMediaByFilename($query);
 
@@ -276,16 +280,16 @@ class Shopware6ProductMediaClient
         return null;
     }
 
-    private function checkAndDeleteByFilename(Shopware6Channel $channel, Multimedia $multimedia): void
+    private function findByFilename(Shopware6Channel $channel, Multimedia $multimedia): ?string
     {
-        $shopwareId = $this->getMediaByFilename($channel, $multimedia->getFileName());
+        $name = str_replace(sprintf('.%s', $multimedia->getExtension()), "", $multimedia->getName());
+        $shopwareId = $this->getMediaByFilename($channel, $name);
         if ($shopwareId) {
-            try {
-                $action = new DeleteMedia($shopwareId);
-                $this->connector->execute($channel, $action);
-            } catch (ClientException $exception) {
-            }
-            $this->removeFromCacheHasMedia($channel->getId(), $shopwareId);
+            $this->multimediaRepository->save($channel->getId(), $multimedia->getId(), $shopwareId);
+
+            return $shopwareId;
         }
+
+        return null;
     }
 }

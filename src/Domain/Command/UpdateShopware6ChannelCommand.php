@@ -86,6 +86,8 @@ class UpdateShopware6ChannelCommand implements ChannelCommandInterface
 
     private ?AttributeId $categoryKeywords;
 
+    private ?AttributeId $productSeoUrl;
+
     /**
      * @param Language[]                  $languages
      * @param array|AttributeId[]         $propertyGroup
@@ -120,7 +122,8 @@ class UpdateShopware6ChannelCommand implements ChannelCommandInterface
         ?AttributeId $categoryGallery,
         ?AttributeId $categoryMetaTitle,
         ?AttributeId $categoryMetaDescription,
-        ?AttributeId $categoryKeywords
+        ?AttributeId $categoryKeywords,
+        ?AttributeId $productSeoUrl
     ) {
         $this->id = $id;
         $this->name = $name;
@@ -150,6 +153,7 @@ class UpdateShopware6ChannelCommand implements ChannelCommandInterface
         $this->categoryMetaTitle = $categoryMetaTitle;
         $this->categoryMetaDescription = $categoryMetaDescription;
         $this->categoryKeywords = $categoryKeywords;
+        $this->productSeoUrl = $productSeoUrl;
     }
 
     public function getId(): ChannelId
@@ -302,5 +306,10 @@ class UpdateShopware6ChannelCommand implements ChannelCommandInterface
     public function getCategoryKeywords(): ?AttributeId
     {
         return $this->categoryKeywords;
+    }
+
+    public function getProductSeoUrl(): ?AttributeId
+    {
+        return $this->productSeoUrl;
     }
 }

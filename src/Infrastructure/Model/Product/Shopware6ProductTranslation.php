@@ -6,42 +6,24 @@ namespace Ergonode\ExporterShopware6\Infrastructure\Model\Product;
 
 class Shopware6ProductTranslation implements \JsonSerializable
 {
-    private string $id;
+    private ?string $id;
     private ?string $metaDescription;
     private ?string $name;
     private ?string $keywords;
     private ?string $description;
     private ?string $metaTitle;
-    private ?string $packUnit;
-    private ?string $packUnitPlural;
-    private ?string $customSearchKeywords;
-    private ?array $slotConfig;
     private ?array $customFields;
-    private string $createdAt;
-    private ?string $updatedAt;
-    private string $productId;
     private string $languageId;
-    private ?string $productVersionId;
-    private ?string $apiAlias;
 
     public function __construct(
-        string $id,
+        ?string $id,
         ?string $metaDescription,
         ?string $name,
         ?string $keywords,
         ?string $description,
         ?string $metaTitle,
-        ?string $packUnit,
-        ?string $packUnitPlural,
-        ?string $customSearchKeywords,
-        ?array $slotConfig,
         ?array $customFields,
-        string $createdAt,
-        ?string $updatedAt,
-        string $productId,
-        string $languageId,
-        ?string $productVersionId,
-        ?string $apiAlias
+        string $languageId
     ) {
         $this->id = $id;
         $this->metaDescription = $metaDescription;
@@ -49,20 +31,11 @@ class Shopware6ProductTranslation implements \JsonSerializable
         $this->keywords = $keywords;
         $this->description = $description;
         $this->metaTitle = $metaTitle;
-        $this->packUnit = $packUnit;
-        $this->packUnitPlural = $packUnitPlural;
-        $this->customSearchKeywords = $customSearchKeywords;
-        $this->slotConfig = $slotConfig;
         $this->customFields = $customFields;
-        $this->createdAt = $createdAt;
-        $this->updatedAt = $updatedAt;
-        $this->productId = $productId;
         $this->languageId = $languageId;
-        $this->productVersionId = $productVersionId;
-        $this->apiAlias = $apiAlias;
     }
 
-    public function getId(): string
+    public function getId(): ?string
     {
         return $this->id;
     }
@@ -98,73 +71,56 @@ class Shopware6ProductTranslation implements \JsonSerializable
         return $this->metaTitle;
     }
 
-    public function getPackUnit(): ?string
-    {
-        return $this->packUnit;
-    }
-
-    public function getPackUnitPlural(): ?string
-    {
-        return $this->packUnitPlural;
-    }
-
-    public function getCustomSearchKeywords(): ?string
-    {
-        return $this->customSearchKeywords;
-    }
-
-    public function getSlotConfig(): ?array
-    {
-        return $this->slotConfig;
-    }
-
-    public function getCreatedAt(): string
-    {
-        return $this->createdAt;
-    }
-
-    public function getUpdatedAt(): ?string
-    {
-        return $this->updatedAt;
-    }
-
-    public function getProductId(): string
-    {
-        return $this->productId;
-    }
-
     public function getLanguageId(): string
     {
         return $this->languageId;
     }
 
-    public function getProductVersionId(): ?string
+    public function setMetaDescription(?string $metaDescription): void
     {
-        return $this->productVersionId;
+        $this->metaDescription = $metaDescription;
     }
 
-    public function getApiAlias(): ?string
+    public function setName(?string $name): void
     {
-        return $this->apiAlias;
+        $this->name = $name;
+    }
+
+    public function setKeywords(?string $keywords): void
+    {
+        $this->keywords = $keywords;
+    }
+
+    public function setDescription(?string $description): void
+    {
+        $this->description = $description;
+    }
+
+    public function setMetaTitle(?string $metaTitle): void
+    {
+        $this->metaTitle = $metaTitle;
+    }
+
+
+    public function setCustomFields(?array $customFields): void
+    {
+        $this->customFields = $customFields;
+    }
+
+    public function setLanguageId(string $languageId): void
+    {
+        $this->languageId = $languageId;
     }
 
     public function jsonSerialize(): array
     {
         return [
-            'id' => $this->id,
             'metaDescription' => $this->metaDescription,
             'metaTitle' => $this->metaTitle,
-            'packUnit' => $this->packUnit,
-            'packUnitPlural' => $this->packUnitPlural,
-            'customSearchKeywords' => $this->customSearchKeywords,
-            'slotConfig' => $this->slotConfig,
-            'customFields' => $this->customFields,
-            'createdAt' => $this->createdAt,
-            'updatedAt' => $this->updatedAt,
-            'productId' => $this->productId,
-            'languageId' => $this->languageId,
-            'productVersionId' => $this->productVersionId,
-            'apiAlias' => $this->apiAlias,
+            'name' => $this->name,
+            'description' => $this->description,
+            'keywords' => $this->keywords,
+            'customFields' => $this->customFields
         ];
     }
 }

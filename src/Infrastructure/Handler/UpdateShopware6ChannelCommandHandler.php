@@ -55,6 +55,7 @@ class UpdateShopware6ChannelCommandHandler
         $channel->setAttributeCategoryMetaTitle($command->getCategoryMetaTitle());
         $channel->setAttributeCategoryMetaDescription($command->getCategoryMetaDescription());
         $channel->setAttributeCategoryKeywords($command->getCategoryKeywords());
+        $channel->setAttributeProductSeoUrl($command->getProductSeoUrl());
 
         $this->repository->save($channel);
     }

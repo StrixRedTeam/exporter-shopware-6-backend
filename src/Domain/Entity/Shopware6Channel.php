@@ -74,15 +74,17 @@ class Shopware6Channel extends AbstractChannel
      */
     private array $crossSelling;
 
-    private ?AttributeId $attributeCategoryDescription = null;
+    private ?AttributeId $attributeCategoryDescription;
 
-    private ?AttributeId $attributeCategoryGallery = null;
+    private ?AttributeId $attributeCategoryGallery;
 
-    private ?AttributeId $attributeCategoryMetaTitle = null;
+    private ?AttributeId $attributeCategoryMetaTitle;
 
-    private ?AttributeId $attributeCategoryMetaDescription = null;
+    private ?AttributeId $attributeCategoryMetaDescription;
 
-    private ?AttributeId $attributeCategoryKeywords = null;
+    private ?AttributeId $attributeCategoryKeywords;
+
+    private ?AttributeId $attributeProductSeoUrl;
 
     /**
      * @param Language[]                  $languages
@@ -118,7 +120,8 @@ class Shopware6Channel extends AbstractChannel
         ?AttributeId $attributeCategoryGallery,
         ?AttributeId $attributeCategoryMetaTitle,
         ?AttributeId $attributeCategoryMetaDescription,
-        ?AttributeId $attributeCategoryKeywords
+        ?AttributeId $attributeCategoryKeywords,
+        ?AttributeId $attributeProductSeoUrl
     ) {
         parent::__construct($id, $name);
 
@@ -148,6 +151,7 @@ class Shopware6Channel extends AbstractChannel
         $this->attributeCategoryMetaTitle = $attributeCategoryMetaTitle;
         $this->attributeCategoryMetaDescription = $attributeCategoryMetaDescription;
         $this->attributeCategoryKeywords = $attributeCategoryKeywords;
+        $this->attributeProductSeoUrl = $attributeProductSeoUrl;
     }
 
     public static function getType(): string
@@ -437,5 +441,15 @@ class Shopware6Channel extends AbstractChannel
     public function setAttributeCategoryKeywords(?AttributeId $attributeCategoryKeywords): void
     {
         $this->attributeCategoryKeywords = $attributeCategoryKeywords;
+    }
+
+    public function getAttributeProductSeoUrl(): ?AttributeId
+    {
+        return $this->attributeProductSeoUrl;
+    }
+
+    public function setAttributeProductSeoUrl(?AttributeId $attributeProductSeoUrl): void
+    {
+        $this->attributeProductSeoUrl = $attributeProductSeoUrl;
     }
 }

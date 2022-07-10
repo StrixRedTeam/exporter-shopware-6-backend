@@ -62,6 +62,7 @@ class Shopware6ProductClient
             ->association('configuratorSettings', ['' => ''])
             ->association('categories', ['' => ''])
             ->association('translations', ['' => ''])
+            ->association('seoUrls', ['' => ''])
             ->limit(1);
 
         $action = new GetProductList($query);
@@ -131,8 +132,15 @@ class Shopware6ProductClient
     private function removeMedia(Shopware6Channel $channel, Shopware6Product $product): void
     {
         foreach ($product->getMediaToRemove() as $media) {
-            $action = new DeleteProductMedia($product->getId(), $media->getId());
-            $this->connector->execute($channel, $action);
+            if (!$media->getId()) {
+                continue;
+            }
+            try {
+                $action = new DeleteProductMedia($product->getId(), $media->getId());
+                $this->connector->execute($channel, $action);
+            } catch (\Exception $e) {
+                $this->logger->error($e->getMessage());
+            }
         }
     }
 

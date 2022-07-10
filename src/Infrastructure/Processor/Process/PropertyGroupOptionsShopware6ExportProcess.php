@@ -15,6 +15,8 @@ use Ergonode\Attribute\Domain\Repository\OptionRepositoryInterface;
 use Ergonode\Channel\Domain\Entity\Export;
 use Ergonode\Core\Domain\ValueObject\Language;
 use Ergonode\ExporterShopware6\Domain\Entity\Shopware6Channel;
+use Ergonode\ExporterShopware6\Domain\Query\EventStoreQueryInterface;
+use Ergonode\ExporterShopware6\Domain\Query\ExportQueryInterface;
 use Ergonode\ExporterShopware6\Domain\Repository\LanguageRepositoryInterface;
 use Ergonode\ExporterShopware6\Domain\Repository\PropertyGroupOptionsRepositoryInterface;
 use Ergonode\ExporterShopware6\Domain\Repository\PropertyGroupRepositoryInterface;
@@ -43,6 +45,10 @@ class PropertyGroupOptionsShopware6ExportProcess
 
     private LanguageRepositoryInterface $languageRepository;
 
+    private EventStoreQueryInterface $eventStoreQuery;
+
+    private ExportQueryInterface $exportQuery;
+
     public function __construct(
         PropertyGroupRepositoryInterface $propertyGroupRepository,
         OptionQueryInterface $optionQuery,
@@ -50,7 +56,9 @@ class PropertyGroupOptionsShopware6ExportProcess
         Shopware6PropertyGroupOptionClient $propertyGroupOptionClient,
         PropertyGroupOptionBuilder $builder,
         OptionRepositoryInterface $optionRepository,
-        LanguageRepositoryInterface $languageRepository
+        LanguageRepositoryInterface $languageRepository,
+        EventStoreQueryInterface $eventStoreQuery,
+        ExportQueryInterface $exportQuery
     ) {
         $this->propertyGroupRepository = $propertyGroupRepository;
         $this->optionQuery = $optionQuery;
@@ -59,10 +67,13 @@ class PropertyGroupOptionsShopware6ExportProcess
         $this->builder = $builder;
         $this->optionRepository = $optionRepository;
         $this->languageRepository = $languageRepository;
+        $this->eventStoreQuery = $eventStoreQuery;
+        $this->exportQuery = $exportQuery;
     }
 
     public function process(Export $export, Shopware6Channel $channel, AbstractAttribute $attribute): void
     {
+        $lastExportDate = $this->exportQuery->findLastExportStarted($channel->getId());
         $propertyGroupId = $this->propertyGroupRepository->load($channel->getId(), $attribute->getId());
         Assert::notNull($propertyGroupId,sprintf('Expected a value other than null for property group %s', $attribute->getId()->getValue()));
 
@@ -71,10 +82,22 @@ class PropertyGroupOptionsShopware6ExportProcess
         $shopwareOptions = $this->propertyGroupOptionClient->get($channel, $propertyGroupId);
 
         $propertyGroupOptions = [];
+
+        // if no property group option was not changed since last export, skip whole export
+        // otherwise export all
+        $skipExport = true;
         foreach ($options as $option) {
+
             $optionId = new AggregateId($option);
             $option = $this->optionRepository->load($optionId);
             Assert::notNull($option,sprintf('Expected a value other than null for option %s', $optionId));
+
+            if ($skipExport) {
+                $lastAttributeChangeDate = $this->eventStoreQuery->findLastDateForAggregateId($optionId);
+                if (!($lastExportDate && $lastAttributeChangeDate && $lastAttributeChangeDate < $lastExportDate)) {
+                    $skipExport = false;
+                }
+            }
 
             $shopwareId = $this->propertyGroupOptionsRepository->load(
                 $channel->getId(),
@@ -108,12 +131,14 @@ class PropertyGroupOptionsShopware6ExportProcess
             $propertyGroupOptions[] = $propertyGroupOption;
         }
 
-        $optionsChunk = array_chunk($propertyGroupOptions, self::CHUNK_SIZE);
-        foreach ($optionsChunk as $row) {
-            $this->propertyGroupOptionClient->insertBatch(
-                $channel,
-                new BatchPropertyGroupOption($row)
-            );
+        if (!$skipExport) {
+            $optionsChunk = array_chunk($propertyGroupOptions, self::CHUNK_SIZE);
+            foreach ($optionsChunk as $row) {
+                $this->propertyGroupOptionClient->insertBatch(
+                    $channel,
+                    new BatchPropertyGroupOption($row)
+                );
+            }
         }
         // delete remaining options not existing in Ergonode
         //if (!empty($shopwareOptions)) {

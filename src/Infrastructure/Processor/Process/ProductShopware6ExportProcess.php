@@ -58,7 +58,7 @@ class ProductShopware6ExportProcess
 
         try {
             if ($shopwareProduct) {
-                $this->updateProduct($channel, $export, $shopwareProduct, $product);
+                $this->updateFullProduct($channel, $export, $shopwareProduct, $product);
             } else {
                 $shopwareProduct = new Shopware6Product();
                 $this->builder->build($channel, $export, $shopwareProduct, $product);
@@ -70,12 +70,8 @@ class ProductShopware6ExportProcess
                     );
                 }
                 $shopwareProduct->setId($shopwareId);
-            }
 
-            foreach ($channel->getLanguages() as $language) {
-                if ($this->languageRepository->exists($channel->getId(), $language->getCode())) {
-                    $this->updateProductWithLanguage($channel, $export, $language, $product, $shopwareProduct);
-                }
+                $this->updateFullProduct($channel, $export, $shopwareProduct, $product);
             }
         } catch (Shopware6ExporterException $exception) {
             $this->exportRepository->addError($export->getId(), $exception->getMessage(), $exception->getParameters());
@@ -83,35 +79,45 @@ class ProductShopware6ExportProcess
         $this->exportRepository->processLine($lineId);
     }
 
-    private function updateProduct(
+    private function updateFullProduct(
         Shopware6Channel $channel,
         Export $export,
         Shopware6Product $shopwareProduct,
-        AbstractProduct $product,
-        ?Language $language = null,
-        ?Shopware6Language $shopwareLanguage = null
+        AbstractProduct $product
     ): void {
-        $this->builder->build($channel, $export, $shopwareProduct, $product, $language);
+        $requireUpdate = false;
 
+        $shopwareLanguage = $this->languageRepository->load($channel->getId(), $channel->getDefaultLanguage()->getCode());
+        Assert::notNull(
+            $shopwareLanguage,
+            sprintf('Expected a value other than null for product lang  %s', $channel->getDefaultLanguage()->getCode())
+        );
+
+        $shopwareProduct = $this->builder->build($channel, $export, $shopwareProduct, $product);
+        $shopwareProduct->updateTranslated($shopwareProduct, $shopwareLanguage);
         if ($shopwareProduct->isModified() || $shopwareProduct->hasItemToRemoved()) {
+            $requireUpdate = true;
+        }
+
+        foreach ($channel->getLanguages() as $channelLanguage) {
+            if ($this->languageRepository->exists($channel->getId(), $channelLanguage->getCode())) {
+                $shopwareLanguage = $this->languageRepository->load($channel->getId(), $channelLanguage->getCode());
+                Assert::notNull(
+                    $shopwareLanguage,
+                    sprintf('Expected a value other than null for product lang  %s', $channelLanguage->getCode())
+                );
+
+                $translatedProduct = $shopwareProduct->getTranslated($shopwareLanguage);
+                $translatedProduct = $this->builder->build($channel, $export, $translatedProduct, $product, $channelLanguage);
+                $shopwareProduct->updateTranslated($translatedProduct, $shopwareLanguage);
+
+                if ($translatedProduct->isModified() || $translatedProduct->hasItemToRemoved()) {
+                    $requireUpdate = true;
+                }
+            }
+        }
+        if ($requireUpdate) {
             $this->productClient->update($channel, $shopwareProduct, $shopwareLanguage);
         }
-    }
-
-    /**
-     * @throws \Exception
-     */
-    private function updateProductWithLanguage(
-        Shopware6Channel $channel,
-        Export $export,
-        Language $language,
-        AbstractProduct $product,
-        Shopware6Product $shopware6Product
-    ): void {
-        $shopwareLanguage = $this->languageRepository->load($channel->getId(), $language->getCode());
-        Assert::notNull($shopwareLanguage,sprintf('Expected a value other than null for product lang  %s', $language->getCode()));
-
-        $translatedShopwareProduct = $shopware6Product->getTranslated($shopwareLanguage);
-        $this->updateProduct($channel, $export, $translatedShopwareProduct, $product, $language, $shopwareLanguage);
     }
 }

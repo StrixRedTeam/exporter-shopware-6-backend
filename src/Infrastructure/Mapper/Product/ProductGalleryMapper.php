@@ -9,6 +9,7 @@ use Ergonode\Channel\Domain\Entity\Export;
 use Ergonode\Core\Domain\ValueObject\Language;
 use Ergonode\ExporterShopware6\Domain\Entity\Shopware6Channel;
 use Ergonode\ExporterShopware6\Infrastructure\Client\Shopware6ProductMediaClient;
+use Ergonode\ExporterShopware6\Infrastructure\Exception\Shopware6ExporterException;
 use Ergonode\ExporterShopware6\Infrastructure\Mapper\ProductMapperInterface;
 use Ergonode\ExporterShopware6\Infrastructure\Model\Product\Shopware6ProductMedia;
 use Ergonode\ExporterShopware6\Infrastructure\Model\Shopware6Product;
@@ -53,6 +54,7 @@ class ProductGalleryMapper implements ProductMapperInterface
         if (null === $channel->getAttributeProductGallery()) {
             return $shopware6Product;
         }
+
         $attribute = $this->repository->load($channel->getAttributeProductGallery());
 
         Assert::notNull($attribute,sprintf('Expected a value other than null for gallery attribute %s', $channel->getAttributeProductGallery()->getValue()));
@@ -63,15 +65,25 @@ class ProductGalleryMapper implements ProductMapperInterface
 
         $value = $product->getAttribute($attribute->getCode());
         $calculateValue = $this->calculator->calculate($attribute->getScope(), $value, $language ?: $channel->getDefaultLanguage());
-        if ($calculateValue) {
-            if (!is_array($calculateValue)) {
-                $calculateValue = [$calculateValue];
+
+        try {
+            if ($calculateValue) {
+                if (!is_array($calculateValue)) {
+                    $calculateValue = [$calculateValue];
+                }
+                $position = 0;
+                foreach ($calculateValue as $galleryValue) {
+                    $multimediaId = new MultimediaId($galleryValue);
+                    $this->getShopware6MultimediaId($multimediaId, $shopware6Product, $channel, $position++);
+                }
             }
-            $position = 0;
-            foreach ($calculateValue as $galleryValue) {
-                $multimediaId = new MultimediaId($galleryValue);
-                $this->getShopware6MultimediaId($multimediaId, $shopware6Product, $channel, $position++);
-            }
+        } catch (\Exception $e) {
+            $message = sprintf(
+                'Export failed for product %s with message %s',
+                $shopware6Product->getSku(),
+                $e->getMessage()
+            );
+            throw new Shopware6ExporterException($message);
         }
 
         return $shopware6Product;
@@ -83,10 +95,6 @@ class ProductGalleryMapper implements ProductMapperInterface
         Shopware6Channel $channel,
         int $position
     ): Shopware6Product {
-        if ($shopware6Product->hasMedia(new Shopware6ProductMedia(null, $multimediaId->getValue(), $position))) {
-            return $shopware6Product;
-        }
-
         $multimedia = $this->multimediaRepository->load($multimediaId);
         if ($multimedia) {
             $shopwareId = $this->mediaClient->findOrCreateMedia($channel, $multimedia, $shopware6Product);

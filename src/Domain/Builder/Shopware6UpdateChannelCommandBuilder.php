@@ -49,6 +49,7 @@ class Shopware6UpdateChannelCommandBuilder implements UpdateChannelCommandBuilde
         $attributeProductDescription = $data->attributeProductDescription;
         $attributeProductGallery = $data->attributeProductGallery;
         $attributeProductMetaTitle = $data->attributeProductMetaTitle;
+        $attributeProductSeoUrl = $data->attributeProductSeoUrl;
         $attributeProductMetaDescription = $data->attributeProductMetaDescription;
         $attributeProductKeywords = $data->attributeProductKeywords;
 
@@ -108,6 +109,7 @@ class Shopware6UpdateChannelCommandBuilder implements UpdateChannelCommandBuilde
             $attributeCategoryMetaTitle? new AttributeId($attributeCategoryMetaTitle) : null,
             $attributeCategoryMetaDescription? new AttributeId($attributeCategoryMetaDescription) : null,
             $attributeCategoryKeywords? new AttributeId($attributeCategoryKeywords) : null,
+            $attributeProductSeoUrl ? new AttributeId($attributeProductSeoUrl) : null
         );
     }
 }

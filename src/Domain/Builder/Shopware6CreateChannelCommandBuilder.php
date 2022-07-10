@@ -53,6 +53,7 @@ class Shopware6CreateChannelCommandBuilder implements CreateChannelCommandBuilde
         $attributeProductGallery = $data->attributeProductGallery;
         $attributeProductMetaTitle = $data->attributeProductMetaTitle;
         $attributeProductMetaDescription = $data->attributeProductMetaDescription;
+        $attributeProductSeoUrl = $data->attributeProductSeoUrl;
         $attributeProductKeywords = $data->attributeProductKeywords;
 
         $attributeCategoryDescription = $data->attributeCategoryDescription;
@@ -112,6 +113,7 @@ class Shopware6CreateChannelCommandBuilder implements CreateChannelCommandBuilde
             $attributeCategoryMetaTitle? new AttributeId($attributeCategoryMetaTitle) : null,
             $attributeCategoryMetaDescription? new AttributeId($attributeCategoryMetaDescription) : null,
             $attributeCategoryKeywords? new AttributeId($attributeCategoryKeywords) : null,
+            $attributeProductSeoUrl ? new AttributeId($attributeProductSeoUrl) : null
         );
     }
 }

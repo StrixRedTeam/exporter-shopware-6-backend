@@ -51,7 +51,8 @@ class CreateShopware6ChannelCommandHandler
             $command->getCategoryGallery(),
             $command->getCategoryMetaTitle(),
             $command->getCategoryMetaDescription(),
-            $command->getCategoryKeywords()
+            $command->getCategoryKeywords(),
+            $command->getProductSeoUrl()
         );
 
         $this->repository->save($channel);

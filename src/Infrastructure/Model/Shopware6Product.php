@@ -13,6 +13,7 @@ use Ergonode\ExporterShopware6\Infrastructure\Model\Product\Shopware6ProductConf
 use Ergonode\ExporterShopware6\Infrastructure\Model\Product\Shopware6ProductMedia;
 use Ergonode\ExporterShopware6\Infrastructure\Model\Product\Shopware6ProductPrice;
 use Ergonode\ExporterShopware6\Infrastructure\Model\Product\Shopware6ProductTranslation;
+use Ergonode\ExporterShopware6\Infrastructure\Model\Product\Shopware6SeoUrl;
 use JsonSerializable;
 use Webmozart\Assert\Assert;
 
@@ -105,6 +106,9 @@ class Shopware6Product implements JsonSerializable
      */
     private array $translations;
 
+    /** @var Shopware6SeoUrl[] */
+    private array $seoUrls;
+
     /**
      * @param string|null $id
      * @param string|null $sku
@@ -147,7 +151,8 @@ class Shopware6Product implements JsonSerializable
         array $categories = [],
         array $media = [],
         array $configuratorSettings = [],
-        array $translations = []
+        array $translations = [],
+        array $seoUrls = []
     ) {
         $this->id = $id;
         $this->sku = $sku;
@@ -170,6 +175,7 @@ class Shopware6Product implements JsonSerializable
         $this->setCategories($categories);
         $this->setMedia($media);
         $this->setConfiguratorSettings($configuratorSettings);
+        $this->seoUrls = $seoUrls;
     }
 
     public function getId(): ?string
@@ -499,6 +505,20 @@ class Shopware6Product implements JsonSerializable
             $this->media[] = $media;
             $this->setModified();
         }
+
+        // find media starting with media id to remove eventual media duplicates
+        $filtered = array_filter($this->mediaToRemove, function ($key) use ($media) {
+            return strpos($key, $media->getMediaId()) === 0;
+        }, ARRAY_FILTER_USE_KEY);
+
+        $mediaKey = array_key_first($filtered);
+        if ($mediaKey) {
+            unset($this->mediaToRemove[$mediaKey]);
+        }
+    }
+
+    public function unsetMediaRemove(Shopware6ProductMedia $media): void
+    {
         unset($this->mediaToRemove[$media->getMediaId()]);
     }
 
@@ -685,6 +705,13 @@ class Shopware6Product implements JsonSerializable
         if (null !== $this->keywords) {
             $data['keywords'] = $this->keywords;
         }
+        foreach ($this->seoUrls as $seoUrl) {
+            $data['seoUrls'][] = $seoUrl->jsonSerialize();
+        }
+
+        foreach ($this->translations as $translation) {
+            $data['translations'][$translation->getLanguageId()] = $translation->jsonSerialize();
+        }
 
         return $data;
     }
@@ -707,6 +734,20 @@ class Shopware6Product implements JsonSerializable
     }
 
     /**
+     * @return Shopware6SeoUrl[]
+     */
+    public function getSeoUrls(): array
+    {
+        return $this->seoUrls;
+    }
+
+    public function setSeoUrls(array $seoUrls): void
+    {
+
+        $this->seoUrls = $seoUrls;
+    }
+
+    /**
      * @param Shopware6ProductCategory[] $categories
      */
     private function setCategoryToRemove(array $categories): void
@@ -717,13 +758,17 @@ class Shopware6Product implements JsonSerializable
         }
     }
 
+    public function resetCategoryToRemove(): void
+    {
+        $this->categoryToRemove = [];
+    }
     /**
-     * @param array $media
+     * @param Shopware6ProductMedia[] $media
      */
     private function setMediaToRemove(array $media): void
     {
         foreach ($media as $item) {
-            $this->mediaToRemove[$item->getMediaId()] = $item;
+            $this->mediaToRemove[$item->getMediaId().'_'.($item->getId() ?? '')] = $item;
         }
     }
 
@@ -738,7 +783,7 @@ class Shopware6Product implements JsonSerializable
         }
     }
 
-    private function setModified(): void
+    public function setModified(): void
     {
         $this->modified = true;
     }
@@ -790,7 +835,26 @@ class Shopware6Product implements JsonSerializable
             $this->categories,
             $this->media,
             $this->configuratorSettings,
-            $this->translations
+            $this->translations,
+            $this->seoUrls
         );
+    }
+
+    public function updateTranslated(Shopware6Product $product, Shopware6Language $shopware6Language): void
+    {
+        foreach ($this->translations as $key => $translation) {
+            if ($translation->getLanguageId() === $shopware6Language->getId()) {
+                $this->translations[$key] = new Shopware6ProductTranslation(
+                    null,
+                    $product->getMetaDescription(),
+                    $product->getName(),
+                    $product->getKeywords(),
+                    $product->getDescription(),
+                    $product->getMetaTitle(),
+                    $product->getCustomFields(),
+                    $shopware6Language->getId()
+                );
+            }
+        }
     }
 }

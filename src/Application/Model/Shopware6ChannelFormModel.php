@@ -98,6 +98,8 @@ class Shopware6ChannelFormModel
 
     public ?string $attributeProductMetaTitle = null;
 
+    public ?string $attributeProductSeoUrl = null;
+
     public ?string $attributeProductMetaDescription = null;
 
     public ?string $attributeProductKeywords = null;
@@ -162,6 +164,8 @@ class Shopware6ChannelFormModel
                 ? $channel->getAttributeProductKeywords()->getValue() : null;
             $this->categoryTree = $channel->getCategoryTree() ? $channel->getCategoryTree()->getValue() : null;
             $this->crossSelling = $channel->getCrossSelling();
+            $this->attributeProductSeoUrl = $channel->getAttributeProductSeoUrl()
+                ? $channel->getAttributeProductSeoUrl()->getValue() : null;
 
             $this->attributeCategoryDescription = $channel->getAttributeCategoryDescription()
                 ? $channel->getAttributeCategoryDescription()->getValue() : null;

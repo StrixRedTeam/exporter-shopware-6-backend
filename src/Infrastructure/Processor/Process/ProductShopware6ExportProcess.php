@@ -117,7 +117,7 @@ class ProductShopware6ExportProcess
             }
         }
         if ($requireUpdate) {
-            $this->productClient->update($channel, $shopwareProduct, $shopwareLanguage);
+            $this->productClient->update($channel, $shopwareProduct);
         }
     }
 }

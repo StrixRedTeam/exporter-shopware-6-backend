@@ -96,13 +96,12 @@ class Shopware6ProductClient
         Shopware6Product $product,
         ?Shopware6Language $shopware6Language = null
     ): void {
-        if ($product->isModified()) {
-            $action = new PatchProductAction($product);
-            if ($shopware6Language) {
-                $action->addHeader('sw-language-id', $shopware6Language->getId());
-            }
-            $this->connector->execute($channel, $action);
+        $action = new PatchProductAction($product);
+        if ($shopware6Language) {
+            $action->addHeader('sw-language-id', $shopware6Language->getId());
         }
+        $this->connector->execute($channel, $action);
+
         if ($product->hasItemToRemoved()) {
             $this->removeProperty($channel, $product);
             $this->removeCategory($channel, $product);

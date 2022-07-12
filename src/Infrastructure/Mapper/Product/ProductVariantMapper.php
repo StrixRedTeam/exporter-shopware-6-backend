@@ -51,7 +51,7 @@ class ProductVariantMapper extends AbstractVariantOptionMapper
         ?Language $language = null
     ): Shopware6Product {
         if ($product instanceof VariableProduct) {
-            $this->variantMapper($channel, $shopware6Product, $product);
+            //$this->variantMapper($channel, $shopware6Product, $product);
         }
 
         return $shopware6Product;

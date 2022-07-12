@@ -84,7 +84,7 @@ class Shopware6Channel extends AbstractChannel
 
     private ?AttributeId $attributeCategoryKeywords;
 
-    private ?AttributeId $attributeProductSeoUrl;
+    private ?AttributeId $attributeProductSeoUrl = null;
 
     /**
      * @param Language[]                  $languages

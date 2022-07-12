@@ -10,6 +10,7 @@ namespace Ergonode\ExporterShopware6\Infrastructure\Mapper\CustomField;
 
 use Ergonode\Attribute\Domain\Entity\AbstractAttribute;
 use Ergonode\Attribute\Domain\Entity\Attribute\AbstractImageAttribute;
+use Ergonode\Attribute\Domain\Entity\Attribute\GalleryAttribute;
 use Ergonode\Core\Domain\ValueObject\Language;
 use Ergonode\Channel\Domain\Entity\Export;
 use Ergonode\ExporterShopware6\Domain\Entity\Shopware6Channel;
@@ -30,7 +31,7 @@ class CustomFieldConfigMediaMapper implements CustomFieldMapperInterface
         ?Language $language = null
     ): AbstractShopware6CustomField {
 
-        if ($attribute->getType() === AbstractImageAttribute::TYPE) {
+        if ($attribute->getType() === AbstractImageAttribute::TYPE || $attribute->getType() === GalleryAttribute::TYPE) {
             $shopware6CustomField->setType(self::TYPE);
             $shopware6CustomField->getConfig()->setCustomFieldType(self::CUSTOM_FIELD_TYPE);
             $shopware6CustomField->getConfig()->setComponentName(self::COMPONENT_NAME);

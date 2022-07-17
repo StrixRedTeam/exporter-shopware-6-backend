@@ -26,6 +26,7 @@ use Ergonode\SharedKernel\Domain\AggregateId;
 class Shopware6PropertyGroupOptionClient
 {
     private const ENTITY_NAME = 'property_group_option';
+    private const TRANSLATION_ENTITY_NAME = 'property_group_option_translation';
 
     private Shopware6Connector $connector;
 
@@ -48,7 +49,6 @@ class Shopware6PropertyGroupOptionClient
         $query->limit(1000);
         $query->association('translations', [0 => '']);
         $query->include(self::ENTITY_NAME, ['id', 'name', 'mediaId', 'position']);
-        $query->include(self::ENTITY_NAME, ['id', 'name', 'propertyGroupId', 'languageId']);
         $action = new GetPropertyGroupOptionsList($query);
 
         return $this->connector->execute($channel, $action);
@@ -66,7 +66,13 @@ class Shopware6PropertyGroupOptionClient
         string $propertyGroupId,
         ?Shopware6Language $shopware6Language = null
     ) {
-        $action = new GetPropertyGroupOptions($propertyGroupId);
+
+        $query = new Shopware6QueryBuilder();
+        $query->association('translations', [0 => '']);
+        $query->include(self::ENTITY_NAME, ['id', 'name', 'mediaId', 'position', 'groupId']);
+        $query->include(self::TRANSLATION_ENTITY_NAME, ['name', 'languageId']);
+
+        $action = new GetPropertyGroupOptions($propertyGroupId, $query);
         if ($shopware6Language) {
             $action->addHeader('sw-language-id', $shopware6Language->getId());
         }

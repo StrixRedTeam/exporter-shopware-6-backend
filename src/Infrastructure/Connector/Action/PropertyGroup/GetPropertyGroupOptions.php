@@ -9,19 +9,23 @@ declare(strict_types=1);
 namespace Ergonode\ExporterShopware6\Infrastructure\Connector\Action\PropertyGroup;
 
 use Ergonode\ExporterShopware6\Infrastructure\Connector\AbstractAction;
+use Ergonode\ExporterShopware6\Infrastructure\Connector\Shopware6QueryBuilder;
 use Ergonode\ExporterShopware6\Infrastructure\Model\Shopware6PropertyGroupOption;
 use GuzzleHttp\Psr7\Request;
 use Symfony\Component\HttpFoundation\Request as HttpRequest;
 
 class GetPropertyGroupOptions extends AbstractAction
 {
-    private const URI = '/api/property-group/%s/options';
+    private const URI = '/api/property-group/%s/options?%s';
 
     private string $propertyGroupId;
 
-    public function __construct(string $propertyGroupId)
+    private Shopware6QueryBuilder $queryBuilder;
+
+    public function __construct(string $propertyGroupId, Shopware6QueryBuilder $queryBuilder)
     {
         $this->propertyGroupId = $propertyGroupId;
+        $this->queryBuilder = $queryBuilder;
     }
 
     public function getRequest(): Request
@@ -65,6 +69,6 @@ class GetPropertyGroupOptions extends AbstractAction
 
     private function getUri(): string
     {
-        return sprintf(self::URI, $this->propertyGroupId);
+        return rtrim(sprintf(self::URI, $this->propertyGroupId, $this->queryBuilder->getQuery()), '?');
     }
 }

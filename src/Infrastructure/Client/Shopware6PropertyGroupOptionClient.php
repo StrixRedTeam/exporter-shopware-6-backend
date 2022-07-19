@@ -8,6 +8,7 @@ declare(strict_types=1);
 
 namespace Ergonode\ExporterShopware6\Infrastructure\Client;
 
+use Ergonode\ExporterShopware6\Domain\Entity\Shopware6Channel;
 use Ergonode\ExporterShopware6\Domain\Repository\PropertyGroupOptionsRepositoryInterface;
 use Ergonode\ExporterShopware6\Infrastructure\Connector\Action\CustomField\BatchPostPropertyGroupOptionAction;
 use Ergonode\ExporterShopware6\Infrastructure\Connector\Action\PropertyGroup\DeletePropertyGroupOption;
@@ -19,7 +20,6 @@ use Ergonode\ExporterShopware6\Infrastructure\Connector\Shopware6QueryBuilder;
 use Ergonode\ExporterShopware6\Infrastructure\Model\PropertyGroupOption\BatchPropertyGroupOption;
 use Ergonode\ExporterShopware6\Infrastructure\Model\Shopware6Language;
 use Ergonode\ExporterShopware6\Infrastructure\Model\Shopware6PropertyGroupOption;
-use Ergonode\ExporterShopware6\Domain\Entity\Shopware6Channel;
 use Ergonode\SharedKernel\Domain\Aggregate\AttributeId;
 use Ergonode\SharedKernel\Domain\AggregateId;
 
@@ -66,18 +66,27 @@ class Shopware6PropertyGroupOptionClient
         string $propertyGroupId,
         ?Shopware6Language $shopware6Language = null
     ) {
-
         $query = new Shopware6QueryBuilder();
         $query->association('translations', [0 => '']);
         $query->include(self::ENTITY_NAME, ['id', 'name', 'mediaId', 'position', 'groupId']);
         $query->include(self::TRANSLATION_ENTITY_NAME, ['name', 'languageId']);
 
-        $action = new GetPropertyGroupOptions($propertyGroupId, $query);
-        if ($shopware6Language) {
-            $action->addHeader('sw-language-id', $shopware6Language->getId());
-        }
+        $limit = 5000;
+        $page = 0;
+        $result = [];
+        do {
+            $action = new GetPropertyGroupOptions($propertyGroupId, $query);
+            if ($shopware6Language) {
+                $action->addHeader('sw-language-id', $shopware6Language->getId());
+            }
+            $page++;
+            $query->limit($limit);
+            $query->setPage($page);
+            $options = $this->connector->execute($channel, $action);
+            $result = array_merge($result, $options);
+        } while (!empty($options));
 
-        return $this->connector->execute($channel, $action);
+        return $result;
     }
 
     public function update(

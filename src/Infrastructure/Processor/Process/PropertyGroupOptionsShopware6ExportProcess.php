@@ -92,19 +92,19 @@ class PropertyGroupOptionsShopware6ExportProcess
             $option = $this->optionRepository->load($optionId);
             Assert::notNull($option,sprintf('Expected a value other than null for option %s', $optionId));
 
-            if ($skipExport) {
-                $lastAttributeChangeDate = $this->eventStoreQuery->findLastDateForAggregateId($optionId);
-                if (!($lastExportDate && $lastAttributeChangeDate && $lastAttributeChangeDate < $lastExportDate)) {
-                    $skipExport = false;
-                }
-            }
-
             $shopwareId = $this->propertyGroupOptionsRepository->load(
                 $channel->getId(),
                 $attribute->getId(),
                 $optionId
             );
 
+            if ($skipExport) {
+                $lastAttributeChangeDate = $this->eventStoreQuery->findLastDateForAggregateId($optionId);
+                if (!($lastExportDate && $lastAttributeChangeDate && $lastAttributeChangeDate < $lastExportDate) || !$shopwareId) {
+                    $skipExport = false;
+                }
+            }
+            
             $propertyGroupOption = null;
             if ($shopwareId && isset($shopwareOptions[$shopwareId])) {
                 $propertyGroupOption = $shopwareOptions[$shopwareId];

@@ -87,8 +87,8 @@ class PropertyGroupShopware6ExportProcess
                 $skipExport = true;
             }
 
-            if (!$skipExport) {
-                $shopwareId = $this->propertyGroupRepository->load($channel->getId(), $attribute->getId());
+            $shopwareId = $this->propertyGroupRepository->load($channel->getId(), $attribute->getId());
+            if (!$skipExport || !$shopwareId) {
                 $propertyGroup = null;
                 if ($shopwareId && isset($propertyGroups[$shopwareId])) {
                     $propertyGroup = $propertyGroups[$shopwareId];

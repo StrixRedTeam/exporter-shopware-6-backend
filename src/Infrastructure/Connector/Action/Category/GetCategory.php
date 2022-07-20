@@ -10,6 +10,7 @@ namespace Ergonode\ExporterShopware6\Infrastructure\Connector\Action\Category;
 
 use Ergonode\ExporterShopware6\Infrastructure\Connector\AbstractAction;
 use Ergonode\ExporterShopware6\Infrastructure\Model\Shopware6Category;
+use Ergonode\ExporterShopware6\Infrastructure\Model\Shopware6CategoryTranslation;
 use GuzzleHttp\Psr7\Request;
 use Symfony\Component\HttpFoundation\Request as HttpRequest;
 
@@ -39,6 +40,31 @@ class GetCategory extends AbstractAction
     {
         $data = json_decode($content, true, 512, JSON_THROW_ON_ERROR);
 
+        $includedTranslations = [];
+
+        foreach ($data['included'] as $includedAssociation) {
+            if (false === isset($includedAssociation['id'])) {
+                continue;
+            }
+
+            $id = $includedAssociation['id'];
+            $type = $includedAssociation['type'];
+            $attributes = $includedAssociation['attributes'];
+
+            if ($type === 'category_translation') {
+                $includedTranslations[$id] = new Shopware6CategoryTranslation(
+                    $id,
+                    $attributes['name'],
+                    $attributes['customFields'],
+                    $attributes['description'],
+                    $attributes['metaTitle'],
+                    $attributes['metaDescription'],
+                    $attributes['keywords'],
+                    $attributes['languageId'],
+                );
+            }
+        }
+
         return new Shopware6Category(
             $data['data']['id'],
             $data['data']['attributes']['name'],
@@ -50,7 +76,8 @@ class GetCategory extends AbstractAction
             $data['data']['attributes']['mediaId'],
             $data['data']['attributes']['metaTitle'],
             $data['data']['attributes']['metaDescription'],
-            $data['data']['attributes']['keywords']
+            $data['data']['attributes']['keywords'],
+            $includedTranslations
         );
     }
 

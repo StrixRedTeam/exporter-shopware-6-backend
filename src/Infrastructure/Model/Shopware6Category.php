@@ -34,6 +34,8 @@ class Shopware6Category implements \JsonSerializable
 
     private ?string $keywords;
 
+    private array $translations;
+
     public function __construct(
         ?string $id = null,
         ?string $name = null,
@@ -45,7 +47,8 @@ class Shopware6Category implements \JsonSerializable
         ?string $mediaId = null,
         ?string $metaTitle = null,
         ?string $metaDescription = null,
-        ?string $keywords = null
+        ?string $keywords = null,
+        array $translations = []
     ) {
         $this->id = $id;
         $this->name = $name;
@@ -58,6 +61,7 @@ class Shopware6Category implements \JsonSerializable
         $this->metaTitle = $metaTitle;
         $this->metaDescription = $metaDescription;
         $this->keywords = $keywords;
+        $this->translations = $translations;
     }
 
     public function getId(): ?string
@@ -245,6 +249,71 @@ class Shopware6Category implements \JsonSerializable
             $data['description'] = $this->description;
         }
 
+        foreach ($this->translations as $translation) {
+            $data['translations'][$translation->getLanguageId()] = $translation->jsonSerialize();
+        }
+
         return $data;
+    }
+
+    public function getTranslated(Shopware6Language $language): Shopware6Category
+    {
+        $translation = null;
+        $languageId = $language->getId();
+        foreach ($this->translations as $translationEntry) {
+            if ($translationEntry->getLanguageId() === $languageId) {
+                $translation = $translationEntry;
+                break;
+            }
+        }
+
+        $name = null;
+        $description = null;
+        $customFields = null;
+        $metaTitle = null;
+        $metaDescription = null;
+        $keywords = null;
+
+        if (null !== $translation) {
+            $name = $translation->getName();
+            $description = $translation->getDescription();
+            $customFields = $translation->getCustomFields();
+            $metaTitle = $translation->getMetaTitle();
+            $metaDescription = $translation->getMetaDescription();
+            $keywords = $translation->getKeywords();
+        }
+
+        return new Shopware6Category(
+            $this->id,
+            $name,
+            $this->parentId,
+            $this->active,
+            $this->visible,
+            $customFields,
+            $description,
+            $this->mediaId,
+            $metaTitle,
+            $metaDescription,
+            $keywords
+        );
+    }
+
+
+    public function updateTranslated(Shopware6Category $category, Shopware6Language $shopware6Language): void
+    {
+        foreach ($this->translations as $key => $translation) {
+            if ($translation->getLanguageId() === $shopware6Language->getId()) {
+                $this->translations[$key] = new Shopware6CategoryTranslation(
+                    null,
+                    $product->getMetaDescription(),
+                    $product->getName(),
+                    $product->getKeywords(),
+                    $product->getDescription(),
+                    $product->getMetaTitle(),
+                    $product->getCustomFields(),
+                    $shopware6Language->getId()
+                );
+            }
+        }
     }
 }

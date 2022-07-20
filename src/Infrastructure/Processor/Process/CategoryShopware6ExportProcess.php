@@ -9,10 +9,10 @@ declare(strict_types=1);
 namespace Ergonode\ExporterShopware6\Infrastructure\Processor\Process;
 
 use Ergonode\Category\Domain\Entity\AbstractCategory;
+use Ergonode\Channel\Domain\Entity\Export;
 use Ergonode\Channel\Domain\Repository\ExportRepositoryInterface;
 use Ergonode\Channel\Domain\ValueObject\ExportLineId;
 use Ergonode\Core\Domain\ValueObject\Language;
-use Ergonode\Channel\Domain\Entity\Export;
 use Ergonode\ExporterShopware6\Domain\Entity\Shopware6Channel;
 use Ergonode\ExporterShopware6\Domain\Repository\CategoryRepositoryInterface;
 use Ergonode\ExporterShopware6\Domain\Repository\LanguageRepositoryInterface;
@@ -59,23 +59,17 @@ class CategoryShopware6ExportProcess
     ): void {
         $shopwareCategory = $this->loadCategory($channel, $category);
         if ($shopwareCategory) {
-            $this->updateCategory($channel, $export, $shopwareCategory, $category, $parentId);
+            $this->updateFullCategory($channel, $export, $shopwareCategory, $category, $parentId);
         } else {
             $shopwareCategory = new Shopware6Category();
             $this->builder->build($channel, $export, $shopwareCategory, $category, $parentId);
             $this->categoryClient->insert($channel, $shopwareCategory, $category);
         }
 
-        foreach ($channel->getLanguages() as $language) {
-            if ($this->languageRepository->exists($channel->getId(), $language->getCode())) {
-                $this->updateCategoryWithLanguage($channel, $export, $language, $category, $parentId);
-            }
-        }
-
         $this->exportRepository->processLine($lineId);
     }
 
-    private function updateCategory(
+    private function updateFullCategory(
         Shopware6Channel $channel,
         Export $export,
         Shopware6Category $shopwareCategory,
@@ -84,37 +78,43 @@ class CategoryShopware6ExportProcess
         ?Language $language = null,
         ?Shopware6Language $shopwareLanguage = null
     ): void {
+        $requireUpdate = false;
         $this->builder->build($channel, $export, $shopwareCategory, $category, $parentId, $language);
         if ($shopwareCategory->isModified()) {
+            $requireUpdate = true;
+        }
+
+        foreach ($channel->getLanguages() as $channelLanguage) {
+            if ($this->languageRepository->exists($channel->getId(), $channelLanguage->getCode())) {
+                $shopwareLanguage = $this->languageRepository->load($channel->getId(), $channelLanguage->getCode());
+                Assert::notNull(
+                    $shopwareLanguage,
+                    sprintf('Expected a value other than null for product lang  %s', $channelLanguage->getCode())
+                );
+
+                $translatedCategory = $shopwareCategory->getTranslated($shopwareLanguage);
+                $translatedCategory = $this->builder->build($channel, $export, $translatedCategory, $category, $parentId,  $channelLanguage);
+                $shopwareCategory->updateTranslated($translatedCategory, $shopwareLanguage);
+
+                if ($translatedCategory->isModified()) {
+                    $requireUpdate = true;
+                }
+            }
+        }
+
+        if ($requireUpdate) {
             $this->categoryClient->update($channel, $shopwareCategory, $shopwareLanguage);
         }
     }
 
-    private function updateCategoryWithLanguage(
-        Shopware6Channel $channel,
-        Export $export,
-        Language $language,
-        AbstractCategory $category,
-        ?CategoryId $parentId = null
-    ): void {
-        $shopwareLanguage = $this->languageRepository->load($channel->getId(), $language->getCode());
-        Assert::notNull($shopwareLanguage,sprintf('Expected a value other than null for category language %s', $language->getCode()));
-
-        $shopwareCategory = $this->loadCategory($channel, $category, $shopwareLanguage);
-        Assert::notNull($shopwareCategory, sprintf('Expected a value other than null for category  %s', $category->getId()->getValue()));
-
-        $this->updateCategory($channel, $export, $shopwareCategory, $category, $parentId, $language, $shopwareLanguage);
-    }
-
     private function loadCategory(
         Shopware6Channel $channel,
-        AbstractCategory $category,
-        ?Shopware6Language $shopware6Language = null
+        AbstractCategory $category
     ): ?Shopware6Category {
         $shopwareId = $this->shopware6CategoryRepository->load($channel->getId(), $category->getId());
         if ($shopwareId) {
             try {
-                return $this->categoryClient->get($channel, $shopwareId, $shopware6Language);
+                return $this->categoryClient->get($channel, $shopwareId);
             } catch (ClientException $exception) {
             }
         }

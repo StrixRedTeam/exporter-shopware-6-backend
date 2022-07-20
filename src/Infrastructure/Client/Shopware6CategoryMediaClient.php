@@ -70,7 +70,10 @@ class Shopware6CategoryMediaClient
             throw new Shopware6DefaultFolderException();
         }
 
-        $this->checkAndDeleteByFilename($channel, $multimedia);
+        $shopwareId = $this->findByFilename($channel, $multimedia);
+        if ($shopwareId) {
+            return $shopwareId;
+        }
 
         return $this->createNew($channel, $multimedia, $folder)->getId();
     }
@@ -164,15 +167,26 @@ class Shopware6CategoryMediaClient
         return $categoryFolderId;
     }
 
-    private function setInCacheCategoryFolderId(ChannelId $channelId, Shopware6MediaDefaultFolder $categoryFolderId): void
+    private function setInCacheCategoryFolderId(ChannelId $channelId, Shopware6MediaDefaultFolder $productFolderId): void
     {
-        $this->inMemoryCache[self::CACHE_KEY_CATEGORY_FOLDER_ID][$channelId->getValue()] = $categoryFolderId;
+        $this->inMemoryCache[self::CACHE_KEY_CATEGORY_FOLDER_ID][$channelId->getValue()] = $productFolderId;
     }
 
     private function getFromCacheCategoryFolderId(ChannelId $channelId): ?Shopware6MediaDefaultFolder
     {
         return $this->inMemoryCache[self::CACHE_KEY_CATEGORY_FOLDER_ID][$channelId->getValue()] ?? null;
     }
+
+    private function setInCacheHasMedia(ChannelId $channelId, string $shopwareId): void
+    {
+        $this->inMemoryCache[self::CACHE_KEY_HAS_MEDIA][$channelId->getValue()][$shopwareId] = true;
+    }
+
+    private function getFromCacheHasMedia(ChannelId $channelId, string $shopwareId): bool
+    {
+        return isset($this->inMemoryCache[self::CACHE_KEY_HAS_MEDIA][$channelId->getValue()][$shopwareId]);
+    }
+
     private function removeFromCacheHasMedia(ChannelId $channelId, string $shopwareId): void
     {
         unset($this->inMemoryCache[self::CACHE_KEY_HAS_MEDIA][$channelId->getValue()][$shopwareId]);
@@ -188,7 +202,39 @@ class Shopware6CategoryMediaClient
         }
         $shopwareId = $this->multimediaRepository->load($channel->getId(), $multimedia->getId());
 
-        return $shopwareId === $shopware6Category->getMediaId() ? $shopwareId : null;
+        $hasMediaInShopware = $this->hasMedia($channel, $shopwareId);
+        if(!$hasMediaInShopware) {
+            return null;
+        }
+
+        return $shopwareId;
+    }
+
+
+    /**
+     * @throws Shopware6InstanceOfException|GuzzleException
+     */
+    private function hasMedia(Shopware6Channel $channel, string $shopwareId): bool
+    {
+        $action = new HasMedia($shopwareId);
+
+        $hasMedia = $this->getFromCacheHasMedia($channel->getId(), $shopwareId);
+        if ($hasMedia) {
+            return true;
+        }
+
+        try {
+            $shopware6MediaId = $this->connector->execute($channel, $action);
+            if (!is_string($shopware6MediaId)) {
+                throw new Shopware6InstanceOfException(Shopware6Media::class);
+            }
+
+            $hasMedia = true;
+            $this->setInCacheHasMedia($channel->getId(), $shopwareId);
+        } catch (ClientException $exception) {
+        }
+
+        return $hasMedia;
     }
 
     private function delete(Shopware6Channel $channel, string $shopwareId, MultimediaId $multimediaId): void
@@ -221,16 +267,16 @@ class Shopware6CategoryMediaClient
         return null;
     }
 
-    private function checkAndDeleteByFilename(Shopware6Channel $channel, Multimedia $multimedia): void
+    private function findByFilename(Shopware6Channel $channel, Multimedia $multimedia): ?string
     {
-        $shopwareId = $this->getMediaByFilename($channel, $multimedia->getFileName());
+        $name = str_replace(sprintf('.%s', $multimedia->getExtension()), "", $multimedia->getName());
+        $shopwareId = $this->getMediaByFilename($channel, $name);
         if ($shopwareId) {
-            try {
-                $action = new DeleteMedia($shopwareId);
-                $this->connector->execute($channel, $action);
-            } catch (ClientException $exception) {
-            }
-            $this->removeFromCacheHasMedia($channel->getId(), $shopwareId);
+            $this->multimediaRepository->save($channel->getId(), $multimedia->getId(), $shopwareId);
+
+            return $shopwareId;
         }
+
+        return null;
     }
 }

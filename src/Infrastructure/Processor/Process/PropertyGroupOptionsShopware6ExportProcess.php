@@ -104,7 +104,7 @@ class PropertyGroupOptionsShopware6ExportProcess
                     $skipExport = false;
                 }
             }
-            
+
             $propertyGroupOption = null;
             if ($shopwareId && isset($shopwareOptions[$shopwareId])) {
                 $propertyGroupOption = $shopwareOptions[$shopwareId];

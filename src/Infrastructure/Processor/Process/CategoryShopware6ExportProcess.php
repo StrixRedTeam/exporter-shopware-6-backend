@@ -74,12 +74,19 @@ class CategoryShopware6ExportProcess
         Export $export,
         Shopware6Category $shopwareCategory,
         AbstractCategory $category,
-        ?CategoryId $parentId = null,
-        ?Language $language = null,
-        ?Shopware6Language $shopwareLanguage = null
+        ?CategoryId $parentId = null
     ): void {
         $requireUpdate = false;
-        $this->builder->build($channel, $export, $shopwareCategory, $category, $parentId, $language);
+
+        $shopwareLanguage = $this->languageRepository->load($channel->getId(), $channel->getDefaultLanguage()->getCode());
+
+        Assert::notNull(
+            $shopwareLanguage,
+            sprintf('Expected a value other than null for product lang  %s', $channel->getDefaultLanguage()->getCode())
+        );
+        $shopwareCategory = $this->builder->build($channel, $export, $shopwareCategory, $category, $parentId);
+
+        $shopwareCategory->updateTranslated($shopwareCategory, $shopwareLanguage);
         if ($shopwareCategory->isModified()) {
             $requireUpdate = true;
         }
@@ -103,7 +110,7 @@ class CategoryShopware6ExportProcess
         }
 
         if ($requireUpdate) {
-            $this->categoryClient->update($channel, $shopwareCategory, $shopwareLanguage);
+            $this->categoryClient->update($channel, $shopwareCategory);
         }
     }
 

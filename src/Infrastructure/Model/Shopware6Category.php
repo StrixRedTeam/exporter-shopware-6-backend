@@ -305,12 +305,12 @@ class Shopware6Category implements \JsonSerializable
             if ($translation->getLanguageId() === $shopware6Language->getId()) {
                 $this->translations[$key] = new Shopware6CategoryTranslation(
                     null,
-                    $product->getMetaDescription(),
-                    $product->getName(),
-                    $product->getKeywords(),
-                    $product->getDescription(),
-                    $product->getMetaTitle(),
-                    $product->getCustomFields(),
+                    $category->getName(),
+                    $category->getCustomFields(),
+                    $category->getDescription(),
+                    $category->getMetaTitle(),
+                    $category->getMetaDescription(),
+                    $category->getKeywords(),
                     $shopware6Language->getId()
                 );
             }

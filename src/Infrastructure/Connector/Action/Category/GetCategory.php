@@ -9,6 +9,7 @@ declare(strict_types=1);
 namespace Ergonode\ExporterShopware6\Infrastructure\Connector\Action\Category;
 
 use Ergonode\ExporterShopware6\Infrastructure\Connector\AbstractAction;
+use Ergonode\ExporterShopware6\Infrastructure\Connector\Shopware6QueryBuilder;
 use Ergonode\ExporterShopware6\Infrastructure\Model\Shopware6Category;
 use Ergonode\ExporterShopware6\Infrastructure\Model\Shopware6CategoryTranslation;
 use GuzzleHttp\Psr7\Request;
@@ -16,13 +17,16 @@ use Symfony\Component\HttpFoundation\Request as HttpRequest;
 
 class GetCategory extends AbstractAction
 {
-    private const URI = '/api/category/%s';
+    private const URI = '/api/category/%s?%s';
 
     private string $categoryId;
 
-    public function __construct(string $categoryId)
+    private Shopware6QueryBuilder $query;
+
+    public function __construct(string $categoryId, Shopware6QueryBuilder $query)
     {
         $this->categoryId = $categoryId;
+        $this->query = $query;
     }
     public function getRequest(): Request
     {
@@ -83,6 +87,6 @@ class GetCategory extends AbstractAction
 
     private function getUri(): string
     {
-        return sprintf(self::URI, $this->categoryId);
+        return sprintf(self::URI, $this->categoryId, $this->query->getQuery());
     }
 }

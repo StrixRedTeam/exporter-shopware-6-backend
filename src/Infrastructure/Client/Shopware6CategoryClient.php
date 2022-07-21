@@ -16,6 +16,7 @@ use Ergonode\ExporterShopware6\Infrastructure\Connector\Action\Category\GetCateg
 use Ergonode\ExporterShopware6\Infrastructure\Connector\Action\Category\PatchCategoryAction;
 use Ergonode\ExporterShopware6\Infrastructure\Connector\Action\Category\PostCategoryAction;
 use Ergonode\ExporterShopware6\Infrastructure\Connector\Shopware6Connector;
+use Ergonode\ExporterShopware6\Infrastructure\Connector\Shopware6QueryBuilder;
 use Ergonode\ExporterShopware6\Infrastructure\Model\Shopware6Category;
 use Ergonode\ExporterShopware6\Infrastructure\Model\Shopware6Language;
 use Ergonode\SharedKernel\Domain\Aggregate\CategoryId;
@@ -38,7 +39,10 @@ class Shopware6CategoryClient
      */
     public function get(Shopware6Channel $channel, string $shopwareId, ?Shopware6Language $shopware6Language = null)
     {
-        $action = new GetCategory($shopwareId);
+        $query = new Shopware6QueryBuilder();
+        $query
+            ->association('translations', ['' => '']);
+        $action = new GetCategory($shopwareId, $query);
         if ($shopware6Language) {
             $action->addHeader('sw-language-id', $shopware6Language->getId());
         }

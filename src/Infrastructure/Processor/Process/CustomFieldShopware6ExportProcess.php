@@ -85,14 +85,15 @@ class CustomFieldShopware6ExportProcess
             $attribute = $this->attributeRepository->load($attributeId);
             Assert::isInstanceOf($attribute, AbstractAttribute::class);
 
-            $lastAttributeChangeDate = $this->eventHistoryQuery->findLastDateForAggregateId($attributeId);
-            // if custom field was not changed since last export, skip it
-            if ($lastExportDate && $lastAttributeChangeDate && $lastAttributeChangeDate < $lastExportDate) {
-                continue;
-            }
             $shopwareId = $this->customFieldRepository->load($channel->getId(), $attributeId);
 
             $customField = ($shopwareId && isset($shopwareCustomFields[$shopwareId])) ? $shopwareCustomFields[$shopwareId] : null;
+
+            $lastAttributeChangeDate = $this->eventHistoryQuery->findLastDateForAggregateId($attributeId);
+            // if custom field was not changed since last export, skip it
+            if ($customField && ($lastExportDate && $lastAttributeChangeDate && $lastAttributeChangeDate < $lastExportDate)) {
+                continue;
+            }
             if (!$customField) {
                 foreach ($shopwareCustomFields as $id => $shopwareCustomField) {
                     if ($shopwareCustomField->getName() === $attribute->getCode()->getValue()) {

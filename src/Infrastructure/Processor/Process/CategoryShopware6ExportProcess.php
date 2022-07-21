@@ -12,14 +12,12 @@ use Ergonode\Category\Domain\Entity\AbstractCategory;
 use Ergonode\Channel\Domain\Entity\Export;
 use Ergonode\Channel\Domain\Repository\ExportRepositoryInterface;
 use Ergonode\Channel\Domain\ValueObject\ExportLineId;
-use Ergonode\Core\Domain\ValueObject\Language;
 use Ergonode\ExporterShopware6\Domain\Entity\Shopware6Channel;
 use Ergonode\ExporterShopware6\Domain\Repository\CategoryRepositoryInterface;
 use Ergonode\ExporterShopware6\Domain\Repository\LanguageRepositoryInterface;
 use Ergonode\ExporterShopware6\Infrastructure\Builder\CategoryBuilder;
 use Ergonode\ExporterShopware6\Infrastructure\Client\Shopware6CategoryClient;
 use Ergonode\ExporterShopware6\Infrastructure\Model\Shopware6Category;
-use Ergonode\ExporterShopware6\Infrastructure\Model\Shopware6Language;
 use Ergonode\SharedKernel\Domain\Aggregate\CategoryId;
 use GuzzleHttp\Exception\ClientException;
 use Webmozart\Assert\Assert;
@@ -79,10 +77,9 @@ class CategoryShopware6ExportProcess
         $requireUpdate = false;
 
         $shopwareLanguage = $this->languageRepository->load($channel->getId(), $channel->getDefaultLanguage()->getCode());
-
         Assert::notNull(
             $shopwareLanguage,
-            sprintf('Expected a value other than null for product lang  %s', $channel->getDefaultLanguage()->getCode())
+            sprintf('Expected a value other than null for category lang  %s', $channel->getDefaultLanguage()->getCode())
         );
         $shopwareCategory = $this->builder->build($channel, $export, $shopwareCategory, $category, $parentId);
 

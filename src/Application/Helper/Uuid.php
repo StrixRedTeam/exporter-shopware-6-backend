@@ -6,7 +6,7 @@ declare(strict_types=1);
  * @package ExporterShopware6\Helper
  */
 
-namespace ExporterShopware6\Helper;
+namespace Ergonode\ExporterShopware6\Application\Helper;
 
 class Uuid
 {

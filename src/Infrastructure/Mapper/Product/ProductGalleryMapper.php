@@ -17,7 +17,7 @@ use Ergonode\Multimedia\Domain\Repository\MultimediaRepositoryInterface;
 use Ergonode\Product\Domain\Entity\AbstractProduct;
 use Ergonode\Product\Infrastructure\Calculator\TranslationInheritanceCalculator;
 use Ergonode\SharedKernel\Domain\Aggregate\MultimediaId;
-use ExporterShopware6\Helper\Uuid;
+use Ergonode\ExporterShopware6\Application\Helper\Uuid;
 use Webmozart\Assert\Assert;
 
 class ProductGalleryMapper implements ProductMapperInterface

@@ -17,6 +17,7 @@ use Ergonode\Multimedia\Domain\Repository\MultimediaRepositoryInterface;
 use Ergonode\Product\Domain\Entity\AbstractProduct;
 use Ergonode\Product\Infrastructure\Calculator\TranslationInheritanceCalculator;
 use Ergonode\SharedKernel\Domain\Aggregate\MultimediaId;
+use ExporterShopware6\Helper\Uuid;
 use Webmozart\Assert\Assert;
 
 class ProductGalleryMapper implements ProductMapperInterface
@@ -99,7 +100,7 @@ class ProductGalleryMapper implements ProductMapperInterface
         if ($multimedia) {
             $shopwareId = $this->mediaClient->findOrCreateMedia($channel, $multimedia, $shopware6Product);
             if ($shopwareId) {
-                $shopware6Product->addMedia(new Shopware6ProductMedia(null, $shopwareId, $position));
+                $shopware6Product->addMedia(new Shopware6ProductMedia(Uuid::randomHex(), $shopwareId, $position));
             }
         }
 

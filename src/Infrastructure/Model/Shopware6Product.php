@@ -658,9 +658,9 @@ class Shopware6Product implements JsonSerializable
         if (null !== $this->description) {
             $data['description'] = $this->description;
         }
-        foreach ($this->categories as $category) {
-            $data['categories'][] = $category->jsonSerialize();
-        }
+        //foreach ($this->categories as $category) {
+        //    $data['categories'][] = $category->jsonSerialize();
+        //}
         if (null !== $this->properties) {
             $data['properties'] = $this->properties;
         }

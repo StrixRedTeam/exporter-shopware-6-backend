@@ -29,6 +29,7 @@ use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Exception\ServerException;
 use League\Flysystem\FilesystemInterface;
+use Psr\Log\LoggerInterface;
 
 class Shopware6ProductMediaClient
 {
@@ -43,14 +44,18 @@ class Shopware6ProductMediaClient
 
     private array $inMemoryCache = [];
 
+    private LoggerInterface $logger;
+
     public function __construct(
         Shopware6Connector $connector,
         FilesystemInterface $multimediaStorage,
-        MultimediaRepositoryInterface $multimediaRepository
+        MultimediaRepositoryInterface $multimediaRepository,
+        LoggerInterface $logger
     ) {
         $this->connector = $connector;
         $this->multimediaStorage = $multimediaStorage;
         $this->multimediaRepository = $multimediaRepository;
+        $this->logger = $logger;
     }
 
     /**
@@ -90,6 +95,14 @@ class Shopware6ProductMediaClient
         Shopware6MediaDefaultFolder $folder
     ): Shopware6Media {
         $media = null;
+        $this->logger->info(
+            'Attempting to create media ',
+            [
+                'multimediaId' => $multimedia->getId()->getValue(),
+                'folder' => $folder->getId(),
+                'multimediaName' => $multimedia->getName(),
+            ]
+        );
         try {
             $media = $this->createMediaResource($channel, $folder);
             $this->upload($channel, $media, $multimedia);
@@ -108,14 +121,43 @@ class Shopware6ProductMediaClient
     {
         $content = $this->multimediaStorage->read($multimedia->getFileName());
         $name = str_replace(sprintf('.%s', $multimedia->getExtension()), "", $multimedia->getName());
+
+        $this->logger->info(
+            'Uploading multimedia media resource start',
+            [
+                'multimediaId' => $multimedia->getId()->getValue(),
+                'multimediaName' => $multimedia->getName(),
+                'shopwareFilename' => $name,
+                'mediaId' => $media->getId()
+            ]
+        );
         try {
             $action = new PostUploadFile($media->getId(), $content, $multimedia, $name);
             $this->connector->execute($channel, $action);
 
+            $this->logger->info(
+                'Uploading multimedia media resource finish',
+                [
+                    'multimediaId' => $multimedia->getId()->getValue(),
+                    'multimediaName' => $multimedia->getName(),
+                    'shopwareFilename' => $name,
+                    'mediaId' => $media->getId()
+                ]
+            );
             return;
         } catch (ServerException $exception) {
             $response = $exception->getResponse();
 
+            $this->logger->info(
+                'Uploading multimedia media resource failed',
+                [
+                    'multimediaId' => $multimedia->getId()->getValue(),
+                    'multimediaName' => $multimedia->getName(),
+                    'shopwareFilename' => $name,
+                    'mediaId' => $media->getId(),
+                    'message' => $exception->getMessage()
+                ]
+            );
             if (null !== $response) {
                 $decode = json_decode(
                     $response->getBody()->getContents(),
@@ -138,13 +180,25 @@ class Shopware6ProductMediaClient
         Shopware6Channel $channel,
         Shopware6MediaDefaultFolder $folder
     ): Shopware6Media {
+        $this->logger->info(
+            'Creating media resource start',
+            [
+                'folder' => $folder->getId(),
+            ]
+        );
         $action = new PostCreateMediaAction($folder->getMediaFolderId(), true);
 
         $shopware6Media = $this->connector->execute($channel, $action);
         if (!$shopware6Media instanceof Shopware6Media) {
             throw new Shopware6InstanceOfException(Shopware6Media::class);
         }
-
+        $this->logger->info(
+            'Creating media resource end',
+            [
+                'folder' => $folder->getId(),
+                'mediaId' => $shopware6Media->getId()
+            ]
+        );
         return $shopware6Media;
     }
 

@@ -854,7 +854,20 @@ class Shopware6Product implements JsonSerializable
                     $product->getCustomFields(),
                     $shopware6Language->getId()
                 );
+
+                return ;
             }
         }
+
+        $this->translations[$shopware6Language->getId()] = new Shopware6ProductTranslation(
+            null,
+            $product->getMetaDescription(),
+            $product->getName(),
+            $product->getKeywords(),
+            $product->getDescription(),
+            $product->getMetaTitle(),
+            $product->getCustomFields(),
+            $shopware6Language->getId()
+        );
     }
 }

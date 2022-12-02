@@ -51,7 +51,10 @@ class PostCreateMediaAction extends AbstractAction
 
         $data = json_decode($content, true, 512, JSON_THROW_ON_ERROR);
 
-        return new Shopware6Media($data['data']['id'], $data['data']['attributes']['fileName'] ?: null);
+        return new Shopware6Media(
+            $data['data']['id'],
+            $data['data']['attributes']['fileName'] ?: null
+        );
     }
 
     /**

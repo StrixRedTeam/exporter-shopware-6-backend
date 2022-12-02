@@ -14,6 +14,8 @@ services:
         resource: '../../Infrastructure/*'
         exclude: ['../../Infrastructure/{Model}', '../../Infrastructure/Connector/{Action}']
 
+    Ergonode\ExporterShopware6\Infrastructure\Model\Media\MediaCachePool:
+
     Ergonode\ExporterShopware6\Infrastructure\Handler\:
         resource: '../../Infrastructure/Handler/*'
         tags: ['messenger.message_handler']
@@ -32,6 +34,7 @@ services:
                 - '@Ergonode\ExporterShopware6\Infrastructure\Processor\Step\SimpleProductStep'
                 - '@Ergonode\ExporterShopware6\Infrastructure\Processor\Step\CategoryRemoveStep'
                 - '@Ergonode\ExporterShopware6\Infrastructure\Processor\Step\ProductCrossSellingStep'
+                - '@Ergonode\ExporterShopware6\Infrastructure\Processor\Step\MediaTranslationStep'
     # Repository
     Ergonode\ExporterShopware6\Domain\Repository\CategoryRepositoryInterface: '@Ergonode\ExporterShopware6\Infrastructure\Persistence\Repository\DbalCategoryRepository'
     Ergonode\ExporterShopware6\Domain\Repository\CurrencyRepositoryInterface: '@Ergonode\ExporterShopware6\Infrastructure\Persistence\Repository\DbalCurrencyRepository'

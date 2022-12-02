@@ -53,7 +53,7 @@ class PostCreateMediaAction extends AbstractAction
 
         return new Shopware6Media(
             $data['data']['id'],
-            $data['data']['attributes']['fileName'] ?: null
+            $data['data']['attributes']['fileName'] ?? null
         );
     }
 

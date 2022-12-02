@@ -113,6 +113,14 @@ class Shopware6Media implements JsonSerializable
             );
             $this->setModified();
         }
+        $this->removeNotConfirmedTranslations($processedLanguages);
+    }
+
+    /**
+     * @param Shopware6MediaTranslation[] $processedLanguages
+     */
+    private function removeNotConfirmedTranslations(array $processedLanguages): void
+    {
         foreach ($this->translations as $language => $translation) {
             if (!in_array($language, $processedLanguages) && !$this->isTranslationEmpty($translation)) {
                 $this->translations[$language] = new Shopware6MediaTranslation(

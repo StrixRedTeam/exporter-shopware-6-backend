@@ -8,6 +8,7 @@ use Ergonode\Channel\Domain\Entity\Export;
 use Ergonode\Channel\Domain\Repository\ExportRepositoryInterface;
 use Ergonode\ExporterShopware6\Domain\Entity\Shopware6Channel;
 use Ergonode\ExporterShopware6\Domain\Repository\LanguageRepositoryInterface;
+use Ergonode\ExporterShopware6\Domain\Repository\MultimediaRepositoryInterface;
 use Ergonode\ExporterShopware6\Domain\Repository\ProductRepositoryInterface;
 use Ergonode\ExporterShopware6\Infrastructure\Connector\Action\Media\GetMediaTranslations;
 use Ergonode\ExporterShopware6\Infrastructure\Connector\Action\Media\PatchMediaAction;
@@ -16,7 +17,6 @@ use Ergonode\ExporterShopware6\Infrastructure\Connector\Shopware6QueryBuilder;
 use Ergonode\ExporterShopware6\Infrastructure\Model\Media\Shopware6MediaTranslation;
 use Ergonode\ExporterShopware6\Infrastructure\Model\Shopware6Media;
 use Ergonode\Multimedia\Domain\Entity\AbstractMultimedia;
-use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\GuzzleException;
 use Psr\Log\LoggerInterface;
 use Throwable;
@@ -32,6 +32,8 @@ class MediaTranslationShopware6ExportProcess
 
     private ExportRepositoryInterface $exportRepository;
 
+    private MultimediaRepositoryInterface $multimediaRepository;
+
     private LoggerInterface $logger;
 
     public function __construct(
@@ -39,12 +41,14 @@ class MediaTranslationShopware6ExportProcess
         LanguageRepositoryInterface $languageRepository,
         ExportRepositoryInterface $exportRepository,
         ProductRepositoryInterface $shopwareProductRepository,
+        MultimediaRepositoryInterface $multimediaRepository,
         LoggerInterface $logger
     ) {
         $this->connector = $connector;
         $this->languageRepository = $languageRepository;
         $this->exportRepository = $exportRepository;
         $this->shopwareProductRepository = $shopwareProductRepository;
+        $this->multimediaRepository = $multimediaRepository;
         $this->logger = $logger;
     }
 
@@ -69,8 +73,8 @@ class MediaTranslationShopware6ExportProcess
         AbstractMultimedia $multimedia,
         string $shopwareId
     ): void {
+        $shopware6Media = $this->getShopware6Media($channel, $multimedia, $shopwareId);
         //apply translations from shopware
-        $shopware6Media = new Shopware6Media($shopwareId, null);
         $shopware6Media->setTranslations($this->getMediaTranslations($channel, $shopwareId));
         //apply translations from ergo
         $altTranslations = $multimedia->getAlt()->getTranslations();
@@ -85,7 +89,7 @@ class MediaTranslationShopware6ExportProcess
                 $shopwareLanguage = $this->languageRepository->load($channel->getId(), $channelLanguage->getCode());
                 Assert::notNull(
                     $shopwareLanguage,
-                    sprintf('Expected a value other than null for product lang  %s', $channelLanguage->getCode())
+                    sprintf('Expected a value other than null for media update lang  %s', $channelLanguage->getCode())
                 );
                 $ergoTranslations[] = new Shopware6MediaTranslation(
                     null,
@@ -98,7 +102,31 @@ class MediaTranslationShopware6ExportProcess
         $shopware6Media->updateTranslated($ergoTranslations);
 
         if ($shopware6Media->isModified()) {
-            $this->logger->info(
+            $this->updateTranslations($channel, $multimedia, $shopware6Media);
+        }
+    }
+
+    private function getShopware6Media(
+        Shopware6Channel $channel,
+        AbstractMultimedia $multimedia,
+        string $shopwareId
+    ): Shopware6Media {
+        Assert::true($this->multimediaRepository->exists($channel->getId(), $multimedia->getId()));
+        Assert::same($shopwareId, $this->multimediaRepository->load($channel->getId(), $multimedia->getId()));
+
+        return new Shopware6Media($shopwareId, null);
+    }
+
+    /**
+     * @throws GuzzleException
+     */
+    private function updateTranslations(
+        Shopware6Channel $channel,
+        AbstractMultimedia $multimedia,
+        Shopware6Media $shopware6Media
+    ): void {
+        if (!empty($shopware6Media->getTranslations())) {
+            $this->logger->debug(
                 'Updating multimedia media translations start',
                 [
                     'multimediaId' => $multimedia->getId()->getValue(),
@@ -106,8 +134,11 @@ class MediaTranslationShopware6ExportProcess
                     'mediaId' => $shopware6Media->getId()
                 ]
             );
-            $this->updateTranslations($channel, $shopware6Media);
-            $this->logger->info(
+
+            $action = new PatchMediaAction($shopware6Media);
+            $this->connector->execute($channel, $action);
+
+            $this->logger->debug(
                 'Updating multimedia media translations end',
                 [
                     'multimediaId' => $multimedia->getId()->getValue(),
@@ -115,17 +146,7 @@ class MediaTranslationShopware6ExportProcess
                     'mediaId' => $shopware6Media->getId()
                 ]
             );
-        }
-    }
 
-    /**
-     * @throws GuzzleException
-     */
-    private function updateTranslations(Shopware6Channel $channel, Shopware6Media $shopware6Media): void
-    {
-        if (!empty($shopware6Media->getTranslations())) {
-            $action = new PatchMediaAction($shopware6Media);
-            $this->connector->execute($channel, $action);
         }
     }
 
@@ -140,11 +161,6 @@ class MediaTranslationShopware6ExportProcess
 
         $action = new GetMediaTranslations($query, $shopwareMediaId);
 
-        try {
-            return $this->connector->execute($channel, $action);
-        } catch (ClientException $exception) {
-        }
-
-        return [];
+        return $this->connector->execute($channel, $action);
     }
 }

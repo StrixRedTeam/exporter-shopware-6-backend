@@ -94,16 +94,16 @@ class Shopware6Media implements JsonSerializable
         foreach ($translations as $translation) {
             $processedLanguages[] = $translation->getLanguageId();
             if (array_key_exists($translation->getLanguageId(), $this->translations)) {
-                if ($this->isTranslationChanged($translation, $this->translations[$translation->getLanguageId()])) {
-                    $this->translations[$translation->getLanguageId()] = new Shopware6MediaTranslation(
-                        $this->translations[$translation->getLanguageId()]->getId(),
-                        $translation->getAlt() ?? null,
-                        $translation->getTitle() ?? null,
-                        $translation->getLanguageId()
-                    );
-                    $this->setModified();
+                if (!$this->isTranslationChanged($translation, $this->translations[$translation->getLanguageId()])) {
+                    continue;
                 }
-                continue;
+                $this->translations[$translation->getLanguageId()] = new Shopware6MediaTranslation(
+                    $this->translations[$translation->getLanguageId()]->getId(),
+                    $translation->getAlt() ?? null,
+                    $translation->getTitle() ?? null,
+                    $translation->getLanguageId()
+                );
+                $this->setModified();
             }
             $this->translations[$translation->getLanguageId()] = new Shopware6MediaTranslation(
                 null,

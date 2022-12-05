@@ -17,6 +17,7 @@ use Ergonode\ExporterShopware6\Infrastructure\Connector\Shopware6Connector;
 use Ergonode\ExporterShopware6\Infrastructure\Connector\Shopware6QueryBuilder;
 use Ergonode\ExporterShopware6\Infrastructure\Exception\Shopware6DefaultFolderException;
 use Ergonode\ExporterShopware6\Infrastructure\Exception\Shopware6InstanceOfException;
+use Ergonode\ExporterShopware6\Infrastructure\Model\Media\MediaCachePool;
 use Ergonode\ExporterShopware6\Infrastructure\Model\Product\Shopware6ProductMedia;
 use Ergonode\ExporterShopware6\Infrastructure\Model\Shopware6Media;
 use Ergonode\ExporterShopware6\Infrastructure\Model\Shopware6MediaDefaultFolder;
@@ -46,21 +47,26 @@ class Shopware6ProductMediaClient
 
     private LoggerInterface $logger;
 
+    private MediaCachePool $cachePool;
+
     public function __construct(
         Shopware6Connector $connector,
         FilesystemInterface $multimediaStorage,
         MultimediaRepositoryInterface $multimediaRepository,
-        LoggerInterface $logger
+        LoggerInterface $logger,
+        MediaCachePool $mediaCachePool
     ) {
         $this->connector = $connector;
         $this->multimediaStorage = $multimediaStorage;
         $this->multimediaRepository = $multimediaRepository;
         $this->logger = $logger;
+        $this->cachePool = $mediaCachePool;
     }
 
     /**
      * @throws Shopware6DefaultFolderException
      * @throws Exception
+     * @throws GuzzleException
      */
     public function findOrCreateMedia(
         Shopware6Channel $channel,
@@ -70,6 +76,7 @@ class Shopware6ProductMediaClient
     ): string {
         $shopwareId = $this->check($channel, $multimedia, $shopware6Product, $attribute);
         if ($shopwareId) {
+            $this->storeForMediaTranslationsUpdate($channel, $multimedia, $shopwareId);
             return $shopwareId;
         }
 
@@ -80,6 +87,7 @@ class Shopware6ProductMediaClient
 
         $shopwareId = $this->findByFilename($channel, $multimedia);
         if ($shopwareId) {
+            $this->storeForMediaTranslationsUpdate($channel, $multimedia, $shopwareId);
             return $shopwareId;
         }
 
@@ -106,6 +114,7 @@ class Shopware6ProductMediaClient
         try {
             $media = $this->createMediaResource($channel, $folder);
             $this->upload($channel, $media, $multimedia);
+            $this->storeForMediaTranslationsUpdate($channel, $multimedia, $media->getId());
             $this->multimediaRepository->save($channel->getId(), $multimedia->getId(), $media->getId());
 
             return $media;
@@ -345,5 +354,13 @@ class Shopware6ProductMediaClient
         }
 
         return null;
+    }
+
+    private function storeForMediaTranslationsUpdate(
+        Shopware6Channel $channel,
+        Multimedia $multimedia,
+        string $shopwareId
+    ): void {
+        $this->cachePool->addData($multimedia->getId()->getValue(), $shopwareId);
     }
 }

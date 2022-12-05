@@ -23,6 +23,11 @@ class Shopware6MediaTranslation implements \JsonSerializable
         $this->languageId = $languageId;
     }
 
+    public function setId(?string $id): void
+    {
+        $this->id = $id;
+    }
+
     public function getId(): ?string
     {
         return $this->id;

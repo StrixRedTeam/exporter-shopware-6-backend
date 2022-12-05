@@ -97,22 +97,13 @@ class Shopware6Media implements JsonSerializable
                 if (!$this->isTranslationChanged($translation, $this->translations[$translation->getLanguageId()])) {
                     continue;
                 }
-                $this->translations[$translation->getLanguageId()] = new Shopware6MediaTranslation(
-                    $this->translations[$translation->getLanguageId()]->getId(),
-                    $translation->getAlt() ?? null,
-                    $translation->getTitle() ?? null,
-                    $translation->getLanguageId()
-                );
-                $this->setModified();
+                $id = $this->translations[$translation->getLanguageId()]->getId();
+                $translation->setId($id);
             }
-            $this->translations[$translation->getLanguageId()] = new Shopware6MediaTranslation(
-                null,
-                $translation->getAlt() ?? null,
-                $translation->getTitle() ?? null,
-                $translation->getLanguageId()
-            );
+            $this->translations[$translation->getLanguageId()] = $translation;
             $this->setModified();
         }
+
         $this->removeNotConfirmedTranslations($processedLanguages);
     }
 

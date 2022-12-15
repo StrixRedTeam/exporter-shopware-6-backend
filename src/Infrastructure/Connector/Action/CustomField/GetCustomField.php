@@ -48,7 +48,8 @@ class GetCustomField extends AbstractAction
             $data['data']['attributes']['config']['componentName'] ?? null,
             $data['data']['attributes']['config']['dateType'] ?? null,
             $data['data']['attributes']['config']['numberType'] ?? null,
-            $data['data']['attributes']['config']['options'] ?? null
+            $data['data']['attributes']['config']['options'] ?? null,
+            $data['data']['attributes']['config']['entityName'] ?? null
         );
 
         return new Shopware6CustomField(

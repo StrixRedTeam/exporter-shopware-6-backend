@@ -18,6 +18,8 @@ class Shopware6CustomFieldConfig extends AbstractShopware6CustomFieldConfig
 
     protected ?array $options;
 
+    protected ?string $entity;
+
     public function __construct(
         ?string $type = null,
         string $customFieldType = null,
@@ -25,12 +27,14 @@ class Shopware6CustomFieldConfig extends AbstractShopware6CustomFieldConfig
         ?string $componentName = null,
         ?string $dateType = null,
         ?string $numberType = null,
-        ?array $options = null
+        ?array $options = null,
+        ?string $entity = null
     ) {
         parent::__construct($type, $customFieldType, $label, $componentName);
         $this->dateType = $dateType;
         $this->numberType = $numberType;
         $this->options = $options;
+        $this->entity = $entity;
     }
 
     public function getDateType(): ?string
@@ -75,6 +79,19 @@ class Shopware6CustomFieldConfig extends AbstractShopware6CustomFieldConfig
         }
     }
 
+    public function getEntity(): string
+    {
+        return $this->entity;
+    }
+
+    public function setEntity(?string $entity)
+    {
+        if ($this->entity !== $entity) {
+            $this->entity = $entity;
+            $this->modified = true;
+        }
+    }
+
     public function jsonSerialize(): array
     {
         $data = parent::jsonSerialize();
@@ -86,6 +103,9 @@ class Shopware6CustomFieldConfig extends AbstractShopware6CustomFieldConfig
         }
         if ($this->options) {
             $data['options'] = $this->options;
+        }
+        if ($this->entity) {
+            $data['entity'] = $this->entity;
         }
 
         return $data;

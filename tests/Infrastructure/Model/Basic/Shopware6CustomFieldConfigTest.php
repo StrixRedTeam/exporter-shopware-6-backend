@@ -27,6 +27,8 @@ class Shopware6CustomFieldConfigTest extends TestCase
 
     private array $option;
 
+    private string $entity;
+
     private string $json;
 
     protected function setUp(): void
@@ -38,8 +40,9 @@ class Shopware6CustomFieldConfigTest extends TestCase
         $this->dateType = 'any_dateType';
         $this->numberType = 'any_numberType';
         $this->option = [];
+        $this->entity = 'any_entity';
         $this->json = '{"type":"any_type","customFieldType":"any_customFieldType","componentName":"any_componentName",';
-        $this->json .= '"dateType":"any_dateType","numberType":"any_numberType"}';
+        $this->json .= '"dateType":"any_dateType","numberType":"any_numberType","entity":"any_entity"}';
     }
 
     public function testCreateModel(): void
@@ -51,7 +54,8 @@ class Shopware6CustomFieldConfigTest extends TestCase
             $this->componentName,
             $this->dateType,
             $this->numberType,
-            $this->option
+            $this->option,
+            $this->entity,
         );
 
         self::assertEquals($this->type, $model->getType());
@@ -61,6 +65,7 @@ class Shopware6CustomFieldConfigTest extends TestCase
         self::assertEquals($this->dateType, $model->getDateType());
         self::assertEquals($this->numberType, $model->getNumberType());
         self::assertEquals($this->option, $model->getOptions());
+        self::assertEquals($this->entity, $model->getEntity());
         self::assertNotTrue($model->isModified());
     }
 
@@ -75,6 +80,7 @@ class Shopware6CustomFieldConfigTest extends TestCase
         $model->setDateType($this->dateType);
         $model->setNumberType($this->numberType);
         $model->addOptions($this->option);
+        $model->setEntity($this->entity);
 
         self::assertEquals($this->type, $model->getType());
         self::assertEquals($this->customFieldType, $model->getCustomFieldType());
@@ -83,6 +89,7 @@ class Shopware6CustomFieldConfigTest extends TestCase
         self::assertEquals($this->dateType, $model->getDateType());
         self::assertEquals($this->numberType, $model->getNumberType());
         self::assertEquals([$this->option], $model->getOptions());
+        self::assertEquals($this->entity, $model->getEntity());
         self::assertTrue($model->isModified());
     }
 
@@ -95,7 +102,8 @@ class Shopware6CustomFieldConfigTest extends TestCase
             $this->componentName,
             $this->dateType,
             $this->numberType,
-            $this->option
+            $this->option,
+            $this->entity
         );
 
         self::assertEquals($this->json, json_encode($model->jsonSerialize(), JSON_THROW_ON_ERROR));

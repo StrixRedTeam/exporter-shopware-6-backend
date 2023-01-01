@@ -7,8 +7,8 @@ use Ergonode\Attribute\Domain\Entity\AbstractAttribute;
 use Ergonode\Attribute\Domain\Repository\AttributeRepositoryInterface;
 use Ergonode\Channel\Domain\Entity\Export;
 use Ergonode\Channel\Domain\Repository\ExportRepositoryInterface;
+use Ergonode\ExporterShopware6\Application\Helper\AttributeHelper;
 use Ergonode\ExporterShopware6\Domain\Entity\Shopware6Channel;
-use Ergonode\ExporterShopware6\Domain\Query\EventStoreQueryInterface;
 use Ergonode\ExporterShopware6\Domain\Query\ExportQueryInterface;
 use Ergonode\ExporterShopware6\Domain\Repository\CustomFieldRepositoryInterface;
 use Ergonode\ExporterShopware6\Infrastructure\Builder\CustomFieldBuilder;
@@ -41,7 +41,7 @@ class CustomFieldShopware6ExportProcess
 
     private ExportQueryInterface $exportQuery;
 
-    private EventStoreQueryInterface $eventHistoryQuery;
+    private AttributeHelper $attributeHelper;
 
     public function __construct(
         CustomFieldRepositoryInterface $customFieldRepository,
@@ -51,7 +51,7 @@ class CustomFieldShopware6ExportProcess
         ExportRepositoryInterface $exportRepository,
         AttributeRepositoryInterface $attributeRepository,
         ExportQueryInterface $exportQuery,
-        EventStoreQueryInterface $eventHistoryQuery
+        AttributeHelper $attributeHelper
     ) {
         $this->customFieldRepository = $customFieldRepository;
         $this->customFieldClient = $customFieldClient;
@@ -60,7 +60,7 @@ class CustomFieldShopware6ExportProcess
         $this->exportRepository = $exportRepository;
         $this->attributeRepository = $attributeRepository;
         $this->exportQuery = $exportQuery;
-        $this->eventHistoryQuery = $eventHistoryQuery;
+        $this->attributeHelper = $attributeHelper;
     }
 
     /**
@@ -85,11 +85,10 @@ class CustomFieldShopware6ExportProcess
             $attribute = $this->attributeRepository->load($attributeId);
             Assert::isInstanceOf($attribute, AbstractAttribute::class);
 
-            $lastAttributeChangeDate = $this->eventHistoryQuery->findLastDateForAggregateId($attributeId);
-            // if custom field was not changed since last export, skip it
-            if ($lastExportDate && $lastAttributeChangeDate && $lastAttributeChangeDate < $lastExportDate) {
+            if ($this->attributeHelper->hasAttributeChangedSinceLastExport($attribute, $lastExportDate)) {
                 continue;
             }
+
             $shopwareId = $this->customFieldRepository->load($channel->getId(), $attributeId);
 
             $customField = ($shopwareId && isset($shopwareCustomFields[$shopwareId])) ? $shopwareCustomFields[$shopwareId] : null;
@@ -159,4 +158,6 @@ class CustomFieldShopware6ExportProcess
 
         return $newCustomFieldSet;
     }
+
+
 }

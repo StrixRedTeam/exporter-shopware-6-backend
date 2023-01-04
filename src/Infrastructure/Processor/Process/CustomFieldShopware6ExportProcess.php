@@ -158,6 +158,4 @@ class CustomFieldShopware6ExportProcess
 
         return $newCustomFieldSet;
     }
-
-
 }

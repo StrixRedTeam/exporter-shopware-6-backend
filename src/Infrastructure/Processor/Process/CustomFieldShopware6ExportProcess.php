@@ -85,7 +85,7 @@ class CustomFieldShopware6ExportProcess
             $attribute = $this->attributeRepository->load($attributeId);
             Assert::isInstanceOf($attribute, AbstractAttribute::class);
 
-            if ($this->attributeHelper->hasAttributeChangedSinceLastExport($attribute, $lastExportDate)) {
+            if (!$this->attributeHelper->hasAttributeChangedSinceLastExport($attribute, $lastExportDate)) {
                 continue;
             }
 

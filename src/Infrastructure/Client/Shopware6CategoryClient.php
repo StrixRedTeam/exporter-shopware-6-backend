@@ -53,7 +53,7 @@ class Shopware6CategoryClient
     public function insert(
         Shopware6Channel $channel,
         Shopware6Category $shopwareCategory,
-        AbstractCategory $category
+        CategoryId $categoryId
     ): ?Shopware6Category {
         $action = new PostCategoryAction($shopwareCategory, true);
 
@@ -70,7 +70,7 @@ class Shopware6CategoryClient
         }
         $this->repository->save(
             $channel->getId(),
-            $category->getId(),
+            $categoryId,
             $newShopwareCategory->getId()
         );
 

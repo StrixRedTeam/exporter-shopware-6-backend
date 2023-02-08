@@ -27,6 +27,7 @@ class CategoryNameMapper implements CategoryMapperInterface
         Shopware6Category $shopware6Category,
         AbstractCategory $category,
         ?CategoryId $parentCategoryId = null,
+        ?string $parentShopwareId = null,
         ?Language $language = null
     ): Shopware6Category {
         $name = $category->getName()->get($language ?: $channel->getDefaultLanguage());

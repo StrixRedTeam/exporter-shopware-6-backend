@@ -37,6 +37,7 @@ class CategoryBuilder
         Shopware6Category $shopware6Category,
         AbstractCategory $category,
         ?CategoryId $parentCategoryId = null,
+        ?string $parentShopwareId = null,
         ?Language $language = null
     ): Shopware6Category {
         foreach ($this->collection as $mapper) {
@@ -46,6 +47,7 @@ class CategoryBuilder
                 $shopware6Category,
                 $category,
                 $parentCategoryId,
+                $parentShopwareId,
                 $language
             );
         }

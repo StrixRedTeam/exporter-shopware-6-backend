@@ -35,8 +35,14 @@ class CategoryParentMapper implements CategoryMapperInterface
         Shopware6Category $shopware6Category,
         AbstractCategory $category,
         ?CategoryId $parentCategoryId = null,
+        ?string $parentShopwareId = null,
         ?Language $language = null
     ): Shopware6Category {
+        if ($parentShopwareId) {
+            $shopware6Category->setParentId($parentShopwareId);
+            return $shopware6Category;
+        }
+
         if ($parentCategoryId) {
             $shopwareParentId = $this->repository->load($channel->getId(), $parentCategoryId);
             $shopware6Category->setParentId($shopwareParentId);

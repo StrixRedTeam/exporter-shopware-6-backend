@@ -307,11 +307,11 @@ class Shopware6ChannelForm extends AbstractType
                 ]
             )
             ->add(
-                'category_tree',
+                'category_trees',
                 ChoiceType::class,
                 [
-                    'label' => 'Category tree',
-                    'property_path' => 'categoryTree',
+                    'label' => 'Category trees',
+                    'property_path' => 'categoryTrees',
                     'multiple' => true,
                     'choices' => array_flip($categoryTrees),
                     'required' => false,

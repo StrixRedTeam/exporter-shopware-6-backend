@@ -57,7 +57,7 @@ class Shopware6Channel extends AbstractChannel
 
     private ?AttributeId $attributeProductKeywords;
 
-    private array $categoryTrees = [];
+    private array $categoryTrees;
 
     /**
      * @var AttributeId[]

@@ -20,6 +20,7 @@ use Ergonode\ExporterShopware6\Infrastructure\Connector\Shopware6QueryBuilder;
 use Ergonode\ExporterShopware6\Infrastructure\Model\Shopware6Category;
 use Ergonode\ExporterShopware6\Infrastructure\Model\Shopware6Language;
 use Ergonode\SharedKernel\Domain\Aggregate\CategoryId;
+use Ergonode\SharedKernel\Domain\Aggregate\CategoryTreeId;
 use GuzzleHttp\Exception\ClientException;
 
 class Shopware6CategoryClient
@@ -53,7 +54,8 @@ class Shopware6CategoryClient
     public function insert(
         Shopware6Channel $channel,
         Shopware6Category $shopwareCategory,
-        CategoryId $categoryId
+        CategoryId $categoryId,
+        CategoryTreeId $categoryTreeId
     ): ?Shopware6Category {
         $action = new PostCategoryAction($shopwareCategory, true);
 
@@ -71,6 +73,7 @@ class Shopware6CategoryClient
         $this->repository->save(
             $channel->getId(),
             $categoryId,
+            $categoryTreeId,
             $newShopwareCategory->getId()
         );
 

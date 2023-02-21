@@ -43,7 +43,7 @@ class CategoryStep implements ExportStepProcessInterface
     public function export(ExportId $exportId, Shopware6Channel $channel): void
     {
         $categoryTreeIds = $channel->getCategoryTrees();
-        foreach($categoryTreeIds as $categoryTreeId) {
+        foreach ($categoryTreeIds as $categoryTreeId) {
             /** @var CategoryTree $tree */
             $tree = $this->treeRepository->load($categoryTreeId);
             Assert::notNull($tree, sprintf('Tree %s not exists', $categoryTreeId));

@@ -65,14 +65,15 @@ class CategoryShopware6ExportProcess
     ): void {
         $parentShopwareId = null;
         if (!$parentId) {
+            // creates a category in Shopware for a tree name
             $parentShopwareId = $this->loadOrCreateCategoryForTree($channel, $categoryTreeId);
         }
-        $shopwareCategory = $this->loadCategory($channel, $category);
+        $shopwareCategory = $this->loadCategory($channel, $category, $categoryTreeId);
         if ($shopwareCategory) {
-            $this->updateFullCategory($channel, $export, $shopwareCategory, $category, $parentId, $parentShopwareId);
+            $this->updateFullCategory($channel, $export, $shopwareCategory, $category, $categoryTreeId,  $parentId, $parentShopwareId);
         } else {
             $shopwareCategory = new Shopware6Category();
-            $this->builder->build($channel, $export, $shopwareCategory, $category, $parentId, $parentShopwareId);
+            $this->builder->build($channel, $export, $shopwareCategory, $category, $categoryTreeId, $parentId, $parentShopwareId);
             $this->categoryClient->insert($channel, $shopwareCategory, $category->getId());
         }
 
@@ -84,6 +85,7 @@ class CategoryShopware6ExportProcess
         Export $export,
         Shopware6Category $shopwareCategory,
         AbstractCategory $category,
+        CategoryTreeId $categoryTreeId,
         ?CategoryId $parentId = null,
         ?string $parentShopwareId = null
     ): void {
@@ -102,6 +104,7 @@ class CategoryShopware6ExportProcess
             $export,
             $shopwareCategory,
             $category,
+            $categoryTreeId,
             $parentId,
             $parentShopwareId
         );
@@ -125,6 +128,7 @@ class CategoryShopware6ExportProcess
                     $export,
                     $translatedCategory,
                     $category,
+                    $categoryTreeId,
                     $parentId,
                     $parentShopwareId,
                     $channelLanguage
@@ -144,9 +148,10 @@ class CategoryShopware6ExportProcess
 
     private function loadCategory(
         Shopware6Channel $channel,
-        AbstractCategory $category
+        AbstractCategory $category,
+        CategoryTreeId $categoryTreeId
     ): ?Shopware6Category {
-        $shopwareId = $this->shopware6CategoryRepository->load($channel->getId(), $category->getId());
+        $shopwareId = $this->shopware6CategoryRepository->load($channel->getId(), $category->getId(), $categoryTreeId);
         if ($shopwareId) {
             try {
                 return $this->categoryClient->get($channel, $shopwareId);
@@ -164,7 +169,8 @@ class CategoryShopware6ExportProcess
         $categoryId = new CategoryId($categoryTreeId->getValue());
         $shopwareId = $this->shopware6CategoryRepository->load(
             $channel->getId(),
-            $categoryId
+            $categoryId,
+            $categoryTreeId
         );
         if (!$shopwareId) {
             $categoryTree = $this->treeRepository->load($categoryTreeId);
@@ -172,10 +178,11 @@ class CategoryShopware6ExportProcess
             $shopwareCategory = new Shopware6Category();
             $shopwareCategory->setName($categoryTree->getName()->get($channel->getDefaultLanguage()));
 
-            $this->categoryClient->insert($channel, $shopwareCategory, $categoryId);
+            $this->categoryClient->insert($channel, $shopwareCategory, $categoryId, $categoryTreeId);
             $shopwareId = $this->shopware6CategoryRepository->load(
                 $channel->getId(),
-                $categoryId
+                $categoryId,
+                $categoryTreeId
             );
 
             if (!$shopwareId) {

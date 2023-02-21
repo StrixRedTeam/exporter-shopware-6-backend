@@ -68,7 +68,7 @@ class Shopware6ChannelForm extends AbstractType
         $galleryAttributeDictionary = $this->attributeQuery->getDictionary([GalleryAttribute::TYPE]);
         $imageAttributeDictionary = $this->attributeQuery->getDictionary([ImageAttribute::TYPE]);
         $languages = $this->languageQuery->getDictionaryActive();
-        $categoryTrees = array_merge(['' => ''], $this->categoryTreeQuery->getDictionary(new Language('en_GB')));
+        $categoryTrees = $this->categoryTreeQuery->getDictionary(new Language('en_GB'));
         $segmentDictionary = array_merge(['' => ''], $this->segmentQuery->getDictionary());
         $productCollectionDictionary = $this->productCollectionQuery->getDictionary();
 

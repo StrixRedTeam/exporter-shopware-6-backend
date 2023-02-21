@@ -14,6 +14,7 @@ use Ergonode\Channel\Domain\Entity\Export;
 use Ergonode\ExporterShopware6\Domain\Entity\Shopware6Channel;
 use Ergonode\ExporterShopware6\Infrastructure\Model\Shopware6Category;
 use Ergonode\SharedKernel\Domain\Aggregate\CategoryId;
+use Ergonode\SharedKernel\Domain\Aggregate\CategoryTreeId;
 
 interface CategoryMapperInterface
 {
@@ -24,6 +25,7 @@ interface CategoryMapperInterface
         Export $export,
         Shopware6Category $shopware6Category,
         AbstractCategory $category,
+        CategoryTreeId $categoryTreeId,
         ?CategoryId $parentCategoryId = null,
         ?string $parentShopwareId = null,
         ?Language $language = null

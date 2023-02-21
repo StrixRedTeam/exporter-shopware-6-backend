@@ -9,15 +9,16 @@ declare(strict_types=1);
 namespace Ergonode\ExporterShopware6\Domain\Repository;
 
 use Ergonode\SharedKernel\Domain\Aggregate\CategoryId;
+use Ergonode\SharedKernel\Domain\Aggregate\CategoryTreeId;
 use Ergonode\SharedKernel\Domain\Aggregate\ChannelId;
 
 interface CategoryRepositoryInterface
 {
-    public function load(ChannelId $channelId, CategoryId $categoryId): ?string;
+    public function load(ChannelId $channelId, CategoryId $categoryId, ?CategoryTreeId $categoryTreeId = null): ?string;
 
-    public function save(ChannelId $channelId, CategoryId $categoryId, string $shopwareId): void;
+    public function save(ChannelId $channelId, CategoryId $categoryId, CategoryTreeId $categoryTreeId, string $shopwareId): void;
 
     public function exists(ChannelId $channelId, CategoryId $categoryId): bool;
 
-    public function delete(ChannelId $channelId, CategoryId $categoryId): void;
+    public function delete(ChannelId $channelId, CategoryId $categoryId/*, CategoryTreeId $categoryTreeId*/): void;
 }

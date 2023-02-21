@@ -42,12 +42,13 @@ class DbalCategoryRepository implements CategoryRepositoryInterface
             ->where($qb->expr()->eq('channel_id', ':channelId'))
             ->setParameter(':channelId', $channelId->getValue())
             ->andWhere($qb->expr()->eq('cs.category_id', ':categoryId'))
-            ->setParameter(':categoryId', $categoryId->getValue())
-            ->andWhere($qb->expr()->eq('cs.category_tree_id', ':categoryTreeId'));
+            ->setParameter(':categoryId', $categoryId->getValue());
 
         if ($categoryTreeId) {
-            $qb->setParameter(':categoryTreeId', $categoryId->getValue())
-               ->execute();
+            $qb
+                ->andWhere($qb->expr()->eq('cs.category_tree_id', ':categoryTreeId'))
+                ->setParameter(':categoryTreeId', $categoryTreeId->getValue())
+                ->execute();
         }
         $record = $query->execute()->fetch();
 

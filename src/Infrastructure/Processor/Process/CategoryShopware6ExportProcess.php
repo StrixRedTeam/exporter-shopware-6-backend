@@ -74,7 +74,7 @@ class CategoryShopware6ExportProcess
         } else {
             $shopwareCategory = new Shopware6Category();
             $this->builder->build($channel, $export, $shopwareCategory, $category, $categoryTreeId, $parentId, $parentShopwareId);
-            $this->categoryClient->insert($channel, $shopwareCategory, $category->getId());
+            $this->categoryClient->insert($channel, $shopwareCategory, $category->getId(), $categoryTreeId);
         }
 
         $this->exportRepository->processLine($lineId);

@@ -176,7 +176,9 @@ class CategoryShopware6ExportProcess
             $categoryTree = $this->treeRepository->load($categoryTreeId);
             Assert::isInstanceOf($categoryTree, CategoryTree::class);
             $shopwareCategory = new Shopware6Category();
-            $shopwareCategory->setName($categoryTree->getName()->get($channel->getDefaultLanguage()));
+            $shopwareCategory->setName(
+                $categoryTree->getName()->get($channel->getDefaultLanguage()) ?? $categoryTree->getCode()
+            );
 
             $this->categoryClient->insert($channel, $shopwareCategory, $categoryId, $categoryTreeId);
             $shopwareId = $this->shopware6CategoryRepository->load(

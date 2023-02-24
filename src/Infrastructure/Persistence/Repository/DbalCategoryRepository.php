@@ -9,7 +9,10 @@ declare(strict_types=1);
 
 namespace Ergonode\ExporterShopware6\Infrastructure\Persistence\Repository;
 
+use DateTimeImmutable;
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\DBALException;
+use Doctrine\DBAL\Exception\InvalidArgumentException;
 use Doctrine\DBAL\Types\Types;
 use Ergonode\ExporterShopware6\Domain\Repository\CategoryRepositoryInterface;
 use Ergonode\SharedKernel\Domain\Aggregate\CategoryId;
@@ -60,7 +63,7 @@ class DbalCategoryRepository implements CategoryRepositoryInterface
     }
 
     /**
-     * @throws \Doctrine\DBAL\DBALException
+     * @throws DBALException
      */
     public function save(ChannelId $channelId, CategoryId $categoryId, CategoryTreeId $categoryTreeId, string $shopwareId): void
     {
@@ -77,7 +80,7 @@ class DbalCategoryRepository implements CategoryRepositoryInterface
                 'categoryId' => $categoryId->getValue(),
                 'shopware6Id' => $shopwareId,
                 'categoryTreeId' => $categoryTreeId->getValue(),
-                'updatedAt' => new \DateTimeImmutable(),
+                'updatedAt' => new DateTimeImmutable(),
             ],
             [
                 'updatedAt' => Types::DATETIMETZ_MUTABLE,
@@ -108,16 +111,17 @@ class DbalCategoryRepository implements CategoryRepositoryInterface
     }
 
     /**
-     * @throws \Doctrine\DBAL\DBALException
-     * @throws \Doctrine\DBAL\Exception\InvalidArgumentException
+     * @throws DBALException
+     * @throws InvalidArgumentException
      */
-    public function delete(ChannelId $channelId, CategoryId $categoryId): void
+    public function delete(ChannelId $channelId, CategoryId $categoryId, CategoryTreeId $categoryTreeId): void
     {
         $this->connection->delete(
             self::TABLE,
             [
                 'category_id' => $categoryId->getValue(),
                 'channel_id' => $channelId->getValue(),
+                'category_tree_id' => $categoryTreeId->getValue(),
             ]
         );
     }

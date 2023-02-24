@@ -77,7 +77,7 @@ class DbalCategoryQuery implements CategoryQueryInterface
             ->setParameter(':channelId', $channelId->getValue())
             ->andWhere($query->expr()->notIn('cs.category_id', ':categoryIds'))
             ->setParameter(':categoryIds', $categoryIds, Connection::PARAM_STR_ARRAY)
-            ->where($query->expr()->eq('cs.category_tree_id', ':categoryTreeId'))
+            ->andWhere($query->expr()->eq('cs.category_tree_id', ':categoryTreeId'))
             ->setParameter(':categoryTreeId', $categoryTreeId->getValue())
             ->execute()
             ->fetchAll(\PDO::FETCH_COLUMN);

@@ -97,7 +97,11 @@ class CategoryRemoveStep implements ExportStepProcessInterface
 
         foreach ($categoryList as $categoryRow) {
             $categoryId = new CategoryId($categoryRow['category_id']);
-            $processCommand = new CategoryRemoveExportCommand($exportId, $categoryId, $categoryRow['category_tree_id']);
+            $processCommand = new CategoryRemoveExportCommand(
+                $exportId,
+                $categoryId,
+                new CategoryTreeId($categoryRow['category_tree_id'])
+            );
             $this->commandBus->dispatch($processCommand, true);
         }
     }

@@ -13,6 +13,7 @@ use Ergonode\ExporterShopware6\Domain\Entity\Shopware6Channel;
 use Ergonode\ExporterShopware6\Domain\Repository\CategoryRepositoryInterface;
 use Ergonode\ExporterShopware6\Infrastructure\Client\Shopware6CategoryClient;
 use Ergonode\SharedKernel\Domain\Aggregate\CategoryId;
+use Ergonode\SharedKernel\Domain\Aggregate\CategoryTreeId;
 
 class CategoryRemoveShopware6ExportProcess
 {
@@ -28,11 +29,15 @@ class CategoryRemoveShopware6ExportProcess
         $this->categoryClient = $categoryClient;
     }
 
-    public function process(Export $export, Shopware6Channel $channel, CategoryId $categoryId): void
-    {
-        $shopwareId = $this->shopwareCategoryRepository->load($channel->getId(), $categoryId);
+    public function process(
+        Export $export,
+        Shopware6Channel $channel,
+        CategoryId $categoryId,
+        CategoryTreeId $categoryTreeId
+    ): void {
+        $shopwareId = $this->shopwareCategoryRepository->load($channel->getId(), $categoryId, $categoryTreeId);
         if ($shopwareId) {
-            $this->categoryClient->delete($channel, $shopwareId, $categoryId);
+            $this->categoryClient->delete($channel, $shopwareId, $categoryId, $categoryTreeId);
         }
     }
 }

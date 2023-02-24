@@ -92,13 +92,17 @@ class Shopware6CategoryClient
         $this->connector->execute($channel, $action);
     }
 
-    public function delete(Shopware6Channel $channel, string $shopwareId, CategoryId $categoryId): void
-    {
+    public function delete(
+        Shopware6Channel $channel,
+        string $shopwareId,
+        CategoryId $categoryId,
+        CategoryTreeId $categoryTreeId
+    ): void {
         try {
             $action = new DeleteCategory($shopwareId);
             $this->connector->execute($channel, $action);
         } catch (ClientException $exception) {
         }
-        $this->repository->delete($channel->getId(), $categoryId);
+        $this->repository->delete($channel->getId(), $categoryId, $categoryTreeId);
     }
 }

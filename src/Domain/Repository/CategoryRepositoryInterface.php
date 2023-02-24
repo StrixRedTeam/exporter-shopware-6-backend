@@ -20,5 +20,5 @@ interface CategoryRepositoryInterface
 
     public function exists(ChannelId $channelId, CategoryId $categoryId): bool;
 
-    public function delete(ChannelId $channelId, CategoryId $categoryId/*, CategoryTreeId $categoryTreeId*/): void;
+    public function delete(ChannelId $channelId, CategoryId $categoryId, CategoryTreeId $categoryTreeId): void;
 }

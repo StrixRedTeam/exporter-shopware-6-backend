@@ -13,6 +13,7 @@ use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Types\Types;
 use Ergonode\ExporterShopware6\Domain\Query\CategoryQueryInterface;
 use Ergonode\SharedKernel\Domain\Aggregate\CategoryId;
+use Ergonode\SharedKernel\Domain\Aggregate\CategoryTreeId;
 use Ergonode\SharedKernel\Domain\Aggregate\ChannelId;
 
 class DbalCategoryQuery implements CategoryQueryInterface
@@ -63,11 +64,9 @@ class DbalCategoryQuery implements CategoryQueryInterface
     }
 
     /**
-     * @param array $categoryIds
-     *
-     * @return array
+     * ((@inheritdoc}}
      */
-    public function getCategoryToDelete(ChannelId $channelId, array $categoryIds): array
+    public function getCategoryToDelete(ChannelId $channelId, array $categoryIds, CategoryTreeId $categoryTreeId): array
     {
         $query = $this->connection->createQueryBuilder();
 
@@ -78,7 +77,27 @@ class DbalCategoryQuery implements CategoryQueryInterface
             ->setParameter(':channelId', $channelId->getValue())
             ->andWhere($query->expr()->notIn('cs.category_id', ':categoryIds'))
             ->setParameter(':categoryIds', $categoryIds, Connection::PARAM_STR_ARRAY)
+            ->where($query->expr()->eq('cs.category_tree_id', ':categoryTreeId'))
+            ->setParameter(':categoryTreeId', $categoryTreeId->getValue())
             ->execute()
             ->fetchAll(\PDO::FETCH_COLUMN);
+    }
+
+    /**
+     * ((@inheritdoc}}
+     */
+    public function getCategoryTreesToDelete(ChannelId $channelId, array $categoryTreeIds): array
+    {
+        $query = $this->connection->createQueryBuilder();
+
+        return $query
+            ->select('cs.category_id, cs.category_tree_id')
+            ->from(self::TABLE, 'cs')
+            ->where($query->expr()->eq('cs.channel_id', ':channelId'))
+            ->setParameter(':channelId', $channelId->getValue())
+            ->andWhere($query->expr()->notIn('cs.category_tree_id', ':categoryTreeIds'))
+            ->setParameter(':categoryTreeIds', $categoryTreeIds, Connection::PARAM_STR_ARRAY)
+            ->execute()
+            ->fetchAllAssociative();
     }
 }

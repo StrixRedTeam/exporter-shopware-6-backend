@@ -43,7 +43,7 @@ class CreateShopware6ChannelCommandHandler
             $command->getProductMetaTitle(),
             $command->getProductMetaDescription(),
             $command->getProductKeywords(),
-            $command->getCategoryTree(),
+            $command->getCategoryTrees(),
             $command->getPropertyGroup(),
             $command->getCustomField(),
             $command->getCrossSelling(),

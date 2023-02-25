@@ -59,7 +59,10 @@ class UpdateShopware6ChannelCommand implements ChannelCommandInterface
 
     private ?AttributeId $productKeywords;
 
-    private ?CategoryTreeId $categoryTree;
+    /**
+     * @var CategoryTreeId[]
+     */
+    private array $categoryTrees;
 
     /**
      * @var AttributeId[]
@@ -114,7 +117,7 @@ class UpdateShopware6ChannelCommand implements ChannelCommandInterface
         ?AttributeId $productMetaTitle,
         ?AttributeId $productMetaDescription,
         ?AttributeId $productKeywords,
-        ?CategoryTreeId $categoryTree,
+        array $categoryTrees,
         array $propertyGroup,
         array $customField,
         array $crossSelling,
@@ -144,7 +147,7 @@ class UpdateShopware6ChannelCommand implements ChannelCommandInterface
         $this->productMetaTitle = $productMetaTitle;
         $this->productMetaDescription = $productMetaDescription;
         $this->productKeywords = $productKeywords;
-        $this->categoryTree = $categoryTree;
+        $this->categoryTrees = $categoryTrees;
         $this->propertyGroup = $propertyGroup;
         $this->customField = $customField;
         $this->crossSelling = $crossSelling;
@@ -254,9 +257,9 @@ class UpdateShopware6ChannelCommand implements ChannelCommandInterface
         return $this->productKeywords;
     }
 
-    public function getCategoryTree(): ?CategoryTreeId
+    public function getCategoryTrees(): array
     {
-        return $this->categoryTree;
+        return $this->categoryTrees;
     }
 
     /**

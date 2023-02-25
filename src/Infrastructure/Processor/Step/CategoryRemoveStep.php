@@ -10,6 +10,7 @@ namespace Ergonode\ExporterShopware6\Infrastructure\Processor\Step;
 
 use Ergonode\Category\Domain\Repository\TreeRepositoryInterface;
 use Ergonode\Category\Domain\ValueObject\Node;
+use Ergonode\SharedKernel\Domain\Aggregate\CategoryTreeId;
 use Ergonode\SharedKernel\Domain\Bus\CommandBusInterface;
 use Ergonode\ExporterShopware6\Domain\Command\Export\CategoryRemoveExportCommand;
 use Ergonode\ExporterShopware6\Domain\Entity\Shopware6Channel;
@@ -39,31 +40,68 @@ class CategoryRemoveStep implements ExportStepProcessInterface
 
     public function export(ExportId $exportId, Shopware6Channel $channel): void
     {
-        $categoryTreeId = $channel->getCategoryTree();
-        if ($categoryTreeId) {
+        $categoryTreeIds = [];
+        $categoryTrees = $channel->getCategoryTrees();
+        foreach ($categoryTrees as $id) {
+            $categoryTreeId = new CategoryTreeId($id);
+            $categoryIds = [];
             $tree = $this->treeRepository->load($categoryTreeId);
             Assert::notNull($tree, sprintf('Tree %s not exists', $categoryTreeId));
 
-            $categoryIds = [];
             foreach ($tree->getCategories() as $node) {
                 $newCategoryIds = $this->buildStep($node);
                 $categoryIds = array_unique(array_merge($categoryIds, $newCategoryIds));
             }
+            // tree is also sent to Shopware as category
+            $categoryIds[] = $tree->getId()->getValue();
+            $categoryTreeIds[] = $tree->getId()->getValue();
 
-            $this->categoryDelete($exportId, $channel, $categoryIds);
+            $this->categoryDelete($exportId, $channel, $categoryIds, $categoryTreeId);
+        }
+
+        $this->categoryTreeDelete($exportId, $channel, $categoryTreeIds);
+    }
+
+    /**
+     * @param ExportId $exportId
+     * @param Shopware6Channel $channel
+     * @param array $categoryIds
+     * @param CategoryTreeId $categoryTreeId
+     */
+    private function categoryDelete(ExportId $exportId, Shopware6Channel $channel, array $categoryIds, CategoryTreeId $categoryTreeId): void
+    {
+        $categoryList = $this->shopwareCategoryQuery->getCategoryToDelete(
+            $channel->getId(),
+            $categoryIds,
+            $categoryTreeId
+        );
+
+        foreach ($categoryList as $category) {
+            $categoryId = new CategoryId($category);
+            $processCommand = new CategoryRemoveExportCommand($exportId, $categoryId, $categoryTreeId);
+            $this->commandBus->dispatch($processCommand, true);
         }
     }
 
     /**
-     * @param array $categoryIds
+     * @param ExportId $exportId
+     * @param Shopware6Channel $channel
+     * @param array $categoryTreeIds
      */
-    private function categoryDelete(ExportId $exportId, Shopware6Channel $channel, array $categoryIds): void
+    private function categoryTreeDelete(ExportId $exportId, Shopware6Channel $channel, array $categoryTreeIds): void
     {
-        $categoryList = $this->shopwareCategoryQuery->getCategoryToDelete($channel->getId(), $categoryIds);
+        $categoryList = $this->shopwareCategoryQuery->getCategoryTreesToDelete(
+            $channel->getId(),
+            $categoryTreeIds
+        );
 
-        foreach ($categoryList as $category) {
-            $categoryId = new CategoryId($category);
-            $processCommand = new CategoryRemoveExportCommand($exportId, $categoryId);
+        foreach ($categoryList as $categoryRow) {
+            $categoryId = new CategoryId($categoryRow['category_id']);
+            $processCommand = new CategoryRemoveExportCommand(
+                $exportId,
+                $categoryId,
+                new CategoryTreeId($categoryRow['category_tree_id'])
+            );
             $this->commandBus->dispatch($processCommand, true);
         }
     }

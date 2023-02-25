@@ -13,6 +13,7 @@ use Ergonode\Category\Domain\Repository\TreeRepositoryInterface;
 use Ergonode\Category\Domain\ValueObject\Node;
 use Ergonode\Channel\Domain\Repository\ExportRepositoryInterface;
 use Ergonode\Channel\Domain\ValueObject\ExportLineId;
+use Ergonode\SharedKernel\Domain\Aggregate\CategoryTreeId;
 use Ergonode\SharedKernel\Domain\Bus\CommandBusInterface;
 use Ergonode\ExporterShopware6\Domain\Command\Export\CategoryExportCommand;
 use Ergonode\ExporterShopware6\Domain\Entity\Shopware6Channel;
@@ -41,27 +42,27 @@ class CategoryStep implements ExportStepProcessInterface
 
     public function export(ExportId $exportId, Shopware6Channel $channel): void
     {
-        $categoryTreeId = $channel->getCategoryTree();
-        if ($categoryTreeId) {
+        $categoryTreeIds = $channel->getCategoryTrees();
+        foreach ($categoryTreeIds as $categoryTreeId) {
             /** @var CategoryTree $tree */
-            $tree = $this->treeRepository->load($categoryTreeId);
+            $tree = $this->treeRepository->load(new CategoryTreeId($categoryTreeId));
             Assert::notNull($tree, sprintf('Tree %s not exists', $categoryTreeId));
             foreach ($tree->getCategories() as $node) {
-                $this->buildStep($exportId, $node);
+                $this->buildStep($tree->getId(), $exportId, $node);
             }
         }
     }
 
-    private function buildStep(ExportId $exportId, Node $node, CategoryId $parentId = null): void
+    private function buildStep(CategoryTreeId $categoryTreeId, ExportId $exportId, Node $node, CategoryId $parentId = null): void
     {
         $lineId = ExportLineId::generate();
-        $processCommand = new CategoryExportCommand($lineId, $exportId, $node->getCategoryId(), $parentId);
+        $processCommand = new CategoryExportCommand($categoryTreeId, $lineId, $exportId, $node->getCategoryId(), $parentId);
         $this->exportRepository->addLine($lineId, $exportId, $node->getCategoryId());
         $this->commandBus->dispatch($processCommand, true);
 
         $newParent = $node->getCategoryId();
         foreach ($node->getChildren() as $child) {
-            $this->buildStep($exportId, $child, $newParent);
+            $this->buildStep($categoryTreeId, $exportId, $child, $newParent);
         }
     }
 }

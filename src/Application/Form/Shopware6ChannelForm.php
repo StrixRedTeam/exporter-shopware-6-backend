@@ -68,7 +68,8 @@ class Shopware6ChannelForm extends AbstractType
         $galleryAttributeDictionary = $this->attributeQuery->getDictionary([GalleryAttribute::TYPE]);
         $imageAttributeDictionary = $this->attributeQuery->getDictionary([ImageAttribute::TYPE]);
         $languages = $this->languageQuery->getDictionaryActive();
-        $categoryTrees = array_merge(['' => ''], $this->categoryTreeQuery->getDictionary(new Language('en_GB')));
+        $categoryTrees = $this->categoryTreeQuery->getDictionary(new Language('en_GB'));
+        sort($categoryTrees);
         $segmentDictionary = array_merge(['' => ''], $this->segmentQuery->getDictionary());
         $productCollectionDictionary = $this->productCollectionQuery->getDictionary();
 
@@ -307,11 +308,12 @@ class Shopware6ChannelForm extends AbstractType
                 ]
             )
             ->add(
-                'category_tree',
+                'category_trees',
                 ChoiceType::class,
                 [
-                    'label' => 'Category tree',
-                    'property_path' => 'categoryTree',
+                    'label' => 'Category trees',
+                    'property_path' => 'categoryTrees',
+                    'multiple' => true,
                     'choices' => array_flip($categoryTrees),
                     'required' => false,
                 ]

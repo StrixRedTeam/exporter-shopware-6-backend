@@ -49,6 +49,13 @@ class CategoryExportCommandHandler
         $category = $this->categoryRepository->load($command->getCategoryId());
         Assert::isInstanceOf($category, AbstractCategory::class);
 
-        $this->process->process($command->getLineId(), $export, $channel, $category, $command->getParentCategoryId());
+        $this->process->process(
+            $command->getCategoryTreeId(),
+            $command->getLineId(),
+            $export,
+            $channel,
+            $category,
+            $command->getParentCategoryId()
+        );
     }
 }

@@ -13,6 +13,7 @@ use Ergonode\ExporterShopware6\Application\Model\Type\CustomFieldAttributeModel;
 use Ergonode\ExporterShopware6\Application\Model\Type\PropertyGroupAttributeModel;
 use Ergonode\ExporterShopware6\Domain\Entity\Shopware6Channel;
 use Ergonode\SharedKernel\Domain\Aggregate\AttributeId;
+use Ergonode\SharedKernel\Domain\Aggregate\CategoryTreeId;
 use Symfony\Component\Validator\Constraints as Assert;
 
 class Shopware6ChannelFormModel
@@ -104,7 +105,10 @@ class Shopware6ChannelFormModel
 
     public ?string $attributeProductKeywords = null;
 
-    public ?string $categoryTree = null;
+    /**
+     * @var CategoryTreeId[]
+     */
+    public array $categoryTrees = [];
 
     /**
      * @var PropertyGroupAttributeModel[]
@@ -162,7 +166,7 @@ class Shopware6ChannelFormModel
                 ? $channel->getAttributeProductMetaDescription()->getValue() : null;
             $this->attributeProductKeywords = $channel->getAttributeProductKeywords()
                 ? $channel->getAttributeProductKeywords()->getValue() : null;
-            $this->categoryTree = $channel->getCategoryTree() ? $channel->getCategoryTree()->getValue() : null;
+            $this->categoryTrees = $channel->getCategoryTrees();
             $this->crossSelling = $channel->getCrossSelling();
             $this->attributeProductSeoUrl = $channel->getAttributeProductSeoUrl()
                 ? $channel->getAttributeProductSeoUrl()->getValue() : null;

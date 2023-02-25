@@ -46,7 +46,7 @@ class UpdateShopware6ChannelCommandHandler
         $channel->setAttributeProductMetaTitle($command->getProductMetaTitle());
         $channel->setAttributeProductMetaDescription($command->getProductMetaDescription());
         $channel->setAttributeProductKeywords($command->getProductKeywords());
-        $channel->setCategoryTree($command->getCategoryTree());
+        $channel->setCategoryTrees($command->getCategoryTrees());
         $channel->setPropertyGroup($command->getPropertyGroup());
         $channel->setCustomField($command->getCustomField());
         $channel->setCrossSelling($command->getCrossSelling());

@@ -10,7 +10,6 @@ namespace Ergonode\ExporterShopware6\Domain\Entity;
 
 use Ergonode\Core\Domain\ValueObject\Language;
 use Ergonode\SharedKernel\Domain\Aggregate\AttributeId;
-use Ergonode\SharedKernel\Domain\Aggregate\CategoryTreeId;
 use Ergonode\SharedKernel\Domain\Aggregate\ProductCollectionId;
 use Ergonode\SharedKernel\Domain\Aggregate\SegmentId;
 use Ergonode\Channel\Domain\Entity\AbstractChannel;
@@ -57,7 +56,7 @@ class Shopware6Channel extends AbstractChannel
 
     private ?AttributeId $attributeProductKeywords;
 
-    private ?CategoryTreeId $categoryTree;
+    private array $categoryTrees = [];
 
     /**
      * @var AttributeId[]
@@ -112,7 +111,7 @@ class Shopware6Channel extends AbstractChannel
         ?AttributeId $attributeProductMetaTitle,
         ?AttributeId $attributeProductMetaDescription,
         ?AttributeId $attributeProductKeywords,
-        ?CategoryTreeId $categoryTree,
+        array $categoryTrees,
         array $propertyGroup,
         array $customField,
         array $crossSelling,
@@ -142,7 +141,7 @@ class Shopware6Channel extends AbstractChannel
         $this->attributeProductMetaTitle = $attributeProductMetaTitle;
         $this->attributeProductMetaDescription = $attributeProductMetaDescription;
         $this->attributeProductKeywords = $attributeProductKeywords;
-        $this->categoryTree = $categoryTree;
+        $this->categoryTrees = $categoryTrees;
         $this->propertyGroup = $propertyGroup;
         $this->customField = $customField;
         $this->crossSelling = $crossSelling;
@@ -247,9 +246,9 @@ class Shopware6Channel extends AbstractChannel
         return $this->attributeProductKeywords;
     }
 
-    public function getCategoryTree(): ?CategoryTreeId
+    public function getCategoryTrees(): array
     {
-        return $this->categoryTree;
+        return $this->categoryTrees;
     }
 
     /**
@@ -364,9 +363,9 @@ class Shopware6Channel extends AbstractChannel
         $this->attributeProductKeywords = $attributeProductKeywords;
     }
 
-    public function setCategoryTree(?CategoryTreeId $categoryTree): void
+    public function setCategoryTrees(array $categoryTrees): void
     {
-        $this->categoryTree = $categoryTree;
+        $this->categoryTrees = $categoryTrees;
     }
 
     /**

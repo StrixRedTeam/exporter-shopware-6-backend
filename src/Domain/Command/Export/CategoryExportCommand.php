@@ -11,6 +11,7 @@ namespace Ergonode\ExporterShopware6\Domain\Command\Export;
 use Ergonode\Channel\Domain\Command\ExporterCommandInterface;
 use Ergonode\Channel\Domain\ValueObject\ExportLineId;
 use Ergonode\SharedKernel\Domain\Aggregate\CategoryId;
+use Ergonode\SharedKernel\Domain\Aggregate\CategoryTreeId;
 use Ergonode\SharedKernel\Domain\Aggregate\ExportId;
 
 class CategoryExportCommand implements ExporterCommandInterface
@@ -23,7 +24,10 @@ class CategoryExportCommand implements ExporterCommandInterface
 
     private ?CategoryId $parentCategoryId;
 
+    private CategoryTreeId $categoryTreeId;
+
     public function __construct(
+        CategoryTreeId $categoryTreeId,
         ExportLineId $lineId,
         ExportId $exportId,
         CategoryId $categoryId,
@@ -33,6 +37,7 @@ class CategoryExportCommand implements ExporterCommandInterface
         $this->exportId = $exportId;
         $this->categoryId = $categoryId;
         $this->parentCategoryId = $parentCategoryId;
+        $this->categoryTreeId = $categoryTreeId;
     }
 
     public function getLineId(): ExportLineId
@@ -53,5 +58,10 @@ class CategoryExportCommand implements ExporterCommandInterface
     public function getParentCategoryId(): ?CategoryId
     {
         return $this->parentCategoryId;
+    }
+
+    public function getCategoryTreeId(): CategoryTreeId
+    {
+        return $this->categoryTreeId;
     }
 }

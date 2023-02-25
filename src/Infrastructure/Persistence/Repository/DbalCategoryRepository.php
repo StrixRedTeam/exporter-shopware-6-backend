@@ -9,10 +9,14 @@ declare(strict_types=1);
 
 namespace Ergonode\ExporterShopware6\Infrastructure\Persistence\Repository;
 
+use DateTimeImmutable;
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\DBALException;
+use Doctrine\DBAL\Exception\InvalidArgumentException;
 use Doctrine\DBAL\Types\Types;
 use Ergonode\ExporterShopware6\Domain\Repository\CategoryRepositoryInterface;
 use Ergonode\SharedKernel\Domain\Aggregate\CategoryId;
+use Ergonode\SharedKernel\Domain\Aggregate\CategoryTreeId;
 use Ergonode\SharedKernel\Domain\Aggregate\ChannelId;
 
 class DbalCategoryRepository implements CategoryRepositoryInterface
@@ -22,6 +26,7 @@ class DbalCategoryRepository implements CategoryRepositoryInterface
         'channel_id',
         'category_id',
         'shopware6_id',
+        'category_tree_id',
     ];
 
     private Connection $connection;
@@ -31,18 +36,24 @@ class DbalCategoryRepository implements CategoryRepositoryInterface
         $this->connection = $connection;
     }
 
-    public function load(ChannelId $channelId, CategoryId $categoryId): ?string
+    public function load(ChannelId $channelId, CategoryId $categoryId, ?CategoryTreeId $categoryTreeId = null): ?string
     {
-        $query = $this->connection->createQueryBuilder();
-        $record = $query
+        $qb = $this->connection->createQueryBuilder();
+        $query = $qb
             ->select(self::FIELDS)
             ->from(self::TABLE, 'cs')
-            ->where($query->expr()->eq('channel_id', ':channelId'))
+            ->where($qb->expr()->eq('channel_id', ':channelId'))
             ->setParameter(':channelId', $channelId->getValue())
-            ->andWhere($query->expr()->eq('cs.category_id', ':categoryId'))
-            ->setParameter(':categoryId', $categoryId->getValue())
-            ->execute()
-            ->fetch();
+            ->andWhere($qb->expr()->eq('cs.category_id', ':categoryId'))
+            ->setParameter(':categoryId', $categoryId->getValue());
+
+        if ($categoryTreeId) {
+            $qb
+                ->andWhere($qb->expr()->eq('cs.category_tree_id', ':categoryTreeId'))
+                ->setParameter(':categoryTreeId', $categoryTreeId->getValue())
+                ->execute();
+        }
+        $record = $query->execute()->fetch();
 
         if ($record) {
             return ($record['shopware6_id']);
@@ -52,12 +63,12 @@ class DbalCategoryRepository implements CategoryRepositoryInterface
     }
 
     /**
-     * @throws \Doctrine\DBAL\DBALException
+     * @throws DBALException
      */
-    public function save(ChannelId $channelId, CategoryId $categoryId, string $shopwareId): void
+    public function save(ChannelId $channelId, CategoryId $categoryId, CategoryTreeId $categoryTreeId, string $shopwareId): void
     {
-        $sql = 'INSERT INTO '.self::TABLE.' (channel_id, category_id, shopware6_id, update_at) 
-        VALUES (:channelId, :categoryId, :shopware6Id, :updatedAt)
+        $sql = 'INSERT INTO '.self::TABLE.' (channel_id, category_id, shopware6_id,category_tree_id, update_at) 
+        VALUES (:channelId, :categoryId, :shopware6Id,:categoryTreeId, :updatedAt)
             ON CONFLICT ON CONSTRAINT shopware6_category_pkey
                 DO UPDATE SET shopware6_id = :shopware6Id, update_at = :updatedAt
         ';
@@ -68,7 +79,8 @@ class DbalCategoryRepository implements CategoryRepositoryInterface
                 'channelId' => $channelId->getValue(),
                 'categoryId' => $categoryId->getValue(),
                 'shopware6Id' => $shopwareId,
-                'updatedAt' => new \DateTimeImmutable(),
+                'categoryTreeId' => $categoryTreeId->getValue(),
+                'updatedAt' => new DateTimeImmutable(),
             ],
             [
                 'updatedAt' => Types::DATETIMETZ_MUTABLE,
@@ -99,16 +111,17 @@ class DbalCategoryRepository implements CategoryRepositoryInterface
     }
 
     /**
-     * @throws \Doctrine\DBAL\DBALException
-     * @throws \Doctrine\DBAL\Exception\InvalidArgumentException
+     * @throws DBALException
+     * @throws InvalidArgumentException
      */
-    public function delete(ChannelId $channelId, CategoryId $categoryId): void
+    public function delete(ChannelId $channelId, CategoryId $categoryId, CategoryTreeId $categoryTreeId): void
     {
         $this->connection->delete(
             self::TABLE,
             [
                 'category_id' => $categoryId->getValue(),
                 'channel_id' => $channelId->getValue(),
+                'category_tree_id' => $categoryTreeId->getValue(),
             ]
         );
     }

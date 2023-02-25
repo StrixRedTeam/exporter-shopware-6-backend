@@ -16,6 +16,7 @@ use Ergonode\ExporterShopware6\Domain\Entity\Shopware6Channel;
 use Ergonode\ExporterShopware6\Infrastructure\Mapper\CategoryMapperInterface;
 use Ergonode\ExporterShopware6\Infrastructure\Model\Shopware6Category;
 use Ergonode\SharedKernel\Domain\Aggregate\CategoryId;
+use Ergonode\SharedKernel\Domain\Aggregate\CategoryTreeId;
 use Webmozart\Assert\Assert;
 
 class CategoryBuilder
@@ -36,7 +37,9 @@ class CategoryBuilder
         Export $export,
         Shopware6Category $shopware6Category,
         AbstractCategory $category,
+        CategoryTreeId $categoryTreeId,
         ?CategoryId $parentCategoryId = null,
+        ?string $parentShopwareId = null,
         ?Language $language = null
     ): Shopware6Category {
         foreach ($this->collection as $mapper) {
@@ -45,7 +48,9 @@ class CategoryBuilder
                 $export,
                 $shopware6Category,
                 $category,
+                $categoryTreeId,
                 $parentCategoryId,
+                $parentShopwareId,
                 $language
             );
         }

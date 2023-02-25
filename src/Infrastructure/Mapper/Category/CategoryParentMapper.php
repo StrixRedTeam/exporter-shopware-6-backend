@@ -16,6 +16,7 @@ use Ergonode\ExporterShopware6\Domain\Repository\CategoryRepositoryInterface;
 use Ergonode\ExporterShopware6\Infrastructure\Mapper\CategoryMapperInterface;
 use Ergonode\ExporterShopware6\Infrastructure\Model\Shopware6Category;
 use Ergonode\SharedKernel\Domain\Aggregate\CategoryId;
+use Ergonode\SharedKernel\Domain\Aggregate\CategoryTreeId;
 
 class CategoryParentMapper implements CategoryMapperInterface
 {
@@ -34,11 +35,18 @@ class CategoryParentMapper implements CategoryMapperInterface
         Export $export,
         Shopware6Category $shopware6Category,
         AbstractCategory $category,
+        CategoryTreeId $categoryTreeId,
         ?CategoryId $parentCategoryId = null,
+        ?string $parentShopwareId = null,
         ?Language $language = null
     ): Shopware6Category {
+        if ($parentShopwareId) {
+            $shopware6Category->setParentId($parentShopwareId);
+            return $shopware6Category;
+        }
+
         if ($parentCategoryId) {
-            $shopwareParentId = $this->repository->load($channel->getId(), $parentCategoryId);
+            $shopwareParentId = $this->repository->load($channel->getId(), $parentCategoryId, $categoryTreeId);
             $shopware6Category->setParentId($shopwareParentId);
         }
 

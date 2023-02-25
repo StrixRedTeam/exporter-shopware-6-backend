@@ -20,6 +20,7 @@ use Ergonode\ExporterShopware6\Infrastructure\Connector\Shopware6QueryBuilder;
 use Ergonode\ExporterShopware6\Infrastructure\Model\Shopware6Category;
 use Ergonode\ExporterShopware6\Infrastructure\Model\Shopware6Language;
 use Ergonode\SharedKernel\Domain\Aggregate\CategoryId;
+use Ergonode\SharedKernel\Domain\Aggregate\CategoryTreeId;
 use GuzzleHttp\Exception\ClientException;
 
 class Shopware6CategoryClient
@@ -53,7 +54,8 @@ class Shopware6CategoryClient
     public function insert(
         Shopware6Channel $channel,
         Shopware6Category $shopwareCategory,
-        AbstractCategory $category
+        CategoryId $categoryId,
+        CategoryTreeId $categoryTreeId
     ): ?Shopware6Category {
         $action = new PostCategoryAction($shopwareCategory, true);
 
@@ -70,7 +72,8 @@ class Shopware6CategoryClient
         }
         $this->repository->save(
             $channel->getId(),
-            $category->getId(),
+            $categoryId,
+            $categoryTreeId,
             $newShopwareCategory->getId()
         );
 
@@ -89,13 +92,17 @@ class Shopware6CategoryClient
         $this->connector->execute($channel, $action);
     }
 
-    public function delete(Shopware6Channel $channel, string $shopwareId, CategoryId $categoryId): void
-    {
+    public function delete(
+        Shopware6Channel $channel,
+        string $shopwareId,
+        CategoryId $categoryId,
+        CategoryTreeId $categoryTreeId
+    ): void {
         try {
             $action = new DeleteCategory($shopwareId);
             $this->connector->execute($channel, $action);
         } catch (ClientException $exception) {
         }
-        $this->repository->delete($channel->getId(), $categoryId);
+        $this->repository->delete($channel->getId(), $categoryId, $categoryTreeId);
     }
 }

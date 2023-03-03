@@ -45,7 +45,7 @@ class CategoryStep implements ExportStepProcessInterface
         $categoryTreeIds = $channel->getCategoryTrees();
         foreach ($categoryTreeIds as $categoryTreeId) {
             /** @var CategoryTree $tree */
-            $tree = $this->treeRepository->load(new CategoryTreeId($categoryTreeId));
+            $tree = $this->treeRepository->load(new CategoryTreeId((string) $categoryTreeId));
             Assert::notNull($tree, sprintf('Tree %s not exists', $categoryTreeId));
             foreach ($tree->getCategories() as $node) {
                 $this->buildStep($tree->getId(), $exportId, $node);

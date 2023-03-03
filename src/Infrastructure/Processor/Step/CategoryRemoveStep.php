@@ -43,7 +43,7 @@ class CategoryRemoveStep implements ExportStepProcessInterface
         $categoryTreeIds = [];
         $categoryTrees = $channel->getCategoryTrees();
         foreach ($categoryTrees as $id) {
-            $categoryTreeId = new CategoryTreeId($id);
+            $categoryTreeId = new CategoryTreeId((string) $id);
             $categoryIds = [];
             $tree = $this->treeRepository->load($categoryTreeId);
             Assert::notNull($tree, sprintf('Tree %s not exists', $categoryTreeId));

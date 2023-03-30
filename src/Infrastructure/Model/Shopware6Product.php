@@ -533,6 +533,18 @@ class Shopware6Product implements JsonSerializable
         return false;
     }
 
+    public function removeMedia(Shopware6ProductMedia $media): void
+    {
+        foreach ($this->media as $key => $productMedia) {
+            if ($media->getMediaId() === $productMedia->getMediaId()) {
+                unset($this->media[$key]);
+
+                $this->setModified();
+                return;
+            }
+        }
+    }
+
     /**
      * @return Shopware6ProductMedia[]
      */

@@ -10,6 +10,7 @@ use Ergonode\Core\Domain\ValueObject\Language;
 use Ergonode\ExporterShopware6\Domain\Entity\Shopware6Channel;
 use Ergonode\ExporterShopware6\Infrastructure\Client\Shopware6ProductMediaClient;
 use Ergonode\ExporterShopware6\Infrastructure\Exception\Shopware6ExporterException;
+use Ergonode\ExporterShopware6\Infrastructure\Exception\Shopware6InstanceOfException;
 use Ergonode\ExporterShopware6\Infrastructure\Mapper\ProductMapperInterface;
 use Ergonode\ExporterShopware6\Infrastructure\Model\Product\Shopware6ProductMedia;
 use Ergonode\ExporterShopware6\Infrastructure\Model\Shopware6Product;
@@ -18,6 +19,7 @@ use Ergonode\Product\Domain\Entity\AbstractProduct;
 use Ergonode\Product\Infrastructure\Calculator\TranslationInheritanceCalculator;
 use Ergonode\SharedKernel\Domain\Aggregate\MultimediaId;
 use Ergonode\ExporterShopware6\Application\Helper\Uuid;
+use GuzzleHttp\Exception\GuzzleException;
 use Webmozart\Assert\Assert;
 
 class ProductGalleryMapper implements ProductMapperInterface
@@ -75,7 +77,7 @@ class ProductGalleryMapper implements ProductMapperInterface
                 $position = 0;
                 foreach ($calculateValue as $galleryValue) {
                     $multimediaId = new MultimediaId($galleryValue);
-                    $this->getShopware6MultimediaId($multimediaId, $shopware6Product, $channel, $position++);
+                    $shopware6Product = $this->getShopware6MultimediaId($multimediaId, $shopware6Product, $channel, $position++);
                 }
             }
         } catch (\Exception $e) {
@@ -85,6 +87,10 @@ class ProductGalleryMapper implements ProductMapperInterface
                 $e->getMessage()
             );
             throw new Shopware6ExporterException($message);
+        }
+
+        if (is_array($calculateValue)) {
+            $shopware6Product = $this->removeDeletedMultimedia($channel, $shopware6Product);
         }
 
         return $shopware6Product;
@@ -101,6 +107,28 @@ class ProductGalleryMapper implements ProductMapperInterface
             $shopwareId = $this->mediaClient->findOrCreateMedia($channel, $multimedia, $shopware6Product);
             if ($shopwareId) {
                 $shopware6Product->addMedia(new Shopware6ProductMedia(Uuid::randomHex(), $shopwareId, $position));
+            }
+        }
+
+        return $shopware6Product;
+    }
+
+    /**
+     * Function that double check if multimedia attached to product exists
+     * It could have been removed during earlier processes due to duplicate filename
+     * @param Shopware6Channel $channel
+     * @param Shopware6Product $shopware6Product
+     * @return Shopware6Product
+     * @throws Shopware6InstanceOfException
+     * @throws GuzzleException
+     */
+    private function removeDeletedMultimedia(
+        Shopware6Channel $channel,
+        Shopware6Product $shopware6Product
+    ): Shopware6Product {
+        foreach ($shopware6Product->getMedia() as $media) {
+            if ($media->getMediaId() && !$this->mediaClient->hasMedia($channel, $media->getMediaId())) {
+                $shopware6Product->removeMedia($media);
             }
         }
 

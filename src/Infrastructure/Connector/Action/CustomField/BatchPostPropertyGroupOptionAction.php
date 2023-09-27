@@ -42,15 +42,9 @@ class BatchPostPropertyGroupOptionAction extends AbstractAction
      */
     public function parseContent(?string $content): array
     {
-        $result = [];
-        var_dump($content);
         $data = json_decode($content, true, 512, JSON_THROW_ON_ERROR);
 
-        foreach ($data['data'] as $requestName => $row) {
-            $result[$requestName] = $row['result'][0]['entities']['property_group_option'][0];
-        }
-
-        return $result;
+        return $data['data']['property_group_option'] ?? [];
     }
 
     private function buildBody(): string

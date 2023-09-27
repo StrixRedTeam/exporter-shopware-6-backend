@@ -25,7 +25,7 @@ use Ergonode\SharedKernel\Domain\AggregateId;
 
 class Shopware6PropertyGroupOptionClient
 {
-    private const ENTITY_NAME = 'property_group_option';
+    private const ENTITY_NAME             = 'property_group_option';
     private const TRANSLATION_ENTITY_NAME = 'property_group_option_translation';
 
     private Shopware6Connector $connector;
@@ -55,6 +55,23 @@ class Shopware6PropertyGroupOptionClient
     }
 
     /**
+     * @return Shopware6PropertyGroupOption[]|null
+     */
+    public function getByIds(Shopware6Channel $channel, array $ids): ?array
+    {
+        $query = new Shopware6QueryBuilder();
+        $query->limit(1000);
+        $query->association('translations', [0 => '']);
+        $query->include(self::ENTITY_NAME, ['id', 'name', 'mediaId', 'position']);
+        foreach ($ids as $id) {
+            $query->equals('id[]', $id);
+        }
+        $action = new GetPropertyGroupOptionsList($query);
+
+        return $this->connector->execute($channel, $action);
+    }
+
+    /**
      * @param Shopware6Channel $channel
      * @param string $propertyGroupId
      * @param Shopware6Language|null $shopware6Language
@@ -64,7 +81,7 @@ class Shopware6PropertyGroupOptionClient
     public function get(
         Shopware6Channel $channel,
         string $propertyGroupId,
-        ?Shopware6Language $shopware6Language = null
+        ?Shopware6Language $shopware6Language = null,
     ) {
         $query = new Shopware6QueryBuilder();
         $query->association('translations', [0 => '']);
@@ -118,7 +135,19 @@ class Shopware6PropertyGroupOptionClient
 
         $ids = $this->connector->execute($channel, $action);
 
-        foreach ($ids as $requestId => $shopwareId) {
+        $idAwareOptions = $this->getByIds($channel, $ids);
+        foreach ($batchPropertyGroupOption->getOptions() as $option) {
+            $requestId = $option->getRequestName();
+            $shopwareId = null;
+            foreach ($idAwareOptions as $idAwareOption) {
+                if ($idAwareOption->getName() === $option->getName()) {
+                    $shopwareId = $idAwareOption->getId();
+                    break;
+                }
+            }
+            if (!$shopwareId) {
+                continue;
+            }
             [$attributeId, $optionId] = explode('_', $requestId, 2);
             $this->propertyGroupOptionsRepository->save(
                 $channel->getId(),

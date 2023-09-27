@@ -105,9 +105,7 @@ class Shopware6CustomFieldClient
         ?Shopware6Language $shopware6Language = null
     ): array {
         $query = new Shopware6QueryBuilder();
-        foreach ($ids as $id) {
-            $query->equals('ids[]', $id);
-        }
+        $query->setIds($ids);
         $action = new GetCustomFieldList($query);
         if ($shopware6Language) {
             $action->addHeader('sw-language-id', $shopware6Language->getId());

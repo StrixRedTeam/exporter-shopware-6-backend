@@ -81,7 +81,7 @@ class Shopware6PropertyGroupOptionClient
     public function get(
         Shopware6Channel $channel,
         string $propertyGroupId,
-        ?Shopware6Language $shopware6Language = null,
+        ?Shopware6Language $shopware6Language = null
     ) {
         $query = new Shopware6QueryBuilder();
         $query->association('translations', [0 => '']);

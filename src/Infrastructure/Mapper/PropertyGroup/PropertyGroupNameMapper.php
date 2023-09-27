@@ -46,6 +46,7 @@ class PropertyGroupNameMapper implements PropertyGroupMapperInterface
             $shopware6PropertyGroup->setName($attribute->getCode()->getValue());
         }
         var_dump($shopware6PropertyGroup->getName());
+        throw new \Exception('alfa');
 
         return $shopware6PropertyGroup;
     }

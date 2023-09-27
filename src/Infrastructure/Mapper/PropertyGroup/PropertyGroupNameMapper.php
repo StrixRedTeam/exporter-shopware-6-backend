@@ -41,7 +41,7 @@ class PropertyGroupNameMapper implements PropertyGroupMapperInterface
             }
         }
 
-        if ($channel->getDefaultLanguage() === $language && null === $name) {
+        if ($channel->getDefaultLanguage()->getCode() === $language->getCode() && null === $name) {
             $shopware6PropertyGroup->setName($attribute->getCode()->getValue());
         }
 

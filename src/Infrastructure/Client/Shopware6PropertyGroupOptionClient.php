@@ -104,15 +104,15 @@ class Shopware6PropertyGroupOptionClient
 
     /**
      * @param Shopware6Channel $channel
-     * @param BatchPropertyGroupOption $batchCustomField
+     * @param BatchPropertyGroupOption $batchPropertyGroupOption
      * @return void
      * @throws \Exception
      */
     public function insertBatch(
         Shopware6Channel $channel,
-        BatchPropertyGroupOption $batchCustomField
+        BatchPropertyGroupOption $batchPropertyGroupOption
     ): void {
-        $action = new BatchPostPropertyGroupOptionAction($batchCustomField);
+        $action = new BatchPostPropertyGroupOptionAction($batchPropertyGroupOption);
         $action->addHeader('indexing-behavior', 'use-queue-indexing');
 
         $ids = $this->connector->execute($channel, $action);

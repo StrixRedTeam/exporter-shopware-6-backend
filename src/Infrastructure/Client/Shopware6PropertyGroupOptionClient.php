@@ -10,7 +10,7 @@ namespace Ergonode\ExporterShopware6\Infrastructure\Client;
 
 use Ergonode\ExporterShopware6\Domain\Entity\Shopware6Channel;
 use Ergonode\ExporterShopware6\Domain\Repository\PropertyGroupOptionsRepositoryInterface;
-use Ergonode\ExporterShopware6\Infrastructure\Connector\Action\CustomField\BatchPostPropertyGroupOptionAction;
+use Ergonode\ExporterShopware6\Infrastructure\Connector\Action\PropertyGroup\BatchPostPropertyGroupOptionAction;
 use Ergonode\ExporterShopware6\Infrastructure\Connector\Action\PropertyGroup\DeletePropertyGroupOption;
 use Ergonode\ExporterShopware6\Infrastructure\Connector\Action\PropertyGroup\GetPropertyGroupOptions;
 use Ergonode\ExporterShopware6\Infrastructure\Connector\Action\PropertyGroup\GetPropertyGroupOptionsList;

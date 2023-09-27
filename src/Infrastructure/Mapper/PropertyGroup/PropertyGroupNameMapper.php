@@ -41,9 +41,11 @@ class PropertyGroupNameMapper implements PropertyGroupMapperInterface
             }
         }
 
+        var_dump($shopware6PropertyGroup->getName());
         if(empty($shopware6PropertyGroup->getName())) {
             $shopware6PropertyGroup->setName($attribute->getCode()->getValue());
         }
+        var_dump($shopware6PropertyGroup->getName());
 
         return $shopware6PropertyGroup;
     }

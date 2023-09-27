@@ -114,6 +114,7 @@ class Shopware6PropertyGroupOptionClient
     ): void {
         $action = new BatchPostPropertyGroupOptionAction($batchPropertyGroupOption);
         $action->addHeader('indexing-behavior', 'use-queue-indexing');
+        $action->addHeader('single-operation', 'true');
 
         $ids = $this->connector->execute($channel, $action);
 

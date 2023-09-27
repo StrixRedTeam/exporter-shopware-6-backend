@@ -43,6 +43,7 @@ class BatchPostPropertyGroupOptionAction extends AbstractAction
     public function parseContent(?string $content): array
     {
         $result = [];
+        var_dump($content);
         $data = json_decode($content, true, 512, JSON_THROW_ON_ERROR);
 
         foreach ($data['data'] as $requestName => $row) {

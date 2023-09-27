@@ -106,7 +106,7 @@ class Shopware6CustomFieldClient
     ): array {
         $query = new Shopware6QueryBuilder();
         foreach ($ids as $id) {
-            $query->equals('id[]', $id);
+            $query->equals('ids[]', $id);
         }
         $action = new GetCustomFieldList($query);
         if ($shopware6Language) {

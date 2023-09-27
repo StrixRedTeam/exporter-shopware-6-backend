@@ -64,7 +64,7 @@ class Shopware6PropertyGroupOptionClient
         $query->association('translations', [0 => '']);
         $query->include(self::ENTITY_NAME, ['id', 'name', 'mediaId', 'position']);
         foreach ($ids as $id) {
-            $query->equals('id[]', $id);
+            $query->equals('ids[]', $id);
         }
         $action = new GetPropertyGroupOptionsList($query);
 

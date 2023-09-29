@@ -91,9 +91,9 @@ class CustomFieldShopware6ExportProcess
 
             $lastAttributeChangeDate = $this->eventHistoryQuery->findLastDateForAggregateId($attributeId);
             // if custom field was not changed since last export, skip it
-            if ($customField && ($lastExportDate && $lastAttributeChangeDate && $lastAttributeChangeDate < $lastExportDate)) {
-                continue;
-            }
+            //if ($customField && ($lastExportDate && $lastAttributeChangeDate && $lastAttributeChangeDate < $lastExportDate)) {
+            //    continue;
+            //}
             if (!$customField) {
                 foreach ($shopwareCustomFields as $id => $shopwareCustomField) {
                     if ($shopwareCustomField->getName() === $attribute->getCode()->getValue()) {

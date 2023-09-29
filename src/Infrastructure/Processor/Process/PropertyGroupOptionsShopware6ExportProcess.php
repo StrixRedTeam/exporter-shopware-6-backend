@@ -85,7 +85,7 @@ class PropertyGroupOptionsShopware6ExportProcess
 
         // if no property group option was not changed since last export, skip whole export
         // otherwise export all
-        $skipExport = true;
+        //$skipExport = true;
         foreach ($options as $option) {
 
             $optionId = new AggregateId($option);
@@ -98,12 +98,12 @@ class PropertyGroupOptionsShopware6ExportProcess
                 $optionId
             );
 
-            if ($skipExport) {
-                $lastAttributeChangeDate = $this->eventStoreQuery->findLastDateForAggregateId($optionId);
-                if (!($lastExportDate && $lastAttributeChangeDate && $lastAttributeChangeDate < $lastExportDate) || !$shopwareId) {
-                    $skipExport = false;
-                }
-            }
+            //if ($skipExport) {
+            //    $lastAttributeChangeDate = $this->eventStoreQuery->findLastDateForAggregateId($optionId);
+            //    if (!($lastExportDate && $lastAttributeChangeDate && $lastAttributeChangeDate < $lastExportDate) || !$shopwareId) {
+            //        $skipExport = false;
+            //    }
+            //}
 
             $propertyGroupOption = null;
             if ($shopwareId && isset($shopwareOptions[$shopwareId])) {
@@ -131,7 +131,7 @@ class PropertyGroupOptionsShopware6ExportProcess
             $propertyGroupOptions[] = $propertyGroupOption;
         }
 
-        if (!$skipExport) {
+        //if (!$skipExport) {
             $optionsChunk = array_chunk($propertyGroupOptions, self::CHUNK_SIZE);
             foreach ($optionsChunk as $row) {
                 $this->propertyGroupOptionClient->insertBatch(
@@ -139,7 +139,7 @@ class PropertyGroupOptionsShopware6ExportProcess
                     new BatchPropertyGroupOption($row)
                 );
             }
-        }
+        //}
         // delete remaining options not existing in Ergonode
         //if (!empty($shopwareOptions)) {
         //    foreach ($shopwareOptions as $shopwareId => $option) {

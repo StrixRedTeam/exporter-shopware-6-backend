@@ -83,9 +83,9 @@ class PropertyGroupShopware6ExportProcess
             $lastAttributeChangeDate = $this->eventStoreQuery->findLastDateForAggregateId($attributeId);
             $skipExport = false;
             // if property group was not changed since last export, skip it
-            if ($lastExportDate && $lastAttributeChangeDate && $lastAttributeChangeDate < $lastExportDate) {
-                $skipExport = true;
-            }
+            //if ($lastExportDate && $lastAttributeChangeDate && $lastAttributeChangeDate < $lastExportDate) {
+            //    $skipExport = true;
+            //}
 
             $shopwareId = $this->propertyGroupRepository->load($channel->getId(), $attribute->getId());
             if (!$skipExport || !$shopwareId) {

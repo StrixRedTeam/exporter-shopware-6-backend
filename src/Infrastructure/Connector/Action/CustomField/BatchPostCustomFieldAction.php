@@ -42,14 +42,9 @@ class BatchPostCustomFieldAction extends AbstractAction
      */
     public function parseContent(?string $content): array
     {
-        $result = [];
         $data = json_decode($content, true, 512, JSON_THROW_ON_ERROR);
 
-        foreach ($data['data'] as $requestName => $row) {
-            $result[$requestName] = $row['result'][0]['entities']['custom_field'][0];
-        }
-
-        return $result;
+        return $data['data']['custom_field'] ?? [];
     }
 
     private function buildBody(): string

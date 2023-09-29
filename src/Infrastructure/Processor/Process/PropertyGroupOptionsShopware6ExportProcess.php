@@ -134,6 +134,9 @@ class PropertyGroupOptionsShopware6ExportProcess
         if (!$skipExport) {
             $optionsChunk = array_chunk($propertyGroupOptions, self::CHUNK_SIZE);
             foreach ($optionsChunk as $row) {
+                if (empty($row)) {
+                    continue;
+                }
                 $this->propertyGroupOptionClient->insertBatch(
                     $channel,
                     new BatchPropertyGroupOption($row)

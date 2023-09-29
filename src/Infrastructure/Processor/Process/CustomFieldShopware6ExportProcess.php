@@ -115,6 +115,10 @@ class CustomFieldShopware6ExportProcess
             $customFields[] = $customField;
         }
 
+        if (empty($customFields)) {
+            return;
+        }
+        
         try {
             $this->customFieldClient->insertBatch($channel, new BatchCustomField($customFields));
         } catch (Shopware6ExporterException $exception) {

@@ -23,6 +23,7 @@ use Ergonode\ExporterShopware6\Infrastructure\Model\Basic\Shopware6CustomField;
 use Ergonode\ExporterShopware6\Infrastructure\Model\CustomField\BatchCustomField;
 use Ergonode\ExporterShopware6\Infrastructure\Model\Shopware6Language;
 use Ergonode\SharedKernel\Domain\Aggregate\AttributeId;
+use GuzzleHttp\Exception\GuzzleException;
 
 class Shopware6CustomFieldClient
 {
@@ -93,6 +94,28 @@ class Shopware6CustomFieldClient
 
     /**
      * @param Shopware6Channel $channel
+     * @param string[] $ids
+     * @param Shopware6Language|null $shopware6Language
+     * @return Shopware6CustomField[]
+     * @throws GuzzleException
+     */
+    public function getByIds(
+        Shopware6Channel $channel,
+        array $ids,
+        ?Shopware6Language $shopware6Language = null
+    ): array {
+        $query = new Shopware6QueryBuilder();
+        $query->setIds($ids);
+        $action = new GetCustomFieldList($query);
+        if ($shopware6Language) {
+            $action->addHeader('sw-language-id', $shopware6Language->getId());
+        }
+
+        return $this->connector->execute($channel, $action);
+    }
+
+    /**
+     * @param Shopware6Channel $channel
      * @param AbstractShopware6CustomField $customField
      * @param AbstractAttribute $attribute
      * @return AbstractShopware6CustomField|null
@@ -132,10 +155,23 @@ class Shopware6CustomFieldClient
     ): void {
         $action = new BatchPostCustomFieldAction($batchCustomField);
         $action->addHeader('indexing-behavior', 'use-queue-indexing');
+        $action->addHeader('single-operation', 'true');
 
         $ids = $this->connector->execute($channel, $action);
+        $idAwareCustomFields = $this->getByIds($channel, $ids);
 
-        foreach ($ids as $requestId => $shopwareId) {
+        foreach ($batchCustomField->getCustomFields() as $customField) {
+            $requestId = $customField->getRequestName();
+            $shopwareId = null;
+            foreach ($idAwareCustomFields as $idAwareCustomField) {
+                if ($idAwareCustomField->getName() === $customField->getName()) {
+                    $shopwareId = $idAwareCustomField->getId();
+                    break;
+                }
+            }
+            if (!$shopwareId) {
+                continue;
+            }
             [$id, $type] = explode('_', $requestId, 2);
             $this->repository->save(
                 $channel->getId(),

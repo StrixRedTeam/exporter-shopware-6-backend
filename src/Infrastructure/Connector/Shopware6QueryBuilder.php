@@ -25,6 +25,8 @@ class Shopware6QueryBuilder
 
     private array $associations = [];
 
+    private array $ids = [];
+
     public function limit(int $limit): Shopware6QueryBuilder
     {
         $this->limit = $limit;
@@ -72,6 +74,11 @@ class Shopware6QueryBuilder
         return $this;
     }
 
+    public function setIds(array $ids): void
+    {
+        $this->ids = $ids;
+    }
+
     public function getQuery(): string
     {
         $param['filter'] = [];
@@ -93,6 +100,10 @@ class Shopware6QueryBuilder
 
         if (count($this->associations) > 0) {
             $param['associations'] = $this->associations;
+        }
+
+        if (count($this->ids) > 0) {
+            $param['ids'] = $this->ids;
         }
 
         return http_build_query($param);

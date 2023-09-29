@@ -10,7 +10,7 @@ namespace Ergonode\ExporterShopware6\Infrastructure\Client;
 
 use Ergonode\ExporterShopware6\Domain\Entity\Shopware6Channel;
 use Ergonode\ExporterShopware6\Domain\Repository\PropertyGroupOptionsRepositoryInterface;
-use Ergonode\ExporterShopware6\Infrastructure\Connector\Action\CustomField\BatchPostPropertyGroupOptionAction;
+use Ergonode\ExporterShopware6\Infrastructure\Connector\Action\PropertyGroup\BatchPostPropertyGroupOptionAction;
 use Ergonode\ExporterShopware6\Infrastructure\Connector\Action\PropertyGroup\DeletePropertyGroupOption;
 use Ergonode\ExporterShopware6\Infrastructure\Connector\Action\PropertyGroup\GetPropertyGroupOptions;
 use Ergonode\ExporterShopware6\Infrastructure\Connector\Action\PropertyGroup\GetPropertyGroupOptionsList;
@@ -25,7 +25,7 @@ use Ergonode\SharedKernel\Domain\AggregateId;
 
 class Shopware6PropertyGroupOptionClient
 {
-    private const ENTITY_NAME = 'property_group_option';
+    private const ENTITY_NAME             = 'property_group_option';
     private const TRANSLATION_ENTITY_NAME = 'property_group_option_translation';
 
     private Shopware6Connector $connector;
@@ -49,6 +49,21 @@ class Shopware6PropertyGroupOptionClient
         $query->limit(1000);
         $query->association('translations', [0 => '']);
         $query->include(self::ENTITY_NAME, ['id', 'name', 'mediaId', 'position']);
+        $action = new GetPropertyGroupOptionsList($query);
+
+        return $this->connector->execute($channel, $action);
+    }
+
+    /**
+     * @return Shopware6PropertyGroupOption[]|null
+     */
+    public function getByIds(Shopware6Channel $channel, array $ids): ?array
+    {
+        $query = new Shopware6QueryBuilder();
+        $query->limit(1000);
+        $query->association('translations', [0 => '']);
+        $query->include(self::ENTITY_NAME, ['id', 'name', 'mediaId', 'position']);
+        $query->setIds($ids);
         $action = new GetPropertyGroupOptionsList($query);
 
         return $this->connector->execute($channel, $action);
@@ -104,20 +119,33 @@ class Shopware6PropertyGroupOptionClient
 
     /**
      * @param Shopware6Channel $channel
-     * @param BatchPropertyGroupOption $batchCustomField
+     * @param BatchPropertyGroupOption $batchPropertyGroupOption
      * @return void
      * @throws \Exception
      */
     public function insertBatch(
         Shopware6Channel $channel,
-        BatchPropertyGroupOption $batchCustomField
+        BatchPropertyGroupOption $batchPropertyGroupOption
     ): void {
-        $action = new BatchPostPropertyGroupOptionAction($batchCustomField);
+        $action = new BatchPostPropertyGroupOptionAction($batchPropertyGroupOption);
         $action->addHeader('indexing-behavior', 'use-queue-indexing');
+        $action->addHeader('single-operation', 'true');
 
         $ids = $this->connector->execute($channel, $action);
 
-        foreach ($ids as $requestId => $shopwareId) {
+        $idAwareOptions = $this->getByIds($channel, $ids);
+        foreach ($batchPropertyGroupOption->getOptions() as $option) {
+            $requestId = $option->getRequestName();
+            $shopwareId = null;
+            foreach ($idAwareOptions as $idAwareOption) {
+                if ($idAwareOption->getName() === $option->getName()) {
+                    $shopwareId = $idAwareOption->getId();
+                    break;
+                }
+            }
+            if (!$shopwareId) {
+                continue;
+            }
             [$attributeId, $optionId] = explode('_', $requestId, 2);
             $this->propertyGroupOptionsRepository->save(
                 $channel->getId(),

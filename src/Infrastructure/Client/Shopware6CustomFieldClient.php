@@ -158,7 +158,11 @@ class Shopware6CustomFieldClient
         $action->addHeader('single-operation', 'true');
 
         $ids = $this->connector->execute($channel, $action);
-        $idAwareCustomFields = $this->getByIds($channel, $ids);
+        $idAwareCustomFields = [];
+        $idChunk = array_chunk($ids, 30);
+        foreach ($idChunk as $chunk) {
+            $idAwareCustomFields = array_merge($idAwareCustomFields, $this->getByIds($channel, $chunk));
+        }
 
         foreach ($batchCustomField->getCustomFields() as $customField) {
             $requestId = $customField->getRequestName();

@@ -133,7 +133,12 @@ class Shopware6PropertyGroupOptionClient
 
         $ids = $this->connector->execute($channel, $action);
 
-        $idAwareOptions = $this->getByIds($channel, $ids);
+        $idAwareOptions = [];
+        $idChunk = array_chunk($ids, 30);
+        foreach ($idChunk as $chunk) {
+            $idAwareOptions = array_merge($idAwareOptions, $this->getByIds($channel, $chunk));
+        }
+
         foreach ($batchPropertyGroupOption->getOptions() as $option) {
             $requestId = $option->getRequestName();
             $shopwareId = null;

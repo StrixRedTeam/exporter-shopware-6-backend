@@ -227,7 +227,7 @@ class Shopware6Category implements \JsonSerializable
                 'name' => $this->name,
                 'active' => $this->active,
                 'visible' => $this->visible,
-                'customFields' => $this->customFields,
+        //        'customFields' => $this->customFields,
             ];
         if (null !== $this->parentId) {
             $data['parentId'] = $this->parentId;

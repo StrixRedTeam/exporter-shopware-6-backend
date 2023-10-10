@@ -328,7 +328,11 @@ class Shopware6Category implements \JsonSerializable
         }
 
         $keywords = substr($this->keywords, 0, 255);
-        // substr to full words
-        return substr($keywords, 0, strrpos($keywords, ","));
+        if (strpos($keywords, ",") !== false) {
+            // substr to full words
+            return substr($keywords, 0, strrpos($keywords, ","));
+        }
+
+        return $keywords;
     }
 }

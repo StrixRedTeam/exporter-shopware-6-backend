@@ -243,7 +243,7 @@ class Shopware6Category implements \JsonSerializable
             $data['metaDescription'] = $this->metaDescription;
         }
         if (null !== $this->keywords) {
-            $data['keywords'] = $this->keywords;
+            $data['keywords'] = $this->getParsedKeywords();
         }
         if (null !== $this->description) {
             $data['description'] = $this->description;
@@ -315,5 +315,20 @@ class Shopware6Category implements \JsonSerializable
                 );
             }
         }
+    }
+
+    private function getParsedKeywords(): ?string
+    {
+        if (!$this->keywords) {
+            return null;
+        }
+
+        if (strlen($this->keywords) < 255) {
+            return $this->keywords;
+        }
+
+        $keywords = substr($this->keywords, 0, 255);
+        // substr to full words
+        return substr($keywords, 0, strrpos($keywords, ","));
     }
 }

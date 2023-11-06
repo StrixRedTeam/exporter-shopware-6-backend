@@ -87,8 +87,8 @@ class PropertyGroupShopware6ExportProcess
                 $skipExport = true;
             }
 
-            if($attribute->getCode()->getValue() === 'variants') {
-                $skipExport = true;
+            if ($attribute->getCode()->getValue() === 'variants') {
+                return;
             }
 
             $shopwareId = $this->propertyGroupRepository->load($channel->getId(), $attribute->getId());

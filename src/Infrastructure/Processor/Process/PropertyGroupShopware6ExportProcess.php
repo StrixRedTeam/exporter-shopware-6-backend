@@ -87,11 +87,8 @@ class PropertyGroupShopware6ExportProcess
                 $skipExport = true;
             }
 
-            if ($attribute->getCode()->getValue() === 'variants') {
-                return;
-            }
-
             $shopwareId = $this->propertyGroupRepository->load($channel->getId(), $attribute->getId());
+
             if (!$skipExport || !$shopwareId) {
                 $propertyGroup = null;
                 if ($shopwareId && isset($propertyGroups[$shopwareId])) {
@@ -129,6 +126,9 @@ class PropertyGroupShopware6ExportProcess
                 }
             }
 
+            if (is_string($shopwareId) && $attribute->getCode()->getValue() === 'variants') {
+                return;
+            }
             $this->propertyGroupOptionsProcess->process($export, $channel, $attribute);
         }
     }
